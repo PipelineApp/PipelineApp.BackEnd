@@ -22,10 +22,12 @@
         [Authorize]
         public IActionResult Private()
         {
-            return Json(new
-            {
-                Message = "Hello from a private endpoint! You need to be authenticated to see this."
-            });
+            return Json(User.Claims.Select(c =>
+                new
+                {
+                    c.Type,
+                    c.Value
+                }));
         }
 
         /// <summary>
