@@ -1,0 +1,12 @@
+﻿.swagger-ui .topbar {
+    background: #560698;
+    color: #fff;
+}
+
+.swagger-ui .topbar label {
+    color: #fff;
+}
+
+.topbar-wrapper .link img {
+    display: none;
+}

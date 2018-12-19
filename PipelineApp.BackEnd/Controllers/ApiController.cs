@@ -1,12 +1,37 @@
-﻿namespace PipelineApp.BackEnd.Controllers
+﻿// <copyright file="ApiController.cs" company="Blackjack Software">
+// Copyright (c) Blackjack Software. All rights reserved.
+// Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace PipelineApp.BackEnd.Controllers
 {
+    using System;
     using System.Linq;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
 
+    /// <summary>
+    /// Controller class for behavior related to testing authentication.
+    /// </summary>
     [Route("api")]
-    public class ApiController : Controller
+    public class ApiController : BaseController
     {
+        private ILogger<ApiController> _logger;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApiController"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        public ApiController(ILogger<ApiController> logger)
+        {
+            _logger = logger;
+        }
+
+        /// <summary>
+        /// Public endpoint accessible by unauthenticated users.
+        /// </summary>
+        /// <returns>JSON containing a message for unauthenticated users.</returns>
         [HttpGet]
         [Route("public")]
         public IActionResult Public()
@@ -17,32 +42,17 @@
             });
         }
 
+        /// <summary>
+        /// Private endpoint accessible only by authenticated users.
+        /// </summary>
+        /// <returns>String containing user's unique identifier.</returns>
         [HttpGet]
         [Route("private")]
         [Authorize]
         public IActionResult Private()
         {
-            return Json(User.Claims.Select(c =>
-                new
-                {
-                    c.Type,
-                    c.Value
-                }));
-        }
-
-        /// <summary>
-        /// This is a helper action. It allows you to easily view all the claims of the token
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("claims")]
-        public IActionResult Claims()
-        {
-            return Json(User.Claims.Select(c =>
-                new
-                {
-                    c.Type,
-                    c.Value
-                }));
+            _logger.LogInformation("Processed request for authenticated endpoint.");
+            return Ok(UserId);
         }
     }
 }

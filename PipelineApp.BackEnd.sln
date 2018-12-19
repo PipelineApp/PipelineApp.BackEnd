@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipelineApp.BackEnd", "PipelineApp.BackEnd\PipelineApp.BackEnd.csproj", "{F386CCD0-0E9F-44AA-8F44-B64E1E8AFF77}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PipelineApp.BackEnd.Test", "PipelineApp.BackEnd.Test\PipelineApp.BackEnd.Test.csproj", "{94A52A07-06D8-4FB8-A8C9-16F9EA53C264}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F386CCD0-0E9F-44AA-8F44-B64E1E8AFF77} = {F386CCD0-0E9F-44AA-8F44-B64E1E8AFF77}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,17 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+﻿// <copyright file="Startup.cs" company="Blackjack Software">
+// Copyright (c) Blackjack Software. All rights reserved.
+// Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
+// </copyright>
 
 namespace PipelineApp.BackEnd
 {
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using System.Reflection;
+    using AutoMapper;
+    using Infrastructure.Providers;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Models.Configuration;
+    using Swashbuckle.AspNetCore.Swagger;
 
+    /// <summary>
+    /// .NET Core application startup class.
+    /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private IConfiguration Configuration { get; set; }
@@ -24,31 +35,59 @@ namespace PipelineApp.BackEnd
         {
             Configuration = configuration;
         }
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+
+        /// <summary>
+        /// Configures services and dependency injection for the application container.
+        /// </summary>
+        /// <param name="services">The application service collection.</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            string domain = $"https://{Configuration["Auth:Domain"]}/";
+            var domain = $"https://{Configuration["Auth:Domain"]}/";
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
             }).AddJwtBearer(options =>
             {
                 options.Authority = domain;
                 options.Audience = Configuration["Auth:ApiIdentifier"];
             });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v3", new Info { Title = "PipelineApp", Version = "v1" });
+                c.IncludeXmlComments(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/PipelineApp.xml");
+            });
+            services.AddOptions();
+            services.Configure<AppSettings>(Configuration);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<GlobalExceptionHandlerAttribute>();
+            services.AddScoped<DisableDuringMaintenanceFilterAttribute>();
+            services.AddCors();
+            services.AddMvc();
+            services.AddAutoMapper();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Configures the application's HTTP request pipeline.
+        /// </summary>
+        /// <param name="app">The application builder.</param>
+        /// <param name="env">The hosting environment.</param>
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v3/swagger.json", "Pipeline V1");
+                c.RoutePrefix = "docs";
+                c.DocumentTitle = "Pipeline";
+                c.InjectStylesheet("/docs/custom.css");
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseStaticFiles();
             app.UseAuthentication();
             app.UseCors(builder =>
                 builder.WithOrigins(Configuration["Cors:CorsUrl"].Split(',')).AllowAnyHeader().AllowAnyMethod());
