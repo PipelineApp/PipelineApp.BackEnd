@@ -1,12 +1,10 @@
-﻿// <copyright file="ApiController.cs" company="Blackjack Software">
+﻿// <copyright file="TestController.cs" company="Blackjack Software">
 // Copyright (c) Blackjack Software. All rights reserved.
 // Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace PipelineApp.BackEnd.Controllers
 {
-    using System;
-    using System.Linq;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -14,16 +12,16 @@ namespace PipelineApp.BackEnd.Controllers
     /// <summary>
     /// Controller class for behavior related to testing authentication.
     /// </summary>
-    [Route("api")]
-    public class ApiController : BaseController
+    [Route("api/[controller]")]
+    public class TestController : BaseController
     {
-        private ILogger<ApiController> _logger;
+        private readonly ILogger<TestController> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ApiController"/> class.
+        /// Initializes a new instance of the <see cref="TestController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public ApiController(ILogger<ApiController> logger)
+        public TestController(ILogger<TestController> logger)
         {
             _logger = logger;
         }

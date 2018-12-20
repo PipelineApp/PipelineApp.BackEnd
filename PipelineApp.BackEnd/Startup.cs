@@ -5,11 +5,16 @@
 
 namespace PipelineApp.BackEnd
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Reflection;
     using AutoMapper;
+    using Infrastructure.Data;
     using Infrastructure.Providers;
+    using Infrastructure.Seeders;
+    using Infrastructure.Services;
+    using Interfaces;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -17,6 +22,7 @@ namespace PipelineApp.BackEnd
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Models.Configuration;
+    using Neo4j.Driver.V1;
     using Swashbuckle.AspNetCore.Swagger;
 
     /// <summary>
@@ -60,9 +66,16 @@ namespace PipelineApp.BackEnd
             });
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
+            services.AddTransient<DatabaseSeeder>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<GlobalExceptionHandlerAttribute>();
             services.AddScoped<DisableDuringMaintenanceFilterAttribute>();
+            services.AddSingleton(provider =>
+                GraphDatabase.Driver(
+                    new Uri(Configuration["GraphDb:Hostname"]),
+                    AuthTokens.Basic(Configuration["GraphDb:Username"], Configuration["GraphDb:Password"])));
+            services.AddSingleton<IGraphDbClient, GraphDbClient>();
+            services.AddScoped<IFandomService, FandomService>();
             services.AddCors();
             services.AddMvc();
             services.AddAutoMapper();

@@ -21,6 +21,11 @@ namespace PipelineApp.BackEnd.Models.Configuration
         public CorsAppSettings Cors { get; set; }
 
         /// <summary>
+        /// Gets or sets the application settings related to graph database queries.
+        /// </summary>
+        public GraphDbAppSettings GraphDb { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the site is in maintenance mode.
         /// </summary>
         public bool IsMaintenanceMode { get; set; }

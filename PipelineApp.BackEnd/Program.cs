@@ -8,6 +8,7 @@ namespace PipelineApp.BackEnd
     using System;
     using System.Diagnostics.CodeAnalysis;
     using Infrastructure.Providers;
+    using Infrastructure.Seeders;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -88,7 +89,9 @@ namespace PipelineApp.BackEnd
                 var services = scope.ServiceProvider;
                 try
                 {
-                    // seed database here
+                    var databaseSeeder = services.GetRequiredService<DatabaseSeeder>();
+                    databaseSeeder.Seed().Wait();
+                    var test = 0;
                 }
                 catch (Exception ex)
                 {
