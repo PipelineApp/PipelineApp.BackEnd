@@ -19,5 +19,20 @@ namespace PipelineApp.BackEnd.Models.Configuration
         /// Gets or sets the authentication API identifier.
         /// </summary>
         public string ApiIdentifier { get; set; }
+
+        /// <summary>
+        /// Gets or sets the authentication server base URL.
+        /// </summary>
+        public string AuthenticationServerBaseUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the authentication client ID.
+        /// </summary>
+        public string ClientId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the authentication client secret.
+        /// </summary>
+        public string ClientSecret { get; set; }
     }
 }

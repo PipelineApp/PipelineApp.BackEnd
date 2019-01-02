@@ -8,6 +8,9 @@ namespace PipelineApp.BackEnd
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.Net;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Reflection;
     using AutoMapper;
     using Infrastructure.Data;
@@ -15,6 +18,7 @@ namespace PipelineApp.BackEnd
     using Infrastructure.Seeders;
     using Infrastructure.Services;
     using Interfaces;
+    using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -66,16 +70,26 @@ namespace PipelineApp.BackEnd
             });
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
+
+            var authEndpoint = new Uri(Configuration["Auth:AuthenticationServerBaseUrl"]);
+            var httpClient = new HttpClient
+            {
+                BaseAddress = authEndpoint,
+            };
+            httpClient.DefaultRequestHeaders.Accept.Clear();
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            ServicePointManager.FindServicePoint(authEndpoint).ConnectionLeaseTimeout = 60000;
+            services.AddSingleton(httpClient);
+
             services.AddTransient<DatabaseSeeder>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<GlobalExceptionHandlerAttribute>();
             services.AddScoped<DisableDuringMaintenanceFilterAttribute>();
-            services.AddSingleton(provider =>
-                GraphDatabase.Driver(
-                    new Uri(Configuration["GraphDb:Hostname"]),
-                    AuthTokens.Basic(Configuration["GraphDb:Username"], Configuration["GraphDb:Password"])));
+            services.AddSingleton(provider => GraphDatabase.Driver(new Uri(Configuration["GraphDb:Hostname"]), AuthTokens.Basic(Configuration["GraphDb:Username"], Configuration["GraphDb:Password"])));
             services.AddSingleton<IGraphDbClient, GraphDbClient>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IFandomService, FandomService>();
+
             services.AddCors();
             services.AddMvc();
             services.AddAutoMapper();

@@ -25,7 +25,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
         /// </summary>
         public string Name { get; set; }
 
-        ///<inheritdoc />
+        /// <inheritdoc />
         public override void LoadRecord(IRecord record)
         {
             var root = record.GetOrDefault("v", (INode)null);

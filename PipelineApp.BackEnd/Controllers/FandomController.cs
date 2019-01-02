@@ -10,6 +10,7 @@ namespace PipelineApp.BackEnd.Controllers
     using System.Linq;
     using AutoMapper;
     using Interfaces;
+    using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;

@@ -91,7 +91,6 @@ namespace PipelineApp.BackEnd
                 {
                     var databaseSeeder = services.GetRequiredService<DatabaseSeeder>();
                     databaseSeeder.Seed().Wait();
-                    var test = 0;
                 }
                 catch (Exception ex)
                 {
