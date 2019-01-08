@@ -17,13 +17,13 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
     [ExcludeFromCodeCoverage]
     public class DatabaseSeeder
     {
-        private readonly IRepository<Fandom> _client;
+        private readonly IRepository<FandomEntity> _client;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseSeeder"/> class.
         /// </summary>
         /// <param name="client">The graph DB client.</param>
-        public DatabaseSeeder(IRepository<Fandom> client)
+        public DatabaseSeeder(IRepository<FandomEntity> client)
         {
             _client = client;
         }
@@ -46,9 +46,9 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
             {
                 return;
             }
-            await _client.Create(new Fandom { Name = "Star Trek" });
-            await _client.Create(new Fandom { Name = "Mass Effect" });
-            await _client.Create(new Fandom { Name = "Dragon Age" });
+            await _client.Create(new FandomEntity { Name = "Star Trek" });
+            await _client.Create(new FandomEntity { Name = "Mass Effect" });
+            await _client.Create(new FandomEntity { Name = "Dragon Age" });
         }
     }
 }

@@ -7,6 +7,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Mappers
 {
     using System.Diagnostics.CodeAnalysis;
     using AutoMapper;
+    using Data.Entities;
     using Models.DomainModels;
     using Models.ViewModels;
 
@@ -22,7 +23,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Mappers
         /// </summary>
         public FandomMapper()
         {
-            CreateMap<Fandom, Data.Entities.Fandom>()
+            CreateMap<Fandom, FandomEntity>()
                 .ReverseMap();
             CreateMap<Fandom, FandomDto>()
                 .ReverseMap();

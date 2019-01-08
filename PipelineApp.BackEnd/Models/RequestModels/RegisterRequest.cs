@@ -40,6 +40,14 @@ namespace PipelineApp.BackEnd.Models.RequestModels
         public string ConfirmPassword { get; set; }
 
         /// <summary>
+        /// Gets or sets the date of birth.
+        /// </summary>
+        /// <value>
+        /// The date of birth.
+        /// </value>
+        public DateTime? DateOfBirth { get; set; }
+
+        /// <summary>
         /// Throws an exception if the registration request is not valid.
         /// </summary>
         /// <exception cref="InvalidRegistrationException">Thrown if the registration request is not valid.</exception>
@@ -61,6 +69,11 @@ namespace PipelineApp.BackEnd.Models.RequestModels
             if (!string.Equals(Password, ConfirmPassword, StringComparison.CurrentCulture))
             {
                 errors.Add("Your passwords must match.");
+            }
+
+            if (DateOfBirth == null || DateOfBirth.Value.ToUniversalTime() > DateTime.UtcNow)
+            {
+                errors.Add("You must enter a valid birthdate.");
             }
 
             if (errors.Any())

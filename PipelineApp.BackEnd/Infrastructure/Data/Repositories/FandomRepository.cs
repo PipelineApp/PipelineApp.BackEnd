@@ -9,7 +9,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
     using Interfaces;
     using Neo4j.Driver.V1;
 
-    public class FandomRepository : BaseRepository, IRepository<Fandom>
+    public class FandomRepository : BaseRepository, IRepository<FandomEntity>
     {
         /// <summary>
         ///
@@ -20,7 +20,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         {
         }
 
-        public async Task<Fandom> Create(Fandom data)
+        public async Task<FandomEntity> Create(FandomEntity data)
         {
             var id = Guid.NewGuid();
             var query = $"CREATE (v:{VertexTypes.FANDOM} {{ id: '{id}', name: '{data.Name}' }}) RETURN v";
@@ -28,7 +28,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
             {
                 var cursor = await tx.RunAsync(query);
                 await cursor.FetchAsync();
-                var fandom = new Fandom();
+                var fandom = new FandomEntity();
                 fandom.LoadRecord(cursor.Current);
                 return fandom;
             });
@@ -39,13 +39,13 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
             return Count(VertexTypes.FANDOM);
         }
 
-        public IEnumerable<Fandom> GetAll()
+        public IEnumerable<FandomEntity> GetAll()
         {
             var query = $"MATCH (v:{VertexTypes.FANDOM}) RETURN v";
             var data = Session.Run(query);
             return data.Select(v =>
             {
-                var entity = new Fandom();
+                var entity = new FandomEntity();
                 entity.LoadRecord(v);
                 return entity;
             });

@@ -10,7 +10,10 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using System.Net.Http;
     using System.Security.Authentication;
     using System.Threading.Tasks;
+    using AutoMapper;
+    using Data.Entities;
     using Exceptions.Account;
+    using Interfaces;
     using Interfaces.Services;
     using Models.Configuration;
     using Models.DomainModels;
@@ -79,7 +82,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task Signup(string email, string password, HttpClient client, AppSettings config)
+        public async Task<User> Signup(string email, string password, DateTime? dateOfBirth, IRepository<UserEntity> userRepository, HttpClient client, AppSettings config, IMapper mapper)
         {
             var body = new
             {
@@ -92,8 +95,18 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             if (!response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsAsync<RegistrationFailureResult>();
-                throw new InvalidRegistrationException(new List<string> { result.Description });
+                throw new RegistrationFailedException(result.Description);
             }
+
+            var successResult = await response.Content.ReadAsAsync<RegistrationSuccessResult>();
+            var entity = new UserEntity
+            {
+                Id = "auth0|" + successResult.UserId,
+                Username = successResult.Email,
+                DateOfBirth = dateOfBirth
+            };
+            await userRepository.Create(entity);
+            return mapper.Map<User>(entity);
         }
     }
 }

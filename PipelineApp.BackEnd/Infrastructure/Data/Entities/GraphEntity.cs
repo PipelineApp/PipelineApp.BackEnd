@@ -13,6 +13,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
     public abstract class GraphEntity
     {
         /// <summary>
+        /// Gets or sets the node's unique identifier.
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
         /// Loads the properties of an <see cref="IRecord"/> into the data model.
         /// </summary>
         /// <param name="record">Graph DB record.</param>

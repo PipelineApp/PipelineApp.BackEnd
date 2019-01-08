@@ -88,7 +88,8 @@ namespace PipelineApp.BackEnd
             services.AddScoped<GlobalExceptionHandlerAttribute>();
             services.AddScoped<DisableDuringMaintenanceFilterAttribute>();
             services.AddSingleton(provider => GraphDatabase.Driver(new Uri(Configuration["GraphDb:Hostname"]), AuthTokens.Basic(Configuration["GraphDb:Username"], Configuration["GraphDb:Password"])));
-            services.AddSingleton<IRepository<Fandom>, FandomRepository>();
+            services.AddSingleton<IRepository<FandomEntity>, FandomRepository>();
+            services.AddSingleton<IRepository<UserEntity>, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IFandomService, FandomService>();
 

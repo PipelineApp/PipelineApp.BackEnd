@@ -28,7 +28,7 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly ILogger<FandomController> _logger;
         private readonly IMapper _mapper;
         private readonly IFandomService _fandomService;
-        private readonly IRepository<Fandom> _repository;
+        private readonly IRepository<FandomEntity> _repository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FandomController"/> class.
@@ -41,7 +41,7 @@ namespace PipelineApp.BackEnd.Controllers
             ILogger<FandomController> logger,
             IMapper mapper,
             IFandomService fandomService,
-            IRepository<Fandom> repository)
+            IRepository<FandomEntity> repository)
         {
             _logger = logger;
             _mapper = mapper;

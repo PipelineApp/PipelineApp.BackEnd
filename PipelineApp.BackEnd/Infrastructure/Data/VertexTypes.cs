@@ -11,6 +11,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Data
     public static class VertexTypes
     {
         /// <summary>
+        /// Vertex type for user vertices.
+        /// </summary>
+        public const string USER = "User";
+
+        /// <summary>
         /// Vertex type for fandom vertices.
         /// </summary>
         public const string FANDOM = "Fandom";

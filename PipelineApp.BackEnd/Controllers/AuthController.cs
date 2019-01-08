@@ -11,7 +11,9 @@ namespace PipelineApp.BackEnd.Controllers
     using System.Security.Authentication;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Infrastructure.Data.Entities;
     using Infrastructure.Exceptions.Account;
+    using Interfaces;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore.Internal;
@@ -30,6 +32,7 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly AppSettings _config;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
+        private readonly IRepository<UserEntity> _userRepository;
         private readonly HttpClient _authHttpClient;
 
         /// <summary>
@@ -39,18 +42,21 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="config">The configuration.</param>
         /// <param name="authService">The authentication service.</param>
         /// <param name="mapper">The mapper.</param>
+        /// <param name="userRepository">The user repository.</param>
         /// <param name="authHttpClient">The http client for calls to the auth server.</param>
         public AuthController(
             ILogger<AuthController> logger,
             IOptions<AppSettings> config,
             IAuthService authService,
             IMapper mapper,
+            IRepository<UserEntity> userRepository,
             HttpClient authHttpClient)
         {
             _logger = logger;
             _config = config.Value;
             _authService = authService;
             _mapper = mapper;
+            _userRepository = userRepository;
             _authHttpClient = authHttpClient;
         }
 
@@ -179,14 +185,20 @@ namespace PipelineApp.BackEnd.Controllers
             try
             {
                 model.AssertIsValid();
-                await _authService.Signup(model.Email, model.Password, _authHttpClient, _config);
+                await _authService.Signup(model.Email, model.Password, model.DateOfBirth, _userRepository,
+                    _authHttpClient, _config, _mapper);
                 _logger.LogInformation(3, $"User {model.Email} created a new account with password.");
                 return Ok();
+            }
+            catch (RegistrationFailedException e)
+            {
+                _logger.LogError(e, $"Error registering user with email {model.Email}: ${e.Message}");
+                return BadRequest("Error creating account. An account with some or all of this information may already exist.");
             }
             catch (InvalidRegistrationException e)
             {
                 _logger.LogError(e, $"Error registering user with email {model.Email}: ${e.Errors.Join(",")}");
-                return BadRequest("Error creating account. An account with some or all of this information may already exist.");
+                return BadRequest(e.Errors);
             }
             catch (Exception e)
             {

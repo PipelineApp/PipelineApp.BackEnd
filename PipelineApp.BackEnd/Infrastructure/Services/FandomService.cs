@@ -8,6 +8,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using System.Collections.Generic;
     using System.Linq;
     using AutoMapper;
+    using Data.Entities;
     using Interfaces;
     using Interfaces.Services;
     using Models.DomainModels;
@@ -16,7 +17,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     public class FandomService : IFandomService
     {
         /// <inheritdoc />
-        public IEnumerable<Fandom> GetAllFandoms(IRepository<Data.Entities.Fandom> client, IMapper mapper)
+        public IEnumerable<Fandom> GetAllFandoms(IRepository<FandomEntity> client, IMapper mapper)
         {
             var fandomEntities = client.GetAll();
             return fandomEntities.Select(mapper.Map<Fandom>).ToList();

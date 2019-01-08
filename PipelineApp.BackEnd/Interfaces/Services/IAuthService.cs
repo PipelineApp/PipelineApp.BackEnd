@@ -5,9 +5,13 @@
 
 namespace PipelineApp.BackEnd.Interfaces.Services
 {
+    using System;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using AutoMapper;
+    using Infrastructure.Data.Entities;
     using Models.Configuration;
+    using Models.DomainModels;
     using Models.DomainModels.Auth;
 
     /// <summary>
@@ -58,11 +62,14 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// </summary>
         /// <param name="email">The account email.</param>
         /// <param name="password">The account password.</param>
+        /// <param name="dateOfBirth">The account date of birth.</param>
+        /// <param name="userRepository"></param>
         /// <param name="client">The HTTP client for communication with auth server.</param>
         /// <param name="config">The app config.</param>
+        /// <param name="mapper"></param>
         /// <returns>
         /// A task representing the asynchronous operation.
         /// </returns>
-        Task Signup(string email, string password, HttpClient client, AppSettings config);
+        Task<User> Signup(string email, string password, DateTime? dateOfBirth, IRepository<UserEntity> userRepository, HttpClient client, AppSettings config, IMapper mapper);
     }
 }

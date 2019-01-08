@@ -1,4 +1,4 @@
-﻿// <copyright file="Fandom.cs" company="Blackjack Software">
+﻿// <copyright file="FandomEntity.cs" company="Blackjack Software">
 // Copyright (c) Blackjack Software. All rights reserved.
 // Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -13,13 +13,8 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
     /// Data-layer representation of a fandom.
     /// </summary>
     /// <seealso cref="IEntity" />
-    public class Fandom : GraphEntity
+    public class FandomEntity : GraphEntity
     {
-        /// <summary>
-        /// Gets or sets the fandom's unique identifier.
-        /// </summary>
-        public string Id { get; set; }
-
         /// <summary>
         /// Gets or sets the fandom's name.
         /// </summary>
