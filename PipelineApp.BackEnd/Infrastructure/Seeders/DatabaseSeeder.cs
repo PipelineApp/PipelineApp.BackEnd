@@ -8,6 +8,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Data;
+    using Data.Entities;
     using Interfaces;
 
     /// <summary>
@@ -16,13 +17,13 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
     [ExcludeFromCodeCoverage]
     public class DatabaseSeeder
     {
-        private readonly IGraphDbClient _client;
+        private readonly IRepository<Fandom> _client;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseSeeder"/> class.
         /// </summary>
         /// <param name="client">The graph DB client.</param>
-        public DatabaseSeeder(IGraphDbClient client)
+        public DatabaseSeeder(IRepository<Fandom> client)
         {
             _client = client;
         }
@@ -40,14 +41,14 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
 
         private async Task InitFandoms()
         {
-            var initialized = _client.Count(VertexTypes.FANDOM) > 0;
+            var initialized = _client.Count() > 0;
             if (initialized)
             {
                 return;
             }
-            await _client.CreateFandom("Star Trek");
-            await _client.CreateFandom("Mass Effect");
-            await _client.CreateFandom("Dragon Age");
+            await _client.Create(new Fandom { Name = "Star Trek" });
+            await _client.Create(new Fandom { Name = "Mass Effect" });
+            await _client.Create(new Fandom { Name = "Dragon Age" });
         }
     }
 }

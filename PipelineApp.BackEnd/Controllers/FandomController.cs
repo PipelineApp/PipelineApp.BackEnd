@@ -9,6 +9,7 @@ namespace PipelineApp.BackEnd.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using AutoMapper;
+    using Infrastructure.Data.Entities;
     using Interfaces;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,7 +28,7 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly ILogger<FandomController> _logger;
         private readonly IMapper _mapper;
         private readonly IFandomService _fandomService;
-        private readonly IGraphDbClient _graphDbClient;
+        private readonly IRepository<Fandom> _repository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FandomController"/> class.
@@ -35,17 +36,17 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="logger">The logger.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="fandomService">The fandom service.</param>
-        /// <param name="graphDbClient">The graph DB client.</param>
+        /// <param name="repository">The graph DB client.</param>
         public FandomController(
             ILogger<FandomController> logger,
             IMapper mapper,
             IFandomService fandomService,
-            IGraphDbClient graphDbClient)
+            IRepository<Fandom> repository)
         {
             _logger = logger;
             _mapper = mapper;
             _fandomService = fandomService;
-            _graphDbClient = graphDbClient;
+            _repository = repository;
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace PipelineApp.BackEnd.Controllers
             {
                 _logger.LogInformation(
                     $"Received request to get list of available fandoms for user {UserId}.");
-                var fandoms = _fandomService.GetAllFandoms(_graphDbClient, _mapper);
+                var fandoms = _fandomService.GetAllFandoms(_repository, _mapper);
                 var result = fandoms.Select(_mapper.Map<FandomDto>).ToList();
                 _logger.LogInformation(
                     $"Processed request to get list of available fandoms for user {UserId}. Found {result.Count} fandoms.");
