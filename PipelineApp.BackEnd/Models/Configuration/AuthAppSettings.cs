@@ -34,5 +34,10 @@ namespace PipelineApp.BackEnd.Models.Configuration
         /// Gets or sets the authentication client secret.
         /// </summary>
         public string ClientSecret { get; set; }
+
+        /// <summary>
+        /// Gets or sets the database connection name on the auth server.
+        /// </summary>
+        public string AuthenticationServerDatabaseConnection { get; set; }
     }
 }

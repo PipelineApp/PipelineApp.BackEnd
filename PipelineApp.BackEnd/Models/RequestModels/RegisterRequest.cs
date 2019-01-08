@@ -16,14 +16,6 @@ namespace PipelineApp.BackEnd.Models.RequestModels
     public class RegisterRequest
     {
         /// <summary>
-        /// Gets or sets the username.
-        /// </summary>
-        /// <value>
-        /// The username.
-        /// </value>
-        public string Username { get; set; }
-
-        /// <summary>
         /// Gets or sets the email.
         /// </summary>
         /// <value>
@@ -54,10 +46,6 @@ namespace PipelineApp.BackEnd.Models.RequestModels
         public virtual void AssertIsValid()
         {
             var errors = new List<string>();
-            if (string.IsNullOrWhiteSpace(Username))
-            {
-                errors.Add("You must provide a username.");
-            }
 
             if (string.IsNullOrWhiteSpace(Email))
             {

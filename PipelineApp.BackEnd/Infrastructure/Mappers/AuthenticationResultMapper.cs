@@ -7,7 +7,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Mappers
 {
     using System.Diagnostics.CodeAnalysis;
     using AutoMapper;
-    using Models.DomainModels;
+    using Models.DomainModels.Auth;
     using Models.ViewModels.Auth;
 
     /// <summary>
@@ -22,7 +22,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Mappers
         /// </summary>
         public AuthenticationResultMapper()
         {
-            CreateMap<AuthenticationResult, AuthTokenCollection>()
+            CreateMap<AuthenticationSuccessResult, AuthTokenCollection>()
                 .ReverseMap();
         }
     }

@@ -8,8 +8,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
     using System.Net.Http;
     using System.Threading.Tasks;
     using Models.Configuration;
-    using Models.DomainModels;
-    using Models.ViewModels.Auth;
+    using Models.DomainModels.Auth;
 
     /// <summary>
     /// Service for data manipulation relating to user authentication.
@@ -25,10 +24,10 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="config">The app config.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
-        /// The task result contains an <see cref="AuthenticationResult"/> object containing
+        /// The task result contains an <see cref="AuthenticationSuccessResult"/> object containing
         /// authentication tokens for the authenticated user.
         /// </returns>
-        Task<AuthenticationResult> AuthenticateUser(string username, string password, HttpClient client, AppSettings config);
+        Task<AuthenticationSuccessResult> AuthenticateUser(string username, string password, HttpClient client, AppSettings config);
 
         /// <summary>
         /// Fetches a refreshed access token associated with the given refresh token.
@@ -38,10 +37,10 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="config">The app config.</param>
         /// <returns>
         /// A task respresenting the asynchronous operations.
-        /// The task result contains an <see cref="AuthenticationResult"/> object
+        /// The task result contains an <see cref="AuthenticationSuccessResult"/> object
         /// containing updated authentication tokens.
         /// </returns>
-        Task<AuthenticationResult> GetRefreshedToken(string refreshToken, HttpClient client, AppSettings config);
+        Task<AuthenticationSuccessResult> GetRefreshedToken(string refreshToken, HttpClient client, AppSettings config);
 
         /// <summary>
         /// Revokes the given refresh token.
@@ -53,5 +52,17 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// A task representing the asynchronous operation.
         /// </returns>
         Task RevokeRefreshToken(string refreshToken, HttpClient client, AppSettings config);
+
+        /// <summary>
+        /// Registers a user account in the application.
+        /// </summary>
+        /// <param name="email">The account email.</param>
+        /// <param name="password">The account password.</param>
+        /// <param name="client">The HTTP client for communication with auth server.</param>
+        /// <param name="config">The app config.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation.
+        /// </returns>
+        Task Signup(string email, string password, HttpClient client, AppSettings config);
     }
 }

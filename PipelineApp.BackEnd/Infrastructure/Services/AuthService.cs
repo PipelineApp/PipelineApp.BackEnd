@@ -5,6 +5,8 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Services
 {
+    using System;
+    using System.Collections.Generic;
     using System.Net.Http;
     using System.Security.Authentication;
     using System.Threading.Tasks;
@@ -12,13 +14,13 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using Interfaces.Services;
     using Models.Configuration;
     using Models.DomainModels;
-    using Models.ViewModels.Auth;
+    using Models.DomainModels.Auth;
 
     /// <inheritdoc cref="IAuthService"/>
     public class AuthService : IAuthService
     {
         /// <inheritdoc />
-        public async Task<AuthenticationResult> AuthenticateUser(string username, string password, HttpClient client, AppSettings config)
+        public async Task<AuthenticationSuccessResult> AuthenticateUser(string username, string password, HttpClient client, AppSettings config)
         {
             var body = new
             {
@@ -33,14 +35,16 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             var response = await client.PostAsJsonAsync("oauth/token", body);
             if (!response.IsSuccessStatusCode)
             {
-                throw new InvalidCredentialException();
+                var failureResult = await response.Content.ReadAsAsync<AuthenticationFailureResult>();
+                throw new InvalidCredentialException(failureResult.ErrorDescription);
             }
-            var result = await response.Content.ReadAsAsync<AuthenticationResult>();
-            return result;
+
+            var successResult = await response.Content.ReadAsAsync<AuthenticationSuccessResult>();
+            return successResult;
         }
 
         /// <inheritdoc />
-        public async Task<AuthenticationResult> GetRefreshedToken(string refreshToken, HttpClient client, AppSettings config)
+        public async Task<AuthenticationSuccessResult> GetRefreshedToken(string refreshToken, HttpClient client, AppSettings config)
         {
             var body = new
             {
@@ -54,7 +58,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             {
                 throw new InvalidRefreshTokenException();
             }
-            var result = await response.Content.ReadAsAsync<AuthenticationResult>();
+            var result = await response.Content.ReadAsAsync<AuthenticationSuccessResult>();
             return result;
         }
 
@@ -71,6 +75,24 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             if (!response.IsSuccessStatusCode)
             {
                 throw new InvalidRefreshTokenException();
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task Signup(string email, string password, HttpClient client, AppSettings config)
+        {
+            var body = new
+            {
+                client_id = config.Auth.ClientId,
+                email,
+                password,
+                connection = config.Auth.AuthenticationServerDatabaseConnection
+            };
+            var response = await client.PostAsJsonAsync("dbconnections/signup", body);
+            if (!response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsAsync<RegistrationFailureResult>();
+                throw new InvalidRegistrationException(new List<string> { result.Description });
             }
         }
     }

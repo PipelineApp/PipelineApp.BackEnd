@@ -14,6 +14,7 @@ namespace PipelineApp.BackEnd.Controllers
     using Infrastructure.Exceptions.Account;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore.Internal;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Models.Configuration;
@@ -79,10 +80,10 @@ namespace PipelineApp.BackEnd.Controllers
                 var tokenData = await _authService.AuthenticateUser(model.Username, model.Password, _authHttpClient, _config);
                 return Ok(_mapper.Map<AuthTokenCollection>(tokenData));
             }
-            catch (InvalidCredentialException)
+            catch (InvalidCredentialException e)
             {
-                _logger.LogWarning($"Login failure for {model.Username}. Error validating password.");
-                return BadRequest("Invalid username or password.");
+                _logger.LogWarning(e, $"Login failure for {model.Username}. Error validating password.");
+                return BadRequest(e.Message);
             }
             catch (Exception ex)
             {
@@ -173,35 +174,25 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400, Type = typeof(List<string>))]
         [ProducesResponseType(500)]
-        public Task<IActionResult> Register([FromBody] RegisterRequest model)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
-            throw new NotImplementedException();
-            /*
             try
             {
                 model.AssertIsValid();
-                var user = new IdentityUser
-                {
-                    UserName = model.Username,
-                    Email = model.Email,
-                    SecurityStamp = Guid.NewGuid().ToString()
-                };
-                await _authService.AssertUserInformationDoesNotExist(model.Username, model.Email, _userManager);
-                await _authService.CreateUser(user, model.Password, _userManager);
-                _logger.LogInformation(3, $"User {model.Username} created a new account with password.");
+                await _authService.Signup(model.Email, model.Password, _authHttpClient, _config);
+                _logger.LogInformation(3, $"User {model.Email} created a new account with password.");
                 return Ok();
             }
             catch (InvalidRegistrationException e)
             {
-                _logger.LogError(e, $"Error registering user with email {model.Email} and username {model.Username}");
-                return BadRequest(e.Errors);
+                _logger.LogError(e, $"Error registering user with email {model.Email}: ${e.Errors.Join(",")}");
+                return BadRequest("Error creating account. An account with some or all of this information may already exist.");
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error registering user with email {model.Email} and username {model.Username}");
+                _logger.LogError(e, $"Error registering user with email {model.Email}");
                 return StatusCode(500, new List<string> { "Error creating account. An account with some or all of this information may already exist." });
             }
-            */
         }
 
         /// <summary>

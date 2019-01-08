@@ -1,16 +1,16 @@
-﻿// <copyright file="AuthenticationResult.cs" company="Blackjack Software">
+﻿// <copyright file="AuthenticationSuccessResult.cs" company="Blackjack Software">
 // Copyright (c) Blackjack Software. All rights reserved.
 // Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace PipelineApp.BackEnd.Models.DomainModels
+namespace PipelineApp.BackEnd.Models.DomainModels.Auth
 {
     using Newtonsoft.Json;
 
     /// <summary>
     /// Collection combining an access token and refresh token for use by a front-end application in authenticating with this API.
     /// </summary>
-    public class AuthenticationResult
+    public class AuthenticationSuccessResult
     {
         /// <summary>
         /// Gets or sets the access token.
