@@ -63,10 +63,10 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="email">The account email.</param>
         /// <param name="password">The account password.</param>
         /// <param name="dateOfBirth">The account date of birth.</param>
-        /// <param name="userRepository"></param>
+        /// <param name="userRepository">The user repository.</param>
         /// <param name="client">The HTTP client for communication with auth server.</param>
         /// <param name="config">The app config.</param>
-        /// <param name="mapper"></param>
+        /// <param name="mapper">The mapper.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
         /// </returns>

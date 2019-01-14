@@ -41,7 +41,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
 
         private async Task InitFandoms()
         {
-            var initialized = _client.Count() > 0;
+            var initialized = _client.Count(string.Empty) > 0;
             if (initialized)
             {
                 return;

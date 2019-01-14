@@ -6,6 +6,7 @@
 namespace PipelineApp.BackEnd.Interfaces.Services
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using AutoMapper;
     using Infrastructure.Data.Entities;
     using Models.DomainModels;
@@ -21,6 +22,6 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="repository">The graph DB client.</param>
         /// <param name="mapper">The application's object mapper.</param>
         /// <returns>A list of <see cref="Fandom"/> objects.</returns>
-        IEnumerable<Fandom> GetAllFandoms(IRepository<FandomEntity> repository, IMapper mapper);
+        Task<IEnumerable<Fandom>> GetAllFandoms(IRepository<FandomEntity> repository, IMapper mapper);
     }
 }

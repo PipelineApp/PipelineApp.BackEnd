@@ -13,6 +13,7 @@ namespace PipelineApp.BackEnd.Interfaces
     /// <summary>
     /// Client class for interactions with a graph database.
     /// </summary>
+    /// <typeparam name="T">The type to which query results should be cast.</typeparam>
     public interface IRepository<T> : IDisposable
         where T : GraphEntity
     {
@@ -27,16 +28,17 @@ namespace PipelineApp.BackEnd.Interfaces
         Task<T> Create(T data);
 
         /// <summary>
-        /// Retrieves the number of nodes in the database of type <code>T</code>.
+        /// Retrieves the number of nodes in the database of type <code>T</code> associated with the given user ID.
         /// </summary>
+        /// <param name="userId">The user whose associated vertices should be counted.</param>
         /// <returns>The number of matching nodes in the database.</returns>
-        int Count();
+        int Count(string userId);
 
         /// <summary>
-        /// Retrieves all vertices in the database of type <code>T</code>.
+        /// Retrieves all vertices in the database of type <code>T</code> associated with the given user ID.
         /// </summary>
-        /// <typeparam name="T">The type to which the retrieved nodes should be mapped.</typeparam>
+        /// <param name="userId">The user whose associated vertices should be searched for.</param>
         /// <returns>A collection of objects of type <code>T</code> retrieved from the database.</returns>
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAll(string userId);
     }
 }

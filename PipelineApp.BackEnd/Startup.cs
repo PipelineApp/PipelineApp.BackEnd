@@ -20,6 +20,7 @@ namespace PipelineApp.BackEnd
     using Infrastructure.Seeders;
     using Infrastructure.Services;
     using Interfaces;
+    using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -90,8 +91,10 @@ namespace PipelineApp.BackEnd
             services.AddSingleton(provider => GraphDatabase.Driver(new Uri(Configuration["GraphDb:Hostname"]), AuthTokens.Basic(Configuration["GraphDb:Username"], Configuration["GraphDb:Password"])));
             services.AddSingleton<IRepository<FandomEntity>, FandomRepository>();
             services.AddSingleton<IRepository<UserEntity>, UserRepository>();
+            services.AddSingleton<IPersonaRepository, PersonaRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IFandomService, FandomService>();
+            services.AddScoped<IPersonaService, PersonaService>();
 
             services.AddCors();
             services.AddMvc();

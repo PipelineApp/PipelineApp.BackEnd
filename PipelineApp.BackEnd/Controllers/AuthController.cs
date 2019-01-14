@@ -185,8 +185,7 @@ namespace PipelineApp.BackEnd.Controllers
             try
             {
                 model.AssertIsValid();
-                await _authService.Signup(model.Email, model.Password, model.DateOfBirth, _userRepository,
-                    _authHttpClient, _config, _mapper);
+                await _authService.Signup(model.Email, model.Password, model.DateOfBirth, _userRepository, _authHttpClient, _config, _mapper);
                 _logger.LogInformation(3, $"User {model.Email} created a new account with password.");
                 return Ok();
             }

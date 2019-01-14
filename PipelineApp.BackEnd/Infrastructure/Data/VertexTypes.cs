@@ -19,5 +19,10 @@ namespace PipelineApp.BackEnd.Infrastructure.Data
         /// Vertex type for fandom vertices.
         /// </summary>
         public const string FANDOM = "Fandom";
+
+        /// <summary>
+        /// Vertex type for persona vertices.
+        /// </summary>
+        public const string PERSONA = "Persona";
     }
 }

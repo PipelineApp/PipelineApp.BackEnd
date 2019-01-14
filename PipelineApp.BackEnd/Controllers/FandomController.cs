@@ -8,6 +8,7 @@ namespace PipelineApp.BackEnd.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using AutoMapper;
     using Infrastructure.Data.Entities;
     using Interfaces;
@@ -63,13 +64,13 @@ namespace PipelineApp.BackEnd.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(List<FandomDto>))]
         [ProducesResponseType(500)]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
                 _logger.LogInformation(
                     $"Received request to get list of available fandoms for user {UserId}.");
-                var fandoms = _fandomService.GetAllFandoms(_repository, _mapper);
+                var fandoms = await _fandomService.GetAllFandoms(_repository, _mapper);
                 var result = fandoms.Select(_mapper.Map<FandomDto>).ToList();
                 _logger.LogInformation(
                     $"Processed request to get list of available fandoms for user {UserId}. Found {result.Count} fandoms.");

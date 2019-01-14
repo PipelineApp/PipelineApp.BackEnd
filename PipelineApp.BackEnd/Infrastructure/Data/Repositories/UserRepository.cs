@@ -1,24 +1,31 @@
-﻿namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
+﻿// <copyright file="UserRepository.cs" company="Blackjack Software">
+// Copyright (c) Blackjack Software. All rights reserved.
+// Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using Entities;
     using Interfaces;
     using Neo4j.Driver.V1;
 
-    public class UserRepository : BaseRepository, IRepository<UserEntity>
+    /// <summary>
+    /// Repository class for data handling relating to users.
+    /// </summary>
+    public class UserRepository : BaseRepository<UserEntity>, IRepository<UserEntity>
     {
         /// <summary>
-        ///
+        /// Initializes a new instance of the <see cref="UserRepository"/> class.
         /// </summary>
-        /// <param name="driver"></param>
+        /// <param name="driver">The graph db driver.</param>
         public UserRepository(IDriver driver)
             : base(driver)
         {
         }
 
+        /// <inheritdoc />
         public async Task<UserEntity> Create(UserEntity data)
         {
             var query = $@"CREATE (v:{VertexTypes.USER} 
@@ -27,31 +34,20 @@
                             username: '{data.Username}',
                             dob: '{data.DateOfBirth}'
                         }}) RETURN v";
-            return await Session.WriteTransactionAsync(async tx =>
-            {
-                var cursor = await tx.RunAsync(query);
-                await cursor.FetchAsync();
-                var fandom = new UserEntity();
-                fandom.LoadRecord(cursor.Current);
-                return fandom;
-            });
+            return await LoadQuerySingle(query);
         }
 
-        public int Count()
+        /// <inheritdoc />
+        public int Count(string userId)
         {
-            return Count(VertexTypes.USER);
+            return CountAll(VertexTypes.USER);
         }
 
-        public IEnumerable<UserEntity> GetAll()
+        /// <inheritdoc />
+        public async Task<IEnumerable<UserEntity>> GetAll(string userId)
         {
             var query = $"MATCH (v:{VertexTypes.USER}) RETURN v";
-            var data = Session.Run(query);
-            return data.Select(v =>
-            {
-                var entity = new UserEntity();
-                entity.LoadRecord(v);
-                return entity;
-            });
+            return await LoadQuery(query);
         }
     }
 }

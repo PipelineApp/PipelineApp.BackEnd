@@ -7,6 +7,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using AutoMapper;
     using Data.Entities;
     using Interfaces;
@@ -17,9 +18,9 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     public class FandomService : IFandomService
     {
         /// <inheritdoc />
-        public IEnumerable<Fandom> GetAllFandoms(IRepository<FandomEntity> client, IMapper mapper)
+        public async Task<IEnumerable<Fandom>> GetAllFandoms(IRepository<FandomEntity> client, IMapper mapper)
         {
-            var fandomEntities = client.GetAll();
+            var fandomEntities = await client.GetAll(null);
             return fandomEntities.Select(mapper.Map<Fandom>).ToList();
         }
     }
