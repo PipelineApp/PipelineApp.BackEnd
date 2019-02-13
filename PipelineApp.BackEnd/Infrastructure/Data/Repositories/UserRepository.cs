@@ -49,5 +49,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
             var query = $"MATCH (v:{VertexTypes.USER}) RETURN v";
             return await LoadQuery(query);
         }
+
+        /// <inheritdoc />
+        public Task<UserEntity> GetById(string id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

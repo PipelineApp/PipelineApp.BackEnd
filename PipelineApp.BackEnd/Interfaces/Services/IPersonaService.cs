@@ -50,5 +50,28 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// The task result contains the created persona.
         /// </returns>
         Task<Persona> CreatePersona(Persona persona, IPersonaRepository personaRepository, IMapper mapper);
+
+        /// <summary>
+        /// Throws an exception if the given user does not own the given persona.
+        /// </summary>
+        /// <param name="personaId">The unique ID of the persona.</param>
+        /// <param name="userId">The unique ID of the user.</param>
+        /// <param name="personaRepository">The persona repository.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// </returns>
+        Task AssertUserOwnsPersona(string personaId, string userId, IPersonaRepository personaRepository);
+
+        /// <summary>
+        /// Updates the passed persona.
+        /// </summary>
+        /// <param name="model">The model containing persona information.</param>
+        /// <param name="personaRepository">The persona repository.</param>
+        /// <param name="mapper">The application's object mapper.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// The task result contains the updated persona object.
+        /// </returns>
+        Task<Persona> UpdatePersona(Persona model, IPersonaRepository personaRepository, IMapper mapper);
     }
 }

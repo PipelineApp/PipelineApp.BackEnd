@@ -67,5 +67,19 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
                         WHERE v.slug = '{personaSlug}' RETURN v";
             return await LoadQuery(query);
         }
+
+        /// <inheritdoc />
+        public Task<PersonaEntity> Update(string modelId, PersonaEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public async Task<PersonaEntity> GetById(string id)
+        {
+            var query = $@"MATCH (v:{VertexTypes.PERSONA})
+                        WHERE v.id = '{id}' RETURN v";
+            return await LoadQuerySingle(query);
+        }
     }
 }

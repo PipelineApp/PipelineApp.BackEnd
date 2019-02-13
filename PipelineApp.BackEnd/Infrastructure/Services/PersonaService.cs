@@ -43,5 +43,32 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             var result = await personaRepository.Create(entity);
             return mapper.Map<Persona>(result);
         }
+
+        /// <inheritdoc />
+        /// <exception cref="PersonaNotFoundException">Thrown if the persona does not exist or does not belong to the given user.</exception>
+        public async Task AssertUserOwnsPersona(string personaId, string userId, IPersonaRepository personaRepository)
+        {
+            var persona = await personaRepository.GetById(personaId);
+            if (persona == null || persona.UserId != userId)
+            {
+                throw new PersonaNotFoundException();
+            }
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="PersonaSlugExistsException">Thrown if the user is attempting to update
+        /// the persona to a slug already in use by another persona.</exception>
+        public async Task<Persona> UpdatePersona(Persona model, IPersonaRepository personaRepository, IMapper mapper)
+        {
+            var entity = mapper.Map<PersonaEntity>(model);
+            var existingEntities = await personaRepository.GetBySlug(model.Slug);
+            var existingEntity = existingEntities.FirstOrDefault();
+            if (existingEntity != null && existingEntity.Id != model.Id)
+            {
+                throw new PersonaSlugExistsException();
+            }
+            var result = await personaRepository.Update(model.Id, entity);
+            return mapper.Map<Persona>(result);
+        }
     }
 }

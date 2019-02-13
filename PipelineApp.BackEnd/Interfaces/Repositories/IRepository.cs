@@ -40,5 +40,16 @@ namespace PipelineApp.BackEnd.Interfaces
         /// <param name="userId">The user whose associated vertices should be searched for.</param>
         /// <returns>A collection of objects of type <code>T</code> retrieved from the database.</returns>
         Task<IEnumerable<T>> GetAll(string userId);
+
+        /// <summary>
+        /// Fetches a vertex of type <code>T</code> with the given unique identifier.
+        /// </summary>
+        /// <param name="id">The identifier to search by.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation.
+        /// The task result contains the matching vertex of type T, or null if no vertex
+        /// exists with the given ID.
+        /// </returns>
+        Task<T> GetById(string id);
     }
 }

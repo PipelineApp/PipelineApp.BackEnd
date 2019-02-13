@@ -19,9 +19,18 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
         /// </summary>
         /// <param name="personaSlug">The slug to search by.</param>
         /// <returns>
-        /// A list of all personas matching the given slug.
+        /// A task representing the asynchronous operation.
+        /// The task result contains a list of all personas matching the given slug.
         /// (Should contain only one item or be empty.)
         /// </returns>
         Task<IEnumerable<PersonaEntity>> GetBySlug(string personaSlug);
+
+        /// <summary>
+        /// Updates the specified persona.
+        /// </summary>
+        /// <param name="id">The unique ID of the persona to be updated.</param>
+        /// <param name="entity">The information with which the entity should be updated.</param>
+        /// <returns>The updated persona entity.</returns>
+        Task<PersonaEntity> Update(string id, PersonaEntity entity);
     }
 }

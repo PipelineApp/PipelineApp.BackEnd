@@ -63,6 +63,10 @@ namespace PipelineApp.BackEnd.Infrastructure.Data
         {
             var cursor = await Session.RunAsync(query);
             await cursor.FetchAsync();
+            if (cursor.Current == null)
+            {
+                return null;
+            }
             var entity = new T();
             entity.LoadRecord(cursor.Current);
             return entity;

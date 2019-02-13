@@ -192,7 +192,7 @@ namespace PipelineApp.BackEnd.Controllers
             catch (RegistrationFailedException e)
             {
                 _logger.LogError(e, $"Error registering user with email {model.Email}: ${e.Message}");
-                return BadRequest("Error creating account. An account with some or all of this information may already exist.");
+                return BadRequest(new List<string> { "Error creating account. An account with some or all of this information may already exist." });
             }
             catch (InvalidRegistrationException e)
             {

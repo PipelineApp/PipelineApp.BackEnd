@@ -46,5 +46,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
             var query = $"MATCH (v:{VertexTypes.FANDOM}) RETURN v";
             return await LoadQuery(query);
         }
+
+        /// <inheritdoc />
+        public Task<FandomEntity> GetById(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
