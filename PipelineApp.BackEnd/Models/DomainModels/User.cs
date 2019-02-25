@@ -12,19 +12,26 @@ namespace PipelineApp.BackEnd.Models.DomainModels
     /// </summary>
     public class User
     {
-        /// <summary>
-        /// Gets or sets the user's unique identifier.
-        /// </summary>
-        public string Id { get; set; }
+        public string UserName { get; set; }
 
-        /// <summary>
-        /// Gets or sets the user's username.
-        /// </summary>
-        public string Username { get; set; }
+        public string NormalizedUserName { get; set; }
 
-        /// <summary>
-        /// Gets or sets the user's date of birth.
-        /// </summary>
-        public DateTime? DateOfBirth { get; set; }
+        public string Email { get; set; }
+
+        public string NormalizedEmail { get; set; }
+
+        public bool EmailConfirmed { get; set; }
+
+        public string PasswordHash { get; set; }
+
+        public string PhoneNumber { get; set; }
+
+        public bool PhoneNumberConfirmed { get; set; }
+
+        public bool TwoFactorEnabled { get; set; }
+
+        public string SecurityStamp { get; set; }
+
+        public DateTime DateOfBirth { get; set; }
     }
 }

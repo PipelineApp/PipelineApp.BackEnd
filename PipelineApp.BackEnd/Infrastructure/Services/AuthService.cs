@@ -7,6 +7,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Security.Authentication;
     using System.Threading.Tasks;
@@ -14,7 +15,9 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using Data.Entities;
     using Exceptions.Account;
     using Interfaces;
+    using Interfaces.Repositories;
     using Interfaces.Services;
+    using Microsoft.AspNetCore.Identity;
     using Models.Configuration;
     using Models.DomainModels;
     using Models.DomainModels.Auth;
@@ -82,31 +85,33 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<User> Signup(string email, string password, DateTime? dateOfBirth, IRepository<UserEntity> userRepository, HttpClient client, AppSettings config, IMapper mapper)
+        public async Task<UserEntity> Signup(UserEntity user, string password, UserManager<UserEntity> userManager)
         {
-            var body = new
+            var result = await userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
             {
-                client_id = config.Auth.ClientId,
-                email,
-                password,
-                connection = config.Auth.AuthenticationServerDatabaseConnection
-            };
-            var response = await client.PostAsJsonAsync("dbconnections/signup", body);
-            if (!response.IsSuccessStatusCode)
-            {
-                var result = await response.Content.ReadAsAsync<RegistrationFailureResult>();
-                throw new RegistrationFailedException(result.Description);
+                throw new InvalidRegistrationException(result.Errors.Select(e => e.Description).ToList());
             }
 
-            var successResult = await response.Content.ReadAsAsync<RegistrationSuccessResult>();
-            var entity = new UserEntity
+            return user;
+        }
+
+        public async Task AssertUserInformationDoesNotExist(string email, UserManager<UserEntity> userManager)
+        {
+            var userByEmail = await userManager.FindByEmailAsync(email);
+            if (userByEmail != null)
             {
-                Id = "auth0|" + successResult.UserId,
-                Username = successResult.Email,
-                DateOfBirth = dateOfBirth
-            };
-            await userRepository.Create(entity);
-            return mapper.Map<User>(entity);
+                throw new InvalidRegistrationException(new List<string> { "Error creating account. An account with some or all of this information may already exist." });
+            }
+        }
+
+        public async Task AddUserToRole(UserEntity user, string role, UserManager<UserEntity> userManager)
+        {
+            var roleResult = await userManager.AddToRoleAsync(user, role);
+            if (!roleResult.Succeeded)
+            {
+                throw new InvalidAccountInfoUpdateException(roleResult.Errors.Select(e => e.Description).ToList());
+            }
         }
     }
 }

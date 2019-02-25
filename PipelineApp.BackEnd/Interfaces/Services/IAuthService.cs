@@ -10,9 +10,11 @@ namespace PipelineApp.BackEnd.Interfaces.Services
     using System.Threading.Tasks;
     using AutoMapper;
     using Infrastructure.Data.Entities;
+    using Microsoft.AspNetCore.Identity;
     using Models.Configuration;
     using Models.DomainModels;
     using Models.DomainModels.Auth;
+    using Repositories;
 
     /// <summary>
     /// Service for data manipulation relating to user authentication.
@@ -60,16 +62,21 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <summary>
         /// Registers a user account in the application.
         /// </summary>
-        /// <param name="email">The account email.</param>
+        /// <param name="user"></param>
         /// <param name="password">The account password.</param>
+        /// <param name="userManager"></param>
+        /// <param name="mapper">The mapper.</param>
+        /// <param name="email">The account email.</param>
         /// <param name="dateOfBirth">The account date of birth.</param>
         /// <param name="userRepository">The user repository.</param>
         /// <param name="client">The HTTP client for communication with auth server.</param>
         /// <param name="config">The app config.</param>
-        /// <param name="mapper">The mapper.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
         /// </returns>
-        Task<User> Signup(string email, string password, DateTime? dateOfBirth, IRepository<UserEntity> userRepository, HttpClient client, AppSettings config, IMapper mapper);
+        Task<UserEntity> Signup(UserEntity user, string password, UserManager<UserEntity> userManager);
+
+        Task AssertUserInformationDoesNotExist(string email, UserManager<UserEntity> userManager);
+        Task AddUserToRole(UserEntity user, string role, UserManager<UserEntity> userManager);
     }
 }

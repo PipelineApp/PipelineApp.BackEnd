@@ -6,35 +6,34 @@
 namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
 {
     using System;
-    using Neo4j.Driver.V1;
+    using Interfaces.Data;
     using Providers;
 
     /// <summary>
     /// Data-layer representation of a user.
     /// </summary>
-    public class UserEntity : GraphEntity
+    public class UserEntity : BaseEntity
     {
-        /// <summary>
-        /// Gets or sets the user's username.
-        /// </summary>
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
-        /// <summary>
-        /// Gets or sets the user's date of birth.
-        /// </summary>
-        public DateTime? DateOfBirth { get; set; }
+        public string NormalizedUserName { get; set; }
 
-        /// <inheritdoc />
-        public override void LoadRecord(IRecord record)
-        {
-            var root = record.GetOrDefault("v", (INode)null);
-            if (root == null)
-            {
-                return;
-            }
-            Id = root.GetOrDefault<string>("id", null);
-            Username = root.GetOrDefault<string>("username", null);
-            DateOfBirth = root.GetOrDefault<DateTime?>("dob", null);
-        }
+        public string Email { get; set; }
+
+        public string NormalizedEmail { get; set; }
+
+        public bool EmailConfirmed { get; set; }
+
+        public string PasswordHash { get; set; }
+
+        public string PhoneNumber { get; set; }
+
+        public bool PhoneNumberConfirmed { get; set; }
+
+        public bool TwoFactorEnabled { get; set; }
+
+        public string SecurityStamp { get; set; }
+
+        public DateTime DateOfBirth { get; set; }
     }
 }

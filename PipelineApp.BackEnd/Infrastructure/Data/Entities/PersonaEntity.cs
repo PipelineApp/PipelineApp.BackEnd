@@ -5,14 +5,15 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
 {
+    using System;
     using System.Collections.Generic;
-    using Neo4j.Driver.V1;
+    using Interfaces.Data;
     using Providers;
 
     /// <summary>
     /// Data-layer representation of a persona.
     /// </summary>
-    public class PersonaEntity : GraphEntity
+    public class PersonaEntity : BaseEntity
     {
         /// <summary>
         /// Gets or sets the unique identifier of the user that owns the persona.
@@ -33,19 +34,5 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
         /// Gets or sets the persona's description.
         /// </summary>
         public string Description { get; set; }
-
-        /// <inheritdoc />
-        public override void LoadRecord(IRecord record)
-        {
-            var root = record.GetOrDefault("v", (INode)null);
-            if (root == null)
-            {
-                return;
-            }
-            Id = root.GetOrDefault<string>("id", null);
-            Slug = root.GetOrDefault<string>("slug", null);
-            PersonaName = root.GetOrDefault<string>("personaname", null);
-            Description = root.GetOrDefault<string>("description", null);
-        }
     }
 }

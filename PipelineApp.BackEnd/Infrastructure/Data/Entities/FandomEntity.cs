@@ -5,31 +5,20 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
 {
+    using System;
     using Interfaces;
-    using Neo4j.Driver.V1;
+    using Interfaces.Data;
     using Providers;
 
     /// <summary>
     /// Data-layer representation of a fandom.
     /// </summary>
     /// <seealso cref="IEntity" />
-    public class FandomEntity : GraphEntity
+    public class FandomEntity : BaseEntity
     {
         /// <summary>
         /// Gets or sets the fandom's name.
         /// </summary>
         public string Name { get; set; }
-
-        /// <inheritdoc />
-        public override void LoadRecord(IRecord record)
-        {
-            var root = record.GetOrDefault("v", (INode)null);
-            if (root == null)
-            {
-                return;
-            }
-            Id = root.GetOrDefault<string>("id", null);
-            Name = root.GetOrDefault<string>("name", null);
-        }
     }
 }

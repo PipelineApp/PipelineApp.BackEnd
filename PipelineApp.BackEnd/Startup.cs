@@ -12,6 +12,7 @@ namespace PipelineApp.BackEnd
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Reflection;
+    using System.Text;
     using AutoMapper;
     using Infrastructure.Data;
     using Infrastructure.Data.Entities;
@@ -26,10 +27,13 @@ namespace PipelineApp.BackEnd
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.IdentityModel.Tokens;
     using Models.Configuration;
     using Neo4j.Driver.V1;
+    using Neo4jClient;
     using Swashbuckle.AspNetCore.Swagger;
 
     /// <summary>
@@ -56,16 +60,22 @@ namespace PipelineApp.BackEnd
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            var domain = $"https://{Configuration["Auth:Domain"]}/";
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.Authority = domain;
-                options.Audience = Configuration["Auth:ApiIdentifier"];
-            });
+
+            services.AddTransient<IUserStore<UserEntity>, UserRepository>();
+            services.AddTransient<IRoleStore<RoleEntity>, RoleRepository>();
+            services.AddIdentity<UserEntity, RoleEntity>(options => { options.User.AllowedUserNameCharacters = string.Empty; })
+                .AddDefaultTokenProviders();
+            services.AddAuthentication(options => { options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidIssuer = Configuration["Auth:Issuer"],
+                        ValidAudience = Configuration["Auth:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:Key"])),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v3", new Info { Title = "PipelineApp", Version = "v1" });
@@ -74,24 +84,14 @@ namespace PipelineApp.BackEnd
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
 
-            var authEndpoint = new Uri(Configuration["Auth:AuthenticationServerBaseUrl"]);
-            var httpClient = new HttpClient
-            {
-                BaseAddress = authEndpoint,
-            };
-            httpClient.DefaultRequestHeaders.Accept.Clear();
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            ServicePointManager.FindServicePoint(authEndpoint).ConnectionLeaseTimeout = 60000;
-            services.AddSingleton(httpClient);
-
             services.AddTransient<DatabaseSeeder>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<GlobalExceptionHandlerAttribute>();
             services.AddScoped<DisableDuringMaintenanceFilterAttribute>();
-            services.AddSingleton(provider => GraphDatabase.Driver(new Uri(Configuration["GraphDb:Hostname"]), AuthTokens.Basic(Configuration["GraphDb:Username"], Configuration["GraphDb:Password"])));
-            services.AddSingleton<IRepository<FandomEntity>, FandomRepository>();
-            services.AddSingleton<IRepository<UserEntity>, UserRepository>();
-            services.AddSingleton<IPersonaRepository, PersonaRepository>();
+            services.AddSingleton(provider => new GraphClient(new Uri(Configuration["GraphDb:Hostname"]), Configuration["GraphDb:Username"], Configuration["GraphDb:Password"]));
+
+            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IFandomRepository, FandomRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IFandomService, FandomService>();
             services.AddScoped<IPersonaService, PersonaService>();

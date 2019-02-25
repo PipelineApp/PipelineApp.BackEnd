@@ -12,6 +12,7 @@ namespace PipelineApp.BackEnd.Controllers
     using AutoMapper;
     using Infrastructure.Data.Entities;
     using Interfaces;
+    using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -29,7 +30,7 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly ILogger<FandomController> _logger;
         private readonly IMapper _mapper;
         private readonly IFandomService _fandomService;
-        private readonly IRepository<FandomEntity> _repository;
+        private readonly IFandomRepository _fandomRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FandomController"/> class.
@@ -42,12 +43,12 @@ namespace PipelineApp.BackEnd.Controllers
             ILogger<FandomController> logger,
             IMapper mapper,
             IFandomService fandomService,
-            IRepository<FandomEntity> repository)
+            IFandomRepository fandomRepository)
         {
             _logger = logger;
             _mapper = mapper;
             _fandomService = fandomService;
-            _repository = repository;
+            _fandomRepository = fandomRepository;
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace PipelineApp.BackEnd.Controllers
             {
                 _logger.LogInformation(
                     $"Received request to get list of available fandoms for user {UserId}.");
-                var fandoms = await _fandomService.GetAllFandoms(_repository, _mapper);
+                var fandoms = await _fandomService.GetAllFandoms(_fandomRepository, _mapper);
                 var result = fandoms.Select(_mapper.Map<FandomDto>).ToList();
                 _logger.LogInformation(
                     $"Processed request to get list of available fandoms for user {UserId}. Found {result.Count} fandoms.");

@@ -10,6 +10,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
     using AutoMapper;
     using Infrastructure.Data.Entities;
     using Models.DomainModels;
+    using Repositories;
 
     /// <summary>
     /// Service for data manipulation related to fandoms.
@@ -19,9 +20,9 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <summary>
         /// Retrieves all fandoms.
         /// </summary>
-        /// <param name="repository">The graph DB client.</param>
+        /// <param name="repository"></param>
         /// <param name="mapper">The application's object mapper.</param>
         /// <returns>A list of <see cref="Fandom"/> objects.</returns>
-        Task<IEnumerable<Fandom>> GetAllFandoms(IRepository<FandomEntity> repository, IMapper mapper);
+        Task<IEnumerable<Fandom>> GetAllFandoms(IFandomRepository repository, IMapper mapper);
     }
 }

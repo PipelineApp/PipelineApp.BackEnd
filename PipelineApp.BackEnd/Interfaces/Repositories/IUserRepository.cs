@@ -2,7 +2,7 @@
 {
     using Infrastructure.Data.Entities;
 
-    public interface IPersonaRepository : IRepository<PersonaEntity>
+    public interface IUserRepository : IRepository<UserEntity>
     {
     }
 }

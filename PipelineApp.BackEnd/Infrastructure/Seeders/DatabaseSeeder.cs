@@ -8,8 +8,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Data;
+    using Data.Constants;
     using Data.Entities;
     using Interfaces;
+    using Interfaces.Repositories;
+    using Microsoft.AspNetCore.Identity;
 
     /// <summary>
     /// Seeder class used to initialize database content for a blank database.
@@ -17,15 +20,17 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
     [ExcludeFromCodeCoverage]
     public class DatabaseSeeder
     {
-        private readonly IRepository<FandomEntity> _client;
+        private readonly IFandomRepository _repository;
+        private readonly RoleManager<RoleEntity> _roleManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseSeeder"/> class.
         /// </summary>
-        /// <param name="client">The graph DB client.</param>
-        public DatabaseSeeder(IRepository<FandomEntity> client)
+        /// <param name="repository">The fandom repository.</param>
+        public DatabaseSeeder(IFandomRepository repository, RoleManager<RoleEntity> roleManager)
         {
-            _client = client;
+            _repository = repository;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -37,18 +42,29 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
         public async Task Seed()
         {
             await InitFandoms();
+            await InitRoles();
+        }
+
+        private async Task InitRoles()
+        {
+            var userRole = await _roleManager.FindByNameAsync(Roles.USER);
+            if (userRole == null)
+            {
+                userRole = new RoleEntity(Roles.USER);
+                await _roleManager.CreateAsync(userRole);
+            }
         }
 
         private async Task InitFandoms()
         {
-            var initialized = _client.Count(string.Empty) > 0;
-            if (initialized)
+            var fandomsCount = await _repository.Count();
+            if (fandomsCount > 0)
             {
                 return;
             }
-            await _client.Create(new FandomEntity { Name = "Star Trek" });
-            await _client.Create(new FandomEntity { Name = "Mass Effect" });
-            await _client.Create(new FandomEntity { Name = "Dragon Age" });
+            await _repository.SaveAsync(new FandomEntity { Name = "Star Trek" });
+            await _repository.SaveAsync(new FandomEntity { Name = "Mass Effect" });
+            await _repository.SaveAsync(new FandomEntity { Name = "Dragon Age" });
         }
     }
 }

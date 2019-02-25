@@ -11,10 +11,13 @@ namespace PipelineApp.BackEnd.Controllers
     using System.Security.Authentication;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Infrastructure.Data.Constants;
     using Infrastructure.Data.Entities;
     using Infrastructure.Exceptions.Account;
     using Interfaces;
+    using Interfaces.Repositories;
     using Interfaces.Services;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore.Internal;
     using Microsoft.Extensions.Logging;
@@ -32,8 +35,7 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly AppSettings _config;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
-        private readonly IRepository<UserEntity> _userRepository;
-        private readonly HttpClient _authHttpClient;
+        private readonly UserManager<UserEntity> _userManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
@@ -42,22 +44,18 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="config">The configuration.</param>
         /// <param name="authService">The authentication service.</param>
         /// <param name="mapper">The mapper.</param>
-        /// <param name="userRepository">The user repository.</param>
-        /// <param name="authHttpClient">The http client for calls to the auth server.</param>
         public AuthController(
             ILogger<AuthController> logger,
             IOptions<AppSettings> config,
             IAuthService authService,
             IMapper mapper,
-            IRepository<UserEntity> userRepository,
-            HttpClient authHttpClient)
+            UserManager<UserEntity> userManager)
         {
             _logger = logger;
             _config = config.Value;
             _authService = authService;
             _mapper = mapper;
-            _userRepository = userRepository;
-            _authHttpClient = authHttpClient;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -81,21 +79,22 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> CreateToken([FromBody] LoginRequest model)
         {
-            try
-            {
-                var tokenData = await _authService.AuthenticateUser(model.Username, model.Password, _authHttpClient, _config);
-                return Ok(_mapper.Map<AuthTokenCollection>(tokenData));
-            }
-            catch (InvalidCredentialException e)
-            {
-                _logger.LogWarning(e, $"Login failure for {model.Username}. Error validating password.");
-                return BadRequest(e.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(default(EventId), ex, $"Error fetching JWT: {ex.Message}");
-                return StatusCode(500, "Failed to fetch JWT.");
-            }
+            throw new NotImplementedException();
+//            try
+//            {
+//                var tokenData = await _authService.AuthenticateUser(model.Username, model.Password, _authHttpClient, _config);
+//                return Ok(_mapper.Map<AuthTokenCollection>(tokenData));
+//            }
+//            catch (InvalidCredentialException e)
+//            {
+//                _logger.LogWarning(e, $"Login failure for {model.Username}. Error validating password.");
+//                return BadRequest(e.Message);
+//            }
+//            catch (Exception ex)
+//            {
+//                _logger.LogError(default(EventId), ex, $"Error fetching JWT: {ex.Message}");
+//                return StatusCode(500, "Failed to fetch JWT.");
+//            }
         }
 
         /// <summary>
@@ -118,22 +117,23 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
         {
-            try
-            {
-                _logger.LogInformation("Received token refresh request.");
-                var tokenData = await _authService.GetRefreshedToken(model.RefreshToken, _authHttpClient, _config);
-                _logger.LogInformation("Processed token refresh request.");
-                return Ok(tokenData);
-            }
-            catch (InvalidRefreshTokenException)
-            {
-                return StatusCode(498);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(default(EventId), ex, $"Error refreshing JWT: {ex.Message}");
-                return StatusCode(500, "Failed to refresh JWT.");
-            }
+            throw new NotImplementedException();
+            //            try
+            //            {
+            //                _logger.LogInformation("Received token refresh request.");
+            //                var tokenData = await _authService.GetRefreshedToken(model.RefreshToken, _authHttpClient, _config);
+            //                _logger.LogInformation("Processed token refresh request.");
+            //                return Ok(tokenData);
+            //            }
+            //            catch (InvalidRefreshTokenException)
+            //            {
+            //                return StatusCode(498);
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                _logger.LogError(default(EventId), ex, $"Error refreshing JWT: {ex.Message}");
+            //                return StatusCode(500, "Failed to refresh JWT.");
+            //            }
         }
 
         /// <summary>
@@ -152,30 +152,32 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(500)]
         public IActionResult RevokeToken([FromBody] RefreshTokenRequest model)
         {
-            try
-            {
-                _authService.RevokeRefreshToken(model.RefreshToken, _authHttpClient, _config);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(default(EventId), ex, $"Error revoking JWT: {ex.Message}");
-                return StatusCode(500, "Failed to revoke JWT.");
-            }
+
+            throw new NotImplementedException();
+            //            try
+            //            {
+            //                _authService.RevokeRefreshToken(model.RefreshToken, _authHttpClient, _config);
+            //                return Ok();
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                _logger.LogError(default(EventId), ex, $"Error revoking JWT: {ex.Message}");
+            //                return StatusCode(500, "Failed to revoke JWT.");
+            //            }
         }
 
         /// <summary>
-        /// Processes a user's request to register a new account.
-        /// </summary>
-        /// <param name="model">Request object containing the user's account information.</param>
-        /// <returns>
-        /// HTTP response containing information about the operation success or failure.<para />
-        /// <list type="table">
-        /// <item><term>200 OK</term><description>Response code for successful account creation</description></item>
-        /// <item><term>400 Bad Request</term><description>Response code for unsuccessful account creation</description></item>
-        /// <item><term>500 Internal Server Error</term><description>Response code for unexpected errors</description></item>
-        /// </list>
-        /// </returns>
+	    /// Processes a user's request to register a new account.
+	    /// </summary>
+	    /// <param name="model">Request object containing the user's account information.</param>
+	    /// <returns>
+	    /// HTTP response containing information about the operation success or failure.<para />
+	    /// <list type="table">
+	    /// <item><term>200 OK</term><description>Response code for successful account creation</description></item>
+	    /// <item><term>400 Bad Request</term><description>Response code for unsuccessful account creation</description></item>
+	    /// <item><term>500 Internal Server Error</term><description>Response code for unexpected errors</description></item>
+	    /// </list>
+	    /// </returns>
         [HttpPost("api/auth/register")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400, Type = typeof(List<string>))]
@@ -185,18 +187,26 @@ namespace PipelineApp.BackEnd.Controllers
             try
             {
                 model.AssertIsValid();
-                await _authService.Signup(model.Email, model.Password, model.DateOfBirth, _userRepository, _authHttpClient, _config, _mapper);
+                var user = new UserEntity
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    SecurityStamp = Guid.NewGuid().ToString()
+                };
+                await _authService.AssertUserInformationDoesNotExist(model.Email, _userManager);
+                var createdUser = await _authService.Signup(user, model.Password, _userManager);
+                await _authService.AddUserToRole(createdUser, Roles.USER, _userManager);
                 _logger.LogInformation(3, $"User {model.Email} created a new account with password.");
                 return Ok();
             }
-            catch (RegistrationFailedException e)
-            {
-                _logger.LogError(e, $"Error registering user with email {model.Email}: ${e.Message}");
-                return BadRequest(new List<string> { "Error creating account. An account with some or all of this information may already exist." });
-            }
             catch (InvalidRegistrationException e)
             {
-                _logger.LogError(e, $"Error registering user with email {model.Email}: ${e.Errors.Join(",")}");
+                _logger.LogError(e, $"Error registering user with email {model.Email}");
+                return BadRequest(e.Errors);
+            }
+            catch (InvalidAccountInfoUpdateException e)
+            {
+                _logger.LogError(e, $"Error adding {model.Email} to user role.");
                 return BadRequest(e.Errors);
             }
             catch (Exception e)
@@ -205,6 +215,7 @@ namespace PipelineApp.BackEnd.Controllers
                 return StatusCode(500, new List<string> { "Error creating account. An account with some or all of this information may already exist." });
             }
         }
+
 
         /// <summary>
         /// Processes a user's request to receive a password reset link.
