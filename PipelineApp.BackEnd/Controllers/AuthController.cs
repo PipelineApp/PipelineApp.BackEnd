@@ -44,6 +44,7 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="config">The configuration.</param>
         /// <param name="authService">The authentication service.</param>
         /// <param name="mapper">The mapper.</param>
+        /// <param name="userManager">The user manager.</param>
         public AuthController(
             ILogger<AuthController> logger,
             IOptions<AppSettings> config,
@@ -77,24 +78,9 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(200, Type = typeof(AuthTokenCollection))]
         [ProducesResponseType(400, Type = typeof(string))]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateToken([FromBody] LoginRequest model)
+        public Task<IActionResult> CreateToken([FromBody] LoginRequest model)
         {
             throw new NotImplementedException();
-//            try
-//            {
-//                var tokenData = await _authService.AuthenticateUser(model.Username, model.Password, _authHttpClient, _config);
-//                return Ok(_mapper.Map<AuthTokenCollection>(tokenData));
-//            }
-//            catch (InvalidCredentialException e)
-//            {
-//                _logger.LogWarning(e, $"Login failure for {model.Username}. Error validating password.");
-//                return BadRequest(e.Message);
-//            }
-//            catch (Exception ex)
-//            {
-//                _logger.LogError(default(EventId), ex, $"Error fetching JWT: {ex.Message}");
-//                return StatusCode(500, "Failed to fetch JWT.");
-//            }
         }
 
         /// <summary>
@@ -115,25 +101,9 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(200, Type = typeof(AuthTokenCollection))]
         [ProducesResponseType(498)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
+        public Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
         {
             throw new NotImplementedException();
-            //            try
-            //            {
-            //                _logger.LogInformation("Received token refresh request.");
-            //                var tokenData = await _authService.GetRefreshedToken(model.RefreshToken, _authHttpClient, _config);
-            //                _logger.LogInformation("Processed token refresh request.");
-            //                return Ok(tokenData);
-            //            }
-            //            catch (InvalidRefreshTokenException)
-            //            {
-            //                return StatusCode(498);
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                _logger.LogError(default(EventId), ex, $"Error refreshing JWT: {ex.Message}");
-            //                return StatusCode(500, "Failed to refresh JWT.");
-            //            }
         }
 
         /// <summary>
@@ -152,18 +122,7 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(500)]
         public IActionResult RevokeToken([FromBody] RefreshTokenRequest model)
         {
-
             throw new NotImplementedException();
-            //            try
-            //            {
-            //                _authService.RevokeRefreshToken(model.RefreshToken, _authHttpClient, _config);
-            //                return Ok();
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                _logger.LogError(default(EventId), ex, $"Error revoking JWT: {ex.Message}");
-            //                return StatusCode(500, "Failed to revoke JWT.");
-            //            }
         }
 
         /// <summary>
@@ -191,6 +150,7 @@ namespace PipelineApp.BackEnd.Controllers
                 {
                     UserName = model.Email,
                     Email = model.Email,
+                    DateOfBirth = model.DateOfBirth.GetValueOrDefault(),
                     SecurityStamp = Guid.NewGuid().ToString()
                 };
                 await _authService.AssertUserInformationDoesNotExist(model.Email, _userManager);
@@ -215,7 +175,6 @@ namespace PipelineApp.BackEnd.Controllers
                 return StatusCode(500, new List<string> { "Error creating account. An account with some or all of this information may already exist." });
             }
         }
-
 
         /// <summary>
         /// Processes a user's request to receive a password reset link.

@@ -58,7 +58,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="userId">The unique ID of the user.</param>
         /// <param name="personaRepository">The persona repository.</param>
         /// <returns>
-        /// A task that represents the asynchronous operation.
+        /// A task representing the asynchronous operation.
         /// </returns>
         Task AssertUserOwnsPersona(string personaId, string userId, IPersonaRepository personaRepository);
 
@@ -69,7 +69,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="personaRepository">The persona repository.</param>
         /// <param name="mapper">The application's object mapper.</param>
         /// <returns>
-        /// A task that represents the asynchronous operation.
+        /// A task representing the asynchronous operation.
         /// The task result contains the updated persona object.
         /// </returns>
         Task<Persona> UpdatePersona(Persona model, IPersonaRepository personaRepository, IMapper mapper);

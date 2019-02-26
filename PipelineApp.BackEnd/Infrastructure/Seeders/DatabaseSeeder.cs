@@ -27,6 +27,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
         /// Initializes a new instance of the <see cref="DatabaseSeeder"/> class.
         /// </summary>
         /// <param name="repository">The fandom repository.</param>
+        /// <param name="roleManager">The role manager.</param>
         public DatabaseSeeder(IFandomRepository repository, RoleManager<RoleEntity> roleManager)
         {
             _repository = repository;
@@ -37,7 +38,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
         /// Seeds the database with fandom vertices.
         /// </summary>
         /// <returns>
-        /// A task that represents the asynchronous operation.
+        /// A task representing the asynchronous operation.
         /// </returns>
         public async Task Seed()
         {

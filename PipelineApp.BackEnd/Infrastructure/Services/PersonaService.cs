@@ -19,26 +19,31 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     /// <inheritdoc />
     public class PersonaService : IPersonaService
     {
+        /// <inheritdoc />
         public Task<IEnumerable<Persona>> GetAllPersonas(string userId, IRepository<PersonaEntity> personaRepository, IMapper mapper)
         {
             throw new System.NotImplementedException();
         }
 
+        /// <inheritdoc />
         public Task AssertSlugIsValid(string personaSlug, string personaId, IPersonaRepository personaRepository)
         {
             throw new System.NotImplementedException();
         }
 
+        /// <inheritdoc />
         public Task<Persona> CreatePersona(Persona persona, IPersonaRepository personaRepository, IMapper mapper)
         {
             throw new System.NotImplementedException();
         }
 
+        /// <inheritdoc />
         public Task AssertUserOwnsPersona(string personaId, string userId, IPersonaRepository personaRepository)
         {
             throw new System.NotImplementedException();
         }
 
+        /// <inheritdoc />
         public Task<Persona> UpdatePersona(Persona model, IPersonaRepository personaRepository, IMapper mapper)
         {
             throw new System.NotImplementedException();

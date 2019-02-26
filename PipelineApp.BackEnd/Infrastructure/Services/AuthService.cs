@@ -96,6 +96,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             return user;
         }
 
+        /// <inheritdoc />
         public async Task AssertUserInformationDoesNotExist(string email, UserManager<UserEntity> userManager)
         {
             var userByEmail = await userManager.FindByEmailAsync(email);
@@ -105,6 +106,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             }
         }
 
+        /// <inheritdoc />
         public async Task AddUserToRole(UserEntity user, string role, UserManager<UserEntity> userManager)
         {
             var roleResult = await userManager.AddToRoleAsync(user, role);

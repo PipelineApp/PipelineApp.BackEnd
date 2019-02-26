@@ -18,11 +18,14 @@ namespace PipelineApp.BackEnd.Interfaces.Services
     public interface IFandomService
     {
         /// <summary>
-        /// Retrieves all fandoms.
+        /// Gets a list of all fandoms managed by the application.
         /// </summary>
-        /// <param name="repository"></param>
-        /// <param name="mapper">The application's object mapper.</param>
-        /// <returns>A list of <see cref="Fandom"/> objects.</returns>
+        /// <param name="repository">The repository.</param>
+        /// <param name="mapper">The mapper.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation.
+        /// The task result contains a list of the retrieved fandoms.
+        /// </returns>
         Task<IEnumerable<Fandom>> GetAllFandoms(IFandomRepository repository, IMapper mapper);
     }
 }

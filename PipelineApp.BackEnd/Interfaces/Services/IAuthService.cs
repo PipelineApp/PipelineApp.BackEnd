@@ -60,23 +60,37 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         Task RevokeRefreshToken(string refreshToken, HttpClient client, AppSettings config);
 
         /// <summary>
-        /// Registers a user account in the application.
+        /// Registers a user with the application.
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="password">The account password.</param>
-        /// <param name="userManager"></param>
-        /// <param name="mapper">The mapper.</param>
-        /// <param name="email">The account email.</param>
-        /// <param name="dateOfBirth">The account date of birth.</param>
-        /// <param name="userRepository">The user repository.</param>
-        /// <param name="client">The HTTP client for communication with auth server.</param>
-        /// <param name="config">The app config.</param>
+        /// <param name="user">The user to register.</param>
+        /// <param name="password">The user's password.</param>
+        /// <param name="userManager">The user manager.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
+        /// The task result contains the created user entity in the database.
         /// </returns>
         Task<UserEntity> Signup(UserEntity user, string password, UserManager<UserEntity> userManager);
 
+        /// <summary>
+        /// Throws an exception if the user with the given information
+        /// already exists in the database.
+        /// </summary>
+        /// <param name="email">The user's email.</param>
+        /// <param name="userManager">The user manager.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation.
+        /// </returns>
         Task AssertUserInformationDoesNotExist(string email, UserManager<UserEntity> userManager);
+
+        /// <summary>
+        /// Grants the given user a particular usage role in the application.
+        /// </summary>
+        /// <param name="user">The user to be modified.</param>
+        /// <param name="role">The name of the role to which the user should be added.</param>
+        /// <param name="userManager">The user manager.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation.
+        /// </returns>
         Task AddUserToRole(UserEntity user, string role, UserManager<UserEntity> userManager);
     }
 }

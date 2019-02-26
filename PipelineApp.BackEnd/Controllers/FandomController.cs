@@ -38,7 +38,7 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="logger">The logger.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="fandomService">The fandom service.</param>
-        /// <param name="repository">The graph DB client.</param>
+        /// <param name="fandomRepository">The fandom repository.</param>
         public FandomController(
             ILogger<FandomController> logger,
             IMapper mapper,

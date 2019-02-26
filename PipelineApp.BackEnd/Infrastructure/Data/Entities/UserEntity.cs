@@ -6,34 +6,66 @@
 namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
 {
     using System;
-    using Interfaces.Data;
-    using Providers;
 
     /// <summary>
     /// Data-layer representation of a user.
     /// </summary>
     public class UserEntity : BaseEntity
     {
+        /// <summary>
+        /// Gets or sets the username.
+        /// </summary>
         public string UserName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the normalized username.
+        /// </summary>
         public string NormalizedUserName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the email.
+        /// </summary>
         public string Email { get; set; }
 
+        /// <summary>
+        /// Gets or sets the normalized email.
+        /// </summary>
         public string NormalizedEmail { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the user has confirmed their email.
+        /// </summary>
         public bool EmailConfirmed { get; set; }
 
+        /// <summary>
+        /// Gets or sets the password hash.
+        /// </summary>
         public string PasswordHash { get; set; }
 
+        /// <summary>
+        /// Gets or sets the phone number.
+        /// </summary>
         public string PhoneNumber { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the user has confirmed their phone number.
+        /// </summary>
         public bool PhoneNumberConfirmed { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the user has
+        /// two-factor authentication enabled for their account.
+        /// </summary>
         public bool TwoFactorEnabled { get; set; }
 
+        /// <summary>
+        /// Gets or sets the security stamp.
+        /// </summary>
         public string SecurityStamp { get; set; }
 
+        /// <summary>
+        /// Gets or sets the date of birth.
+        /// </summary>
         public DateTime DateOfBirth { get; set; }
     }
 }
