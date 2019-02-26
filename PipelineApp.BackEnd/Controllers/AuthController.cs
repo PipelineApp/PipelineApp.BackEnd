@@ -36,6 +36,7 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
         private readonly UserManager<UserEntity> _userManager;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
@@ -45,18 +46,21 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="authService">The authentication service.</param>
         /// <param name="mapper">The mapper.</param>
         /// <param name="userManager">The user manager.</param>
+        /// <param name="refreshTokenRepository">The refresh token repository.</param>
         public AuthController(
             ILogger<AuthController> logger,
             IOptions<AppSettings> config,
             IAuthService authService,
             IMapper mapper,
-            UserManager<UserEntity> userManager)
+            UserManager<UserEntity> userManager,
+            IRefreshTokenRepository refreshTokenRepository)
         {
             _logger = logger;
             _config = config.Value;
             _authService = authService;
             _mapper = mapper;
             _userManager = userManager;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         /// <summary>
@@ -78,9 +82,35 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(200, Type = typeof(AuthTokenCollection))]
         [ProducesResponseType(400, Type = typeof(string))]
         [ProducesResponseType(500)]
-        public Task<IActionResult> CreateToken([FromBody] LoginRequest model)
+        public async Task<IActionResult> CreateToken([FromBody] LoginRequest model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var user = await _authService.GetUserByUsername(model.Username, _userManager);
+                await _authService.ValidatePassword(user, model.Password, _userManager);
+                var jwt = await _authService.GenerateJwt(user, _userManager, _config);
+                var refreshToken = await _authService.GenerateRefreshToken(user, _config, _refreshTokenRepository);
+                return Ok(new AuthTokenCollection
+                {
+                    Token = jwt,
+                    RefreshToken = refreshToken
+                });
+            }
+            catch (UserNotFoundException)
+            {
+                _logger.LogWarning($"Login failure for {model.Username}. No user exists with this username or email address.");
+                return BadRequest("Invalid username or password.");
+            }
+            catch (InvalidCredentialException)
+            {
+                _logger.LogWarning($"Login failure for {model.Username}. Error validating password.");
+                return BadRequest("Invalid username or password.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(default(EventId), ex, $"Error creating JWT: {ex.Message}");
+                return StatusCode(500, "Failed to create JWT.");
+            }
         }
 
         /// <summary>

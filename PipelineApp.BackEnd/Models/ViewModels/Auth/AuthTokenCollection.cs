@@ -5,8 +5,6 @@
 
 namespace PipelineApp.BackEnd.Models.ViewModels.Auth
 {
-    using Newtonsoft.Json;
-
     /// <summary>
     /// Collection combining an access token and refresh token for use by a front-end application in authenticating with this API.
     /// </summary>
@@ -18,7 +16,7 @@ namespace PipelineApp.BackEnd.Models.ViewModels.Auth
         /// <value>
         /// The access token.
         /// </value>
-        public string AccessToken { get; set; }
+        public AuthToken Token { get; set; }
 
         /// <summary>
         /// Gets or sets the refresh token.
@@ -26,14 +24,6 @@ namespace PipelineApp.BackEnd.Models.ViewModels.Auth
         /// <value>
         /// The refresh token.
         /// </value>
-        public string RefreshToken { get; set; }
-
-        /// <summary>
-        /// Gets or sets the refresh token.
-        /// </summary>
-        /// <value>
-        /// The refresh token.
-        /// </value>
-        public int ExpiresIn { get; set; }
+        public AuthToken RefreshToken { get; set; }
     }
 }

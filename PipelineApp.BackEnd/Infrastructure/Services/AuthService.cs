@@ -7,9 +7,12 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
     using System.Linq;
     using System.Net.Http;
     using System.Security.Authentication;
+    using System.Security.Claims;
+    using System.Text;
     using System.Threading.Tasks;
     using AutoMapper;
     using Data.Entities;
@@ -18,72 +21,15 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.IdentityModel.Tokens;
     using Models.Configuration;
     using Models.DomainModels;
     using Models.DomainModels.Auth;
+    using Models.ViewModels.Auth;
 
     /// <inheritdoc cref="IAuthService"/>
     public class AuthService : IAuthService
     {
-        /// <inheritdoc />
-        public async Task<AuthenticationSuccessResult> AuthenticateUser(string username, string password, HttpClient client, AppSettings config)
-        {
-            var body = new
-            {
-                grant_type = "password",
-                client_id = config.Auth.ClientId,
-                client_secret = config.Auth.ClientSecret,
-                audience = config.Auth.ApiIdentifier,
-                scope = "offline_access",
-                username,
-                password
-            };
-            var response = await client.PostAsJsonAsync("oauth/token", body);
-            if (!response.IsSuccessStatusCode)
-            {
-                var failureResult = await response.Content.ReadAsAsync<AuthenticationFailureResult>();
-                throw new InvalidCredentialException(failureResult.ErrorDescription);
-            }
-
-            var successResult = await response.Content.ReadAsAsync<AuthenticationSuccessResult>();
-            return successResult;
-        }
-
-        /// <inheritdoc />
-        public async Task<AuthenticationSuccessResult> GetRefreshedToken(string refreshToken, HttpClient client, AppSettings config)
-        {
-            var body = new
-            {
-                grant_type = "refresh_token",
-                client_id = config.Auth.ClientId,
-                client_secret = config.Auth.ClientSecret,
-                refresh_token = refreshToken
-            };
-            var response = await client.PostAsJsonAsync("oauth/token", body);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new InvalidRefreshTokenException();
-            }
-            var result = await response.Content.ReadAsAsync<AuthenticationSuccessResult>();
-            return result;
-        }
-
-        /// <inheritdoc />
-        public async Task RevokeRefreshToken(string refreshToken, HttpClient client, AppSettings config)
-        {
-            var body = new
-            {
-                client_id = config.Auth.ClientId,
-                client_secret = config.Auth.ClientSecret,
-                token = refreshToken
-            };
-            var response = await client.PostAsJsonAsync("oauth/revoke", body);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new InvalidRefreshTokenException();
-            }
-        }
-
         /// <inheritdoc />
         public async Task<UserEntity> Signup(UserEntity user, string password, UserManager<UserEntity> userManager)
         {
@@ -114,6 +60,87 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             {
                 throw new InvalidAccountInfoUpdateException(roleResult.Errors.Select(e => e.Description).ToList());
             }
+        }
+
+        /// <inheritdoc />
+        public async Task<UserEntity> GetUserByUsername(string username, UserManager<UserEntity> userManager)
+        {
+            var user = await userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                throw new UserNotFoundException();
+            }
+            return user;
+        }
+
+        /// <inheritdoc />
+        public async Task ValidatePassword(UserEntity user, string password, UserManager<UserEntity> userManager)
+        {
+            var verificationResult = await userManager.CheckPasswordAsync(user, password);
+            if (!verificationResult)
+            {
+                throw new InvalidCredentialException();
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task<AuthToken> GenerateJwt(UserEntity user, UserManager<UserEntity> userManager, AppSettings config)
+        {
+            var claims = await GetUserClaims(user, userManager);
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.Auth.Key));
+            var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var expiry = DateTime.UtcNow.AddMinutes(config.Auth.AccessExpireMinutes);
+            var token = new JwtSecurityToken(
+                config.Auth.Issuer,
+                config.Auth.Audience,
+                claims,
+                expires: expiry,
+                signingCredentials: creds);
+            var jwtString = new JwtSecurityTokenHandler().WriteToken(token);
+            return new AuthToken(jwtString, expiry);
+        }
+
+        /// <inheritdoc />
+        public async Task<AuthToken> GenerateRefreshToken(UserEntity user, AppSettings config, IRefreshTokenRepository refreshTokenRepository)
+        {
+            var now = DateTime.UtcNow;
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.Auth.Key));
+            var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var expiry = now.AddMinutes(config.Auth.RefreshExpireMinutes);
+            var jwt = new JwtSecurityToken(
+                config.Auth.Issuer,
+                config.Auth.Audience,
+                claims,
+                expires: expiry,
+                signingCredentials: signingCredentials);
+            var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+            await refreshTokenRepository.SaveRefreshTokenForUser(
+                new RefreshTokenEntity
+                {
+                    Token = token,
+                    IssuedUtc = now,
+                    ExpiresUtc = expiry
+                }, user);
+            return new AuthToken(token, expiry);
+        }
+
+        private static async Task<IEnumerable<Claim>> GetUserClaims(UserEntity user, UserManager<UserEntity> userManager)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            };
+            return claims;
         }
     }
 }

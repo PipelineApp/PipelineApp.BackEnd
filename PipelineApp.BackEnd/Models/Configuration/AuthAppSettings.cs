@@ -11,33 +11,28 @@ namespace PipelineApp.BackEnd.Models.Configuration
     public class AuthAppSettings
     {
         /// <summary>
-        /// Gets or sets the authentication domain.
+        /// Gets or sets the auth token key.
         /// </summary>
-        public string Domain { get; set; }
+        public string Key { get; set; }
 
         /// <summary>
-        /// Gets or sets the authentication API identifier.
+        /// Gets or sets the auth token issuer.
         /// </summary>
-        public string ApiIdentifier { get; set; }
+        public string Issuer { get; set; }
 
         /// <summary>
-        /// Gets or sets the authentication server base URL.
+        /// Gets or sets the auth token audience.
         /// </summary>
-        public string AuthenticationServerBaseUrl { get; set; }
+        public string Audience { get; set; }
 
         /// <summary>
-        /// Gets or sets the authentication client ID.
+        /// Gets or sets the access token duration in minutes.
         /// </summary>
-        public string ClientId { get; set; }
+        public int AccessExpireMinutes { get; set; }
 
         /// <summary>
-        /// Gets or sets the authentication client secret.
+        /// Gets or sets the refresh token duration in minutes.
         /// </summary>
-        public string ClientSecret { get; set; }
-
-        /// <summary>
-        /// Gets or sets the database connection name on the auth server.
-        /// </summary>
-        public string AuthenticationServerDatabaseConnection { get; set; }
+        public int RefreshExpireMinutes { get; set; }
     }
 }

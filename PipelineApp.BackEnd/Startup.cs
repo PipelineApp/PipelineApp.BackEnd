@@ -92,6 +92,7 @@ namespace PipelineApp.BackEnd
 
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IFandomRepository, FandomRepository>();
+            services.AddSingleton<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IFandomService, FandomService>();
             services.AddScoped<IPersonaService, PersonaService>();
