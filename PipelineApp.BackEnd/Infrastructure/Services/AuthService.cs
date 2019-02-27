@@ -84,9 +84,9 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<AuthToken> GenerateJwt(UserEntity user, UserManager<UserEntity> userManager, AppSettings config)
+        public AuthToken GenerateJwt(UserEntity user, UserManager<UserEntity> userManager, AppSettings config)
         {
-            var claims = await GetUserClaims(user, userManager);
+            var claims = GetUserClaims(user, userManager);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.Auth.Key));
             var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var expiry = DateTime.UtcNow.AddMinutes(config.Auth.AccessExpireMinutes);
@@ -130,7 +130,19 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             return new AuthToken(token, expiry);
         }
 
-        private static async Task<IEnumerable<Claim>> GetUserClaims(UserEntity user, UserManager<UserEntity> userManager)
+        /// <inheritdoc />
+        public async Task<UserEntity> GetUserForRefreshToken(string refreshToken, IRefreshTokenRepository refreshTokenRepository)
+        {
+            var user = await refreshTokenRepository.GetValidUserForToken(refreshToken);
+            var now = DateTime.UtcNow;
+            if (user == null)
+            {
+                throw new InvalidRefreshTokenException();
+            }
+            return user;
+        }
+
+        private static IEnumerable<Claim> GetUserClaims(UserEntity user, UserManager<UserEntity> userManager)
         {
             var claims = new[]
             {

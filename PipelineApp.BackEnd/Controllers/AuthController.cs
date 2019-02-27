@@ -88,7 +88,7 @@ namespace PipelineApp.BackEnd.Controllers
             {
                 var user = await _authService.GetUserByUsername(model.Username, _userManager);
                 await _authService.ValidatePassword(user, model.Password, _userManager);
-                var jwt = await _authService.GenerateJwt(user, _userManager, _config);
+                var jwt = _authService.GenerateJwt(user, _userManager, _config);
                 var refreshToken = await _authService.GenerateRefreshToken(user, _config, _refreshTokenRepository);
                 return Ok(new AuthTokenCollection
                 {
@@ -131,9 +131,30 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(200, Type = typeof(AuthTokenCollection))]
         [ProducesResponseType(498)]
         [ProducesResponseType(500)]
-        public Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Received token refresh request.");
+                var user = await _authService.GetUserForRefreshToken(model.RefreshToken, _refreshTokenRepository);
+                var jwt = _authService.GenerateJwt(user, _userManager, _config);
+                var refreshToken = await _authService.GenerateRefreshToken(user, _config, _refreshTokenRepository);
+                _logger.LogInformation("Processed token refresh request.");
+                return Ok(new AuthTokenCollection
+                {
+                    Token = jwt,
+                    RefreshToken = refreshToken
+                });
+            }
+            catch (InvalidRefreshTokenException)
+            {
+                return StatusCode(498);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(default(EventId), ex, $"Error refreshing JWT: {ex.Message}");
+                return StatusCode(500, "Failed to create JWT.");
+            }
         }
 
         /// <summary>

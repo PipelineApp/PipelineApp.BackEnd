@@ -21,5 +21,13 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
         /// <param name="user">The user.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task SaveRefreshTokenForUser(RefreshTokenEntity refreshToken, UserEntity user);
+
+        /// <summary>
+        /// Retrieves the user validated by the given refresh token,
+        /// or null if the token does not exist or has expired.
+        /// </summary>
+        /// <param name="refreshToken">The token to search for.</param>
+        /// <returns>The user validated by the given refresh token, or null if the token does not exist or has expired.</returns>
+        Task<UserEntity> GetValidUserForToken(string refreshToken);
     }
 }

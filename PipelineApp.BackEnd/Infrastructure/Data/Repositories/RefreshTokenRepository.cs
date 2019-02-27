@@ -5,6 +5,8 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
 {
+    using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using Entities;
     using Interfaces.Repositories;
@@ -32,6 +34,19 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
                 .Create($"(token:{typeof(RefreshTokenEntity).Name} {{newToken}})<-[:{typeof(IsValidatedBy).Name}]-(user)")
                 .WithParam("newToken", refreshToken)
                 .ExecuteWithoutResultsAsync();
+        }
+
+        /// <inheritdoc />
+        public async Task<UserEntity> GetValidUserForToken(string refreshToken)
+        {
+            var now = DateTime.UtcNow;
+            var result = await GraphClient.Cypher
+                .OptionalMatch(
+                    $"(user:{typeof(UserEntity).Name})-[:{typeof(IsValidatedBy).Name}]->(token:{typeof(RefreshTokenEntity).Name})")
+                .Where((RefreshTokenEntity token) => token.Token == refreshToken && token.ExpiresUtc > now)
+                .Return((user, token) => user.As<UserEntity>())
+                .ResultsAsync;
+            return result.FirstOrDefault();
         }
     }
 }

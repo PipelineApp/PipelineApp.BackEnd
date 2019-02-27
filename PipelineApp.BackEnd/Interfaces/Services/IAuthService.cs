@@ -85,10 +85,9 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="userManager">The user manager.</param>
         /// <param name="config">The configuration.</param>
         /// <returns>
-        /// A task that represents the asynchronous operation.
-        /// The task result contains an <see cref="AuthToken"/> containing the JWT information.
+        /// An <see cref="AuthToken"/> containing the JWT information.
         /// </returns>
-        Task<AuthToken> GenerateJwt(UserEntity user, UserManager<UserEntity> userManager, AppSettings config);
+        AuthToken GenerateJwt(UserEntity user, UserManager<UserEntity> userManager, AppSettings config);
 
         /// <summary>
         /// Generates a refresh token for the given user.
@@ -101,5 +100,16 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// The task result contains an <see cref="AuthToken" /> containing the refresh token information information.
         /// </returns>
         Task<AuthToken> GenerateRefreshToken(UserEntity user, AppSettings config, IRefreshTokenRepository refreshTokenRepository);
+
+        /// <summary>
+        /// Gets the user with whom the given refresh token is associated.
+        /// </summary>
+        /// <param name="refreshToken">The refresh token.</param>
+        /// <param name="refreshTokenRepository">The refresh token repository.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// The task result contains the <see cref="IdentityUser"/> associated with the given refresh token.
+        /// </returns>
+        Task<UserEntity> GetUserForRefreshToken(string refreshToken, IRefreshTokenRepository refreshTokenRepository);
     }
 }
