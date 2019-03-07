@@ -142,6 +142,16 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             return user;
         }
 
+        /// <inheritdoc />
+        public async Task RevokeRefreshToken(string refreshToken, IRefreshTokenRepository refreshTokenRepository)
+        {
+            var token = await refreshTokenRepository.GetByTokenString(refreshToken);
+            if (token != null)
+            {
+                await refreshTokenRepository.DeleteAsync(token);
+            }
+        }
+
         private static IEnumerable<Claim> GetUserClaims(UserEntity user, UserManager<UserEntity> userManager)
         {
             var claims = new[]

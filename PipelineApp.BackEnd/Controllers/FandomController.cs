@@ -69,8 +69,7 @@ namespace PipelineApp.BackEnd.Controllers
         {
             try
             {
-                _logger.LogInformation(
-                    $"Received request to get list of available fandoms for user {UserId}.");
+                _logger.LogInformation($"Received request to get list of available fandoms for user {UserId}.");
                 var fandoms = await _fandomService.GetAllFandoms(_fandomRepository, _mapper);
                 var result = fandoms.Select(_mapper.Map<FandomDto>).ToList();
                 _logger.LogInformation(

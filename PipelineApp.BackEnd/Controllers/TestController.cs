@@ -5,6 +5,7 @@
 
 namespace PipelineApp.BackEnd.Controllers
 {
+    using System.Diagnostics.CodeAnalysis;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ namespace PipelineApp.BackEnd.Controllers
     /// Controller class for behavior related to testing authentication.
     /// </summary>
     [Route("api/[controller]")]
+    [ExcludeFromCodeCoverage]
     public class TestController : BaseController
     {
         private readonly ILogger<TestController> _logger;

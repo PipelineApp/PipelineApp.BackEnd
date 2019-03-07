@@ -88,7 +88,7 @@ namespace PipelineApp.BackEnd
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<GlobalExceptionHandlerAttribute>();
             services.AddScoped<DisableDuringMaintenanceFilterAttribute>();
-            services.AddSingleton(provider => new GraphClient(new Uri(Configuration["GraphDb:Hostname"]), Configuration["GraphDb:Username"], Configuration["GraphDb:Password"]));
+            services.AddSingleton<IGraphClient>(provider => new GraphClient(new Uri(Configuration["GraphDb:Hostname"]), Configuration["GraphDb:Username"], Configuration["GraphDb:Password"]));
 
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IFandomRepository, FandomRepository>();

@@ -19,7 +19,6 @@ namespace PipelineApp.BackEnd.Controllers
     using Interfaces.Services;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore.Internal;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Models.Configuration;
@@ -34,7 +33,6 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly ILogger<AuthController> _logger;
         private readonly AppSettings _config;
         private readonly IAuthService _authService;
-        private readonly IMapper _mapper;
         private readonly UserManager<UserEntity> _userManager;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
 
@@ -44,21 +42,18 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="logger">The logger.</param>
         /// <param name="config">The configuration.</param>
         /// <param name="authService">The authentication service.</param>
-        /// <param name="mapper">The mapper.</param>
         /// <param name="userManager">The user manager.</param>
         /// <param name="refreshTokenRepository">The refresh token repository.</param>
         public AuthController(
             ILogger<AuthController> logger,
             IOptions<AppSettings> config,
             IAuthService authService,
-            IMapper mapper,
             UserManager<UserEntity> userManager,
             IRefreshTokenRepository refreshTokenRepository)
         {
             _logger = logger;
             _config = config.Value;
             _authService = authService;
-            _mapper = mapper;
             _userManager = userManager;
             _refreshTokenRepository = refreshTokenRepository;
         }
@@ -171,9 +166,18 @@ namespace PipelineApp.BackEnd.Controllers
         [HttpPost("api/auth/revoke")]
         [ProducesResponseType(200)]
         [ProducesResponseType(500)]
-        public IActionResult RevokeToken([FromBody] RefreshTokenRequest model)
+        public async Task<IActionResult> RevokeToken([FromBody] RefreshTokenRequest model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _authService.RevokeRefreshToken(model.RefreshToken, _refreshTokenRepository);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(default(EventId), ex, $"Error revoking JWT: {ex.Message}");
+                return StatusCode(500, "Failed to revoke JWT.");
+            }
         }
 
         /// <summary>

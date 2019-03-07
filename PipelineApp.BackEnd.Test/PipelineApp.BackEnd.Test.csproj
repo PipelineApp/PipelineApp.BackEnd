@@ -6,6 +6,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <CodeAnalysisRuleSet>PipelineApp.BackEnd.Test.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -20,20 +21,35 @@
 
   <ItemGroup>
     <AdditionalFiles Include="stylecop.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </AdditionalFiles>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="2.4.0" />
-    <PackageReference Include="FluentAssertions" Version="5.5.3" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.2" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
-    <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="ReportGenerator" Version="4.0.4" />
+    <PackageReference Include="coverlet.msbuild" Version="2.5.1" />
+    <PackageReference Include="FluentAssertions" Version="5.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.0" />
+    <PackageReference Include="Moq" Version="4.10.1" />
+    <PackageReference Include="OpenCover" Version="4.7.922" />
+    <PackageReference Include="ReportGenerator" Version="4.0.14" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
     <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.console" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PipelineApp.BackEnd\PipelineApp.BackEnd.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Mvc.ViewFeatures">
+      <HintPath>..\..\..\..\.nuget\packages\microsoft.aspnetcore.mvc.viewfeatures\2.1.1\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.ViewFeatures.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Identity.Core">
+      <HintPath>..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.identity.core\2.1.1\lib\netstandard2.0\Microsoft.Extensions.Identity.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -28,7 +28,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         /// Initializes a new instance of the <see cref="BaseRepository{TModel}"/> class.
         /// </summary>
         /// <param name="client">The graph client.</param>
-        public BaseRepository(GraphClient client)
+        public BaseRepository(IGraphClient client)
         {
             _graphClient = client;
             _graphClient.Connect();
@@ -37,9 +37,9 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         /// <inheritdoc />
         public async Task<IList<TModel>> GetAllAsync()
         {
-            var results = await GraphClient.Cypher.Match($"(e:{typeof(TModel).Name})")
-                                     .Return(e => e.As<TModel>())
-                                     .ResultsAsync;
+            var match = GraphClient.Cypher.Match($"(e:{typeof(TModel).Name})");
+            var returnQuery = match.Return(e => e.As<TModel>());
+            var results = await returnQuery.ResultsAsync;
             return results.ToList();
         }
 

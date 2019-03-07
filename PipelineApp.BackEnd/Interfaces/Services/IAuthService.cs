@@ -111,5 +111,15 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// The task result contains the <see cref="IdentityUser"/> associated with the given refresh token.
         /// </returns>
         Task<UserEntity> GetUserForRefreshToken(string refreshToken, IRefreshTokenRepository refreshTokenRepository);
+
+        /// <summary>
+        /// Revokes the given refresh token.
+        /// </summary>
+        /// <param name="refreshToken">The refresh token to be revoked.</param>
+        /// <param name="refreshTokenRepository">The refresh token repository.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// </returns>
+        Task RevokeRefreshToken(string refreshToken, IRefreshTokenRepository refreshTokenRepository);
     }
 }

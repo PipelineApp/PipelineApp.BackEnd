@@ -16,7 +16,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
         /// <summary>
         /// Gets or sets the entity's unique identifier.
         /// </summary>
-        public Guid Id { get; protected set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseEntity"/> class.

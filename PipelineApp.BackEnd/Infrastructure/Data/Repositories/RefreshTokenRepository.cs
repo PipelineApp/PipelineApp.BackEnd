@@ -48,5 +48,16 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
                 .ResultsAsync;
             return result.FirstOrDefault();
         }
+
+        /// <inheritdoc />
+        public async Task<RefreshTokenEntity> GetByTokenString(string refreshToken)
+        {
+            var result = await GraphClient.Cypher
+                .OptionalMatch($"(token:{typeof(RefreshTokenEntity).Name})")
+                .Where((RefreshTokenEntity token) => token.Token == refreshToken)
+                .Return(token => token.As<RefreshTokenEntity>())
+                .ResultsAsync;
+            return result.FirstOrDefault();
+        }
     }
 }
