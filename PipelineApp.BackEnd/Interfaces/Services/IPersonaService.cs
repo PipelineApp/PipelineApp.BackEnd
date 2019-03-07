@@ -28,7 +28,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// The task result contains a list of <see cref="Persona"/> objects belonging to the
         /// given user.
         /// </returns>
-        Task<IEnumerable<Persona>> GetAllPersonas(string userId, IRepository<PersonaEntity> personaRepository, IMapper mapper);
+        Task<IEnumerable<Persona>> GetAllPersonas(string userId, IPersonaRepository personaRepository, IMapper mapper);
 
         /// <summary>
         /// Throws an exception if the provided slug is not valid.

@@ -72,12 +72,11 @@ namespace PipelineApp.BackEnd.Controllers
         {
             try
             {
-                _logger.LogInformation(
-                    $"Received request to get list of personas belonging to user {UserId}.");
+                _logger.LogInformation($"Received request to get list of available personas for user {UserId}.");
                 var personas = await _personaService.GetAllPersonas(UserId, _personaRepository, _mapper);
                 var result = personas.Select(_mapper.Map<PersonaDto>).ToList();
                 _logger.LogInformation(
-                    $"Processed request to get list of personas belonging to user {UserId}. Found {result.Count} personas.");
+                    $"Processed request to get list of available personas for user {UserId}. Found {result.Count} personas.");
                 return Ok(result);
             }
             catch (Exception e)

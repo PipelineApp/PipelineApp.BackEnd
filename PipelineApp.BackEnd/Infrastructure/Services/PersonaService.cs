@@ -20,9 +20,10 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     public class PersonaService : IPersonaService
     {
         /// <inheritdoc />
-        public Task<IEnumerable<Persona>> GetAllPersonas(string userId, IRepository<PersonaEntity> personaRepository, IMapper mapper)
+        public async Task<IEnumerable<Persona>> GetAllPersonas(string userId, IPersonaRepository repository, IMapper mapper)
         {
-            throw new System.NotImplementedException();
+            var personaEntities = await repository.GetByUserIdAsync(userId);
+            return personaEntities.Select(mapper.Map<Persona>).ToList();
         }
 
         /// <inheritdoc />

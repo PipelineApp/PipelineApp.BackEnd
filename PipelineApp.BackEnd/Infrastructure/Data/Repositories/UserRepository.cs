@@ -28,7 +28,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         /// Initializes a new instance of the <see cref="UserRepository"/> class.
         /// </summary>
         /// <param name="graphClient">The graph client.</param>
-        public UserRepository(GraphClient graphClient)
+        public UserRepository(IGraphClient graphClient)
             : base(graphClient)
         {
         }

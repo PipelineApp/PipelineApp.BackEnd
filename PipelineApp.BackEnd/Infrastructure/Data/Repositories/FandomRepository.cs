@@ -9,14 +9,14 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
     using Interfaces.Repositories;
     using Neo4jClient;
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IFandomRepository" />
     public class FandomRepository : BaseRepository<FandomEntity>, IFandomRepository
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FandomRepository"/> class.
         /// </summary>
         /// <param name="graphClient">The graph client.</param>
-        public FandomRepository(GraphClient graphClient)
+        public FandomRepository(IGraphClient graphClient)
             : base(graphClient)
         {
         }

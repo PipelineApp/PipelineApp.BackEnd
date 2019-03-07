@@ -20,7 +20,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         /// Initializes a new instance of the <see cref="RefreshTokenRepository"/> class.
         /// </summary>
         /// <param name="graphClient">The graph client.</param>
-        public RefreshTokenRepository(GraphClient graphClient)
+        public RefreshTokenRepository(IGraphClient graphClient)
             : base(graphClient)
         {
         }

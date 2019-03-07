@@ -23,7 +23,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         /// Initializes a new instance of the <see cref="RoleRepository"/> class.
         /// </summary>
         /// <param name="graphClient">The graph client.</param>
-        public RoleRepository(GraphClient graphClient)
+        public RoleRepository(IGraphClient graphClient)
             : base(graphClient)
         {
         }
