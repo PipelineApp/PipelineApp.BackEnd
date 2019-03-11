@@ -44,7 +44,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// Initializes and saves a new persona object.
         /// </summary>
         /// <param name="persona">Data regarding the persona to be created.</param>
-        /// <param name="userId"></param>
+        /// <param name="userId">The unique ID of the user to which the persona should be connected.</param>
         /// <param name="personaRepository">The persona repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <returns>
@@ -68,7 +68,6 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// Updates the passed persona.
         /// </summary>
         /// <param name="model">The model containing persona information.</param>
-        /// <param name="userId"></param>
         /// <param name="personaRepository">The persona repository.</param>
         /// <param name="mapper">The application's object mapper.</param>
         /// <returns>
@@ -77,6 +76,12 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// </returns>
         Task<Persona> UpdatePersona(Persona model, IPersonaRepository personaRepository, IMapper mapper);
 
+        /// <summary>
+        /// Deletes the persona associated with the given persona ID.
+        /// </summary>
+        /// <param name="personaId">The unique identifier of the persona to be deleted.</param>
+        /// <param name="personaRepository">The persona repository.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         Task DeletePersona(Guid personaId, IPersonaRepository personaRepository);
     }
 }

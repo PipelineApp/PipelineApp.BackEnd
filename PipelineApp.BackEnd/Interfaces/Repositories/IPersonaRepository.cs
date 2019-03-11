@@ -16,8 +16,18 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
     /// </summary>
     public interface IPersonaRepository : IRepository<PersonaEntity>
     {
+        /// <summary>
+        /// Retrieves a list of the personas owned by the given user.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user whose personas should be retrieved.</param>
+        /// <returns>A list of persona entities owned by the given user.</returns>
         Task<IEnumerable<PersonaEntity>> GetByUserIdAsync(Guid? userId);
 
+        /// <summary>
+        /// Retrieves a list of personas with the given slug. (Should only ever return one item.)
+        /// </summary>
+        /// <param name="slug">The slug value to be searched for.</param>
+        /// <returns>A list of personas with the given slug. This list should only ever have one item.</returns>
         Task<IEnumerable<PersonaEntity>> GetBySlugAsync(string slug);
     }
 }

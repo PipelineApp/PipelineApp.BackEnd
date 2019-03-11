@@ -26,6 +26,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         {
         }
 
+        /// <inheritdoc />
         public async Task<IEnumerable<PersonaEntity>> GetByUserIdAsync(Guid? userId)
         {
             var result = await GraphClient.Cypher
@@ -36,6 +37,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
             return result.ToList();
         }
 
+        /// <inheritdoc />
         public async Task<IEnumerable<PersonaEntity>> GetBySlugAsync(string slug)
         {
             var result = await GraphClient.Cypher

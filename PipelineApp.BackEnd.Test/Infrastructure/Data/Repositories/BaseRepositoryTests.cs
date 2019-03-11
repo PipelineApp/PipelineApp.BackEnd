@@ -1,9 +1,12 @@
-﻿namespace PipelineApp.BackEnd.Test.Infrastructure.Data.Repositories
+﻿// <copyright file="BaseRepositoryTests.cs" company="Blackjack Software">
+// Copyright (c) Blackjack Software. All rights reserved.
+// Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace PipelineApp.BackEnd.Test.Infrastructure.Data.Repositories
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using BackEnd.Infrastructure.Data.Entities;
     using BackEnd.Infrastructure.Data.Repositories;
     using FluentAssertions;
     using TestHelpers;
@@ -27,8 +30,8 @@
                 // Arrange
                 var entities = new List<TestEntity>
                 {
-                    new TestEntity {Name = "Entity 1"},
-                    new TestEntity {Name = "Entity 2"}
+                    new TestEntity { Name = "Entity 1" },
+                    new TestEntity { Name = "Entity 2" }
                 };
                 var client = _queryBuilder
                     .WithMatch("(e:TestEntity)")

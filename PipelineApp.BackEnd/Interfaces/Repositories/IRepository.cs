@@ -49,6 +49,18 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
         /// </returns>
         Task<TModel> SaveAsync(TModel model);
 
+        /// <summary>
+        /// Inserts a new object into the database, as well as a relationship of type <code>TRelationship</code>
+        /// from another node (of type <code>TSource</code> with ID <code>sourceId</code>) to the created node.
+        /// </summary>
+        /// <typeparam name="TRelationship">The type of the relationship edge to be created.</typeparam>
+        /// <typeparam name="TSource">The type of the source node for the relationship to be created.</typeparam>
+        /// <param name="model">The object to be inserted.</param>
+        /// <param name="sourceId">The unique identifier of the source node to which the inserted object should be connected.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation.
+        /// The task result contains the created object.
+        /// </returns>
         Task<TModel> CreateWithInboundRelationshipAsync<TRelationship, TSource>(TModel model, Guid sourceId)
             where TRelationship : BaseRelationship
             where TSource : BaseEntity;

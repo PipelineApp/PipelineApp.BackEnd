@@ -1,11 +1,14 @@
-﻿namespace PipelineApp.BackEnd.Test.TestHelpers
+﻿// <copyright file="MockCypherClientBuilder.cs" company="Blackjack Software">
+// Copyright (c) Blackjack Software. All rights reserved.
+// Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace PipelineApp.BackEnd.Test.TestHelpers
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using FluentAssertions;
     using Interfaces.Data;
     using Moq;
     using Neo4jClient;

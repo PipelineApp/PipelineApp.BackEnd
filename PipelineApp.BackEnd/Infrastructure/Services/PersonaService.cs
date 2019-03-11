@@ -23,8 +23,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     public class PersonaService : IPersonaService
     {
         /// <inheritdoc />
-        public async Task<IEnumerable<Persona>> GetAllPersonas(Guid? userId, IPersonaRepository repository,
-            IMapper mapper)
+        public async Task<IEnumerable<Persona>> GetAllPersonas(Guid? userId, IPersonaRepository repository, IMapper mapper)
         {
             var personaEntities = await repository.GetByUserIdAsync(userId);
             return personaEntities.Select(mapper.Map<Persona>).ToList();
@@ -36,7 +35,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             var slugRegex = new Regex(@"^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$");
             if (!slugRegex.IsMatch(slug))
             {
-                throw new InvalidPersonaException(new List<string> { "The provided slug is in an invalid format."});
+                throw new InvalidPersonaException(new List<string> { "The provided slug is in an invalid format." });
             }
             var existingEntities = await personaRepository.GetBySlugAsync(slug);
             if (existingEntities.Any(p => p.Id != personaId))
@@ -79,6 +78,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             return mapper.Map<Persona>(result);
         }
 
+        /// <inheritdoc />
         public async Task DeletePersona(Guid personaId, IPersonaRepository repository)
         {
             await repository.DeleteAsync(personaId);
