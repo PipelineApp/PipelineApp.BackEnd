@@ -5,6 +5,7 @@
 
 namespace PipelineApp.BackEnd.Interfaces.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -28,7 +29,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// The task result contains a list of <see cref="Persona"/> objects belonging to the
         /// given user.
         /// </returns>
-        Task<IEnumerable<Persona>> GetAllPersonas(string userId, IPersonaRepository personaRepository, IMapper mapper);
+        Task<IEnumerable<Persona>> GetAllPersonas(Guid? userId, IPersonaRepository personaRepository, IMapper mapper);
 
         /// <summary>
         /// Throws an exception if the provided slug is not valid.
@@ -37,19 +38,20 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="personaId">Optional identifier for an existing persona to which the slug may already belong.</param>
         /// <param name="personaRepository">The persona repository.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task AssertSlugIsValid(string personaSlug, string personaId, IPersonaRepository personaRepository);
+        Task AssertSlugIsValid(string personaSlug, Guid personaId, IPersonaRepository personaRepository);
 
         /// <summary>
         /// Initializes and saves a new persona object.
         /// </summary>
         /// <param name="persona">Data regarding the persona to be created.</param>
+        /// <param name="userId"></param>
         /// <param name="personaRepository">The persona repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
         /// The task result contains the created persona.
         /// </returns>
-        Task<Persona> CreatePersona(Persona persona, IPersonaRepository personaRepository, IMapper mapper);
+        Task<Persona> CreatePersona(Persona persona, Guid? userId, IPersonaRepository personaRepository, IMapper mapper);
 
         /// <summary>
         /// Throws an exception if the given user does not own the given persona.
@@ -60,12 +62,13 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <returns>
         /// A task representing the asynchronous operation.
         /// </returns>
-        Task AssertUserOwnsPersona(string personaId, string userId, IPersonaRepository personaRepository);
+        Task AssertUserOwnsPersona(Guid personaId, Guid? userId, IPersonaRepository personaRepository);
 
         /// <summary>
         /// Updates the passed persona.
         /// </summary>
         /// <param name="model">The model containing persona information.</param>
+        /// <param name="userId"></param>
         /// <param name="personaRepository">The persona repository.</param>
         /// <param name="mapper">The application's object mapper.</param>
         /// <returns>

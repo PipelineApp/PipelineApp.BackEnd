@@ -5,6 +5,8 @@
 
 namespace PipelineApp.BackEnd.Models.ViewModels
 {
+    using System;
+
     /// <summary>
     /// View model representation of a fandom.
     /// </summary>
@@ -13,7 +15,7 @@ namespace PipelineApp.BackEnd.Models.ViewModels
         /// <summary>
         /// Gets or sets the fandom's unique identifier.
         /// </summary>
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the fandom's name.

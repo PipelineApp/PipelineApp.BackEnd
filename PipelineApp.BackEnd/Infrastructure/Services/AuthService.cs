@@ -24,7 +24,6 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using Microsoft.IdentityModel.Tokens;
     using Models.Configuration;
     using Models.DomainModels;
-    using Models.DomainModels.Auth;
     using Models.ViewModels.Auth;
 
     /// <inheritdoc cref="IAuthService"/>

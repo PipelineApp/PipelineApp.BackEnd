@@ -15,6 +15,6 @@ namespace PipelineApp.BackEnd.Interfaces.Data
         /// <summary>
         /// Gets the entity's unique identifier.
         /// </summary>
-        Guid Id { get; }
+        Guid Id { get; set; }
     }
 }

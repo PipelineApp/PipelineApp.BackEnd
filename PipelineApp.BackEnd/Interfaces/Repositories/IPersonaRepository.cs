@@ -5,6 +5,7 @@
 
 namespace PipelineApp.BackEnd.Interfaces.Repositories
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Infrastructure.Data.Entities;
@@ -15,6 +16,8 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
     /// </summary>
     public interface IPersonaRepository : IRepository<PersonaEntity>
     {
-        Task<IEnumerable<PersonaEntity>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<PersonaEntity>> GetByUserIdAsync(Guid? userId);
+
+        Task<IEnumerable<PersonaEntity>> GetBySlugAsync(string slug);
     }
 }

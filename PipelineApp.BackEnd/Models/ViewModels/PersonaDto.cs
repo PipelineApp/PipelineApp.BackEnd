@@ -5,6 +5,7 @@
 
 namespace PipelineApp.BackEnd.Models.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using Infrastructure.Exceptions.Persona;
@@ -18,7 +19,7 @@ namespace PipelineApp.BackEnd.Models.ViewModels
         /// <summary>
         /// Gets or sets the unique identifier of the persona.
         /// </summary>
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the persona's unique slug.
@@ -34,12 +35,6 @@ namespace PipelineApp.BackEnd.Models.ViewModels
         /// Gets or sets the persona's description.
         /// </summary>
         public string Description { get; set; }
-
-        /// <summary>
-        /// Gets or sets the unique identifier of the user to whom
-        /// the persona belongs.
-        /// </summary>
-        public string UserId { get; set; }
 
         /// <summary>
         /// Throws an exception if the persona is not valid.

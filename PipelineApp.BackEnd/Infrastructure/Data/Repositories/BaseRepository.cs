@@ -9,9 +9,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Entities;
     using Interfaces.Data;
     using Interfaces.Repositories;
     using Neo4jClient;
+    using Relationships;
 
     /// <inheritdoc cref="IRepository{TModel}"/>
     public class BaseRepository<TModel> : IRepository<TModel>
@@ -56,6 +58,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         /// <inheritdoc />
         public async Task<TModel> SaveAsync(TModel model)
         {
+            model.Id = Guid.NewGuid();
             var results = await GraphClient.Cypher.Create($"(e:{typeof(TModel).Name} {{model}})")
                                      .WithParam("model", model)
                                      .Return(e => e.As<TModel>())
@@ -64,9 +67,25 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         }
 
         /// <inheritdoc />
+        public async Task<TModel> CreateWithInboundRelationshipAsync<TRelationship, TSource>(TModel model, Guid sourceId)
+            where TRelationship : BaseRelationship
+            where TSource : BaseEntity
+        {
+            model.Id = Guid.NewGuid();
+            var results = await GraphClient.Cypher
+                .Match($"(source:{typeof(TSource).Name})")
+                .Where((TSource source) => source.Id == sourceId)
+                .Create($"(source)-[:{typeof(TRelationship).Name}]->(newEntity:{typeof(TModel).Name} {{model}})")
+                .WithParam("model", model)
+                .Return(newEntity => newEntity.As<TModel>())
+                .ResultsAsync;
+            return results.Single();
+        }
+
+        /// <inheritdoc />
         public async Task<TModel> UpdateAsync(TModel model)
         {
-            Guid id = model.Id;
+            var id = model.Id;
 
             var results = await GraphClient.Cypher.Match($"(e:{typeof(TModel).Name})")
                                      .Where<IEntity>(e => e.Id == id)

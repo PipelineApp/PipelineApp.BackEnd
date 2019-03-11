@@ -5,6 +5,8 @@
 
 namespace PipelineApp.BackEnd.Models.DomainModels
 {
+    using System;
+
     /// <summary>
     /// Domain model representing a user's persona.
     /// </summary>
@@ -13,13 +15,7 @@ namespace PipelineApp.BackEnd.Models.DomainModels
         /// <summary>
         /// Gets or sets the unique identifier of this persona.
         /// </summary>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the unique identifier of the user to whom
-        /// this persona belongs.
-        /// </summary>
-        public string UserId { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets this persona's unique slug.

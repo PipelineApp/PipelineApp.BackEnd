@@ -5,6 +5,7 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -25,11 +26,21 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         {
         }
 
-        public async Task<IEnumerable<PersonaEntity>> GetByUserIdAsync(string userId)
+        public async Task<IEnumerable<PersonaEntity>> GetByUserIdAsync(Guid? userId)
         {
             var result = await GraphClient.Cypher
                 .Match($"(user:{typeof(UserEntity).Name})-[r:{typeof(HasPersona).Name}]->(persona:{typeof(PersonaEntity).Name})")
-                .Where((UserEntity user) => user.Id.ToString() == userId)
+                .Where((UserEntity user) => user.Id == userId)
+                .Return(persona => persona.As<PersonaEntity>())
+                .ResultsAsync;
+            return result.ToList();
+        }
+
+        public async Task<IEnumerable<PersonaEntity>> GetBySlugAsync(string slug)
+        {
+            var result = await GraphClient.Cypher
+                .Match($"(persona:{typeof(PersonaEntity).Name})")
+                .Where((PersonaEntity persona) => persona.Slug == slug)
                 .Return(persona => persona.As<PersonaEntity>())
                 .ResultsAsync;
             return result.ToList();

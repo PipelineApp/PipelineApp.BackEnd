@@ -9,6 +9,8 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Data;
+    using Infrastructure.Data.Entities;
+    using Infrastructure.Data.Relationships;
 
     /// <summary>
     /// Base repository for CRUD operations relating to the given model class.
@@ -46,6 +48,10 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
         /// The task result contains the created object.
         /// </returns>
         Task<TModel> SaveAsync(TModel model);
+
+        Task<TModel> CreateWithInboundRelationshipAsync<TRelationship, TSource>(TModel model, Guid sourceId)
+            where TRelationship : BaseRelationship
+            where TSource : BaseEntity;
 
         /// <summary>
         /// Updates an existing object in the database.

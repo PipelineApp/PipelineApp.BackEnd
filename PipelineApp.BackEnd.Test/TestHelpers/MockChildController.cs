@@ -5,11 +5,12 @@
 
 namespace PipelineApp.BackEnd.Test.TestHelpers
 {
+    using System;
     using BackEnd.Controllers;
 
     public class MockChildController : BaseController
     {
-        public string RetrieveUserId()
+        public Guid? RetrieveUserId()
         {
             return UserId;
         }

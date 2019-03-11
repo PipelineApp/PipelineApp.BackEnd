@@ -110,10 +110,8 @@ namespace PipelineApp.BackEnd.Controllers
                 personaDto.AssertIsValid();
                 await _personaService.AssertSlugIsValid(personaDto.Slug, personaDto.Id, _personaRepository);
                 var persona = _mapper.Map<Persona>(personaDto);
-                persona.UserId = UserId;
-                var result = await _personaService.CreatePersona(persona, _personaRepository, _mapper);
-                _logger.LogInformation(
-                    $"Processed request to create a persona belonging to user {UserId}. Created {result}");
+                var result = await _personaService.CreatePersona(persona, UserId, _personaRepository, _mapper);
+                _logger.LogInformation($"Processed request to create a persona belonging to user {UserId}. Created {result}");
                 return Ok(result);
             }
             catch (InvalidPersonaException e)
@@ -157,8 +155,9 @@ namespace PipelineApp.BackEnd.Controllers
             {
                 _logger.LogInformation($"Received request to update persona {personaId} for user {UserId}. Request body: {JsonConvert.SerializeObject(personaDto)}");
                 personaDto.AssertIsValid();
-                personaDto.UserId = UserId;
-                await _personaService.AssertUserOwnsPersona(personaId, UserId, _personaRepository);
+                personaDto.Id = Guid.Parse(personaId);
+                await _personaService.AssertUserOwnsPersona(personaDto.Id, UserId, _personaRepository);
+                await _personaService.AssertSlugIsValid(personaDto.Slug, personaDto.Id, _personaRepository);
                 var model = _mapper.Map<Persona>(personaDto);
                 var updatedPersona = await _personaService.UpdatePersona(model, _personaRepository, _mapper);
                 _logger.LogInformation($"Processed request to update persona {personaId} for user {UserId}. Result body: {JsonConvert.SerializeObject(updatedPersona)}");

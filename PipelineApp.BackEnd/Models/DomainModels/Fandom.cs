@@ -5,6 +5,8 @@
 
 namespace PipelineApp.BackEnd.Models.DomainModels
 {
+    using System;
+
     /// <summary>
     /// Domain-layer representation of a fandom.
     /// </summary>
@@ -13,7 +15,7 @@ namespace PipelineApp.BackEnd.Models.DomainModels
         /// <summary>
         /// Gets or sets the unique identifier for this fandom.
         /// </summary>
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets or sets the fandom's name.

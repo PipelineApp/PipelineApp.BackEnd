@@ -5,6 +5,7 @@
 
 namespace PipelineApp.BackEnd.Controllers
 {
+    using System;
     using System.Linq;
     using System.Security.Claims;
     using Infrastructure.Providers;
@@ -25,6 +26,17 @@ namespace PipelineApp.BackEnd.Controllers
         /// <value>
         /// The ID of the currently logged in user, or <c>null</c> if no user is logged in.
         /// </value>
-        protected string UserId => User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        protected Guid? UserId
+        {
+            get
+            {
+                var claim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (claim == null)
+                {
+                    return null;
+                }
+                return Guid.Parse(claim);
+            }
+        }
     }
 }

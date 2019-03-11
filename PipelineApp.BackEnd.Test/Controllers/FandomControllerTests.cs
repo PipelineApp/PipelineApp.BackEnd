@@ -71,7 +71,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
             public async Task ReturnsOkWithFandomListWhenNoExceptionsThrown()
             {
                 // Arrange
-                var fandoms = new List<Fandom> { new Fandom { Id = "12345" }, new Fandom { Id = "23456" } };
+                var fandoms = new List<Fandom> { new Fandom { Id = Guid.NewGuid() }, new Fandom { Id = Guid.NewGuid() } };
                 _mockFandomService
                     .Setup(s => s.GetAllFandoms(_mockFandomRepository.Object, _mockMapper.Object))
                     .ReturnsAsync(fandoms);
@@ -83,8 +83,8 @@ namespace PipelineApp.BackEnd.Test.Controllers
                 // Assert
                 data.Should().NotBeNull();
                 data.Should().HaveCount(2);
-                data.Should().Contain(f => f.Id == "12345");
-                data.Should().Contain(f => f.Id == "23456");
+                data.Should().Contain(f => f.Id == fandoms[0].Id);
+                data.Should().Contain(f => f.Id == fandoms[1].Id);
             }
         }
     }

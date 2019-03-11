@@ -13,7 +13,6 @@ namespace PipelineApp.BackEnd.Interfaces.Services
     using Microsoft.AspNetCore.Identity;
     using Models.Configuration;
     using Models.DomainModels;
-    using Models.DomainModels.Auth;
     using Models.ViewModels.Auth;
     using Repositories;
 
