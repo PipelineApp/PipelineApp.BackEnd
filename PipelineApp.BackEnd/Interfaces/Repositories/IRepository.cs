@@ -66,11 +66,11 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
         /// <summary>
         /// Removes an object and its relationships from the database.
         /// </summary>
-        /// <param name="model">The object to be deleted.</param>
+        /// <param name="id">The unique identifier of the object to be deleted.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
         /// </returns>
-        Task DeleteAsync(TModel model);
+        Task DeleteAsync(Guid id);
 
         /// <summary>
         /// Fetches a count of all objects of type <code>TModel</code>

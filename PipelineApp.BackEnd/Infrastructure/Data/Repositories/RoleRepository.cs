@@ -48,7 +48,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         public async Task<IdentityResult> DeleteAsync(RoleEntity role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await DeleteAsync(role);
+            await DeleteAsync(role.Id);
             return IdentityResult.Success;
         }
 

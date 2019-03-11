@@ -78,5 +78,10 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             var result = await repository.UpdateAsync(entity);
             return mapper.Map<Persona>(result);
         }
+
+        public async Task DeletePersona(Guid personaId, IPersonaRepository repository)
+        {
+            await repository.DeleteAsync(personaId);
+        }
     }
 }

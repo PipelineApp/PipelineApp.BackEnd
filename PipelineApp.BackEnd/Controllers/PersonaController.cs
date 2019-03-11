@@ -149,13 +149,13 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(200, Type = typeof(PersonaDto))]
         [ProducesResponseType(400, Type = typeof(string))]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> Put(string personaId, [FromBody]PersonaDto personaDto)
+        public async Task<IActionResult> Put(Guid personaId, [FromBody]PersonaDto personaDto)
         {
             try
             {
                 _logger.LogInformation($"Received request to update persona {personaId} for user {UserId}. Request body: {JsonConvert.SerializeObject(personaDto)}");
                 personaDto.AssertIsValid();
-                personaDto.Id = Guid.Parse(personaId);
+                personaDto.Id = personaId;
                 await _personaService.AssertUserOwnsPersona(personaDto.Id, UserId, _personaRepository);
                 await _personaService.AssertSlugIsValid(personaDto.Slug, personaDto.Id, _personaRepository);
                 var model = _mapper.Map<Persona>(personaDto);
@@ -181,6 +181,44 @@ namespace PipelineApp.BackEnd.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error updating public view {JsonConvert.SerializeObject(personaDto)}: {e.Message}", e);
+                return StatusCode(500, "An unexpected error occurred.");
+            }
+        }
+
+        /// <summary>
+        /// Processes a request to delete an existing persona belonging to the logged-in user.
+        /// </summary>
+        /// <param name="personaId">The unique ID of the persona to be deleted.</param>
+        /// <returns>
+        /// HTTP response containing the results of the request.<para />
+        /// <list type="table">
+        /// <item><term>200 OK</term><description>Response code for successful deletion of persona</description></item>
+        /// <item><term>404 Not Found</term><description>Response code if persona does not exist or does not belong to logged-in user</description></item>
+        /// <item><term>500 Internal Server Error</term><description>Response code for unexpected errors</description></item></list>
+        /// </returns>
+        [HttpDelete]
+        [Route("{personaId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404, Type = typeof(string))]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Delete(Guid personaId)
+        {
+            try
+            {
+                _logger.LogInformation($"Received request to delete persona {personaId} for user {UserId}");
+                await _personaService.AssertUserOwnsPersona(personaId, UserId, _personaRepository);
+                await _personaService.DeletePersona(personaId, _personaRepository);
+                _logger.LogInformation($"Processed request to delete persona {personaId} for user {UserId}");
+                return Ok();
+            }
+            catch (PersonaNotFoundException)
+            {
+                _logger.LogWarning($"User {UserId} attempted to delete persona {personaId} illegally.");
+                return NotFound("A persona with that ID does not exist.");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error deleting persona {personaId}: {e.Message}", e);
                 return StatusCode(500, "An unexpected error occurred.");
             }
         }

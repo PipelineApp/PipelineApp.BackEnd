@@ -147,7 +147,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             var token = await refreshTokenRepository.GetByTokenString(refreshToken);
             if (token != null)
             {
-                await refreshTokenRepository.DeleteAsync(token);
+                await refreshTokenRepository.DeleteAsync(token.Id);
             }
         }
 

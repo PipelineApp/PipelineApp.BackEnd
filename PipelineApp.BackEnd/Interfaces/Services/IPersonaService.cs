@@ -76,5 +76,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// The task result contains the updated persona object.
         /// </returns>
         Task<Persona> UpdatePersona(Persona model, IPersonaRepository personaRepository, IMapper mapper);
+
+        Task DeletePersona(Guid personaId, IPersonaRepository personaRepository);
     }
 }

@@ -97,10 +97,8 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         }
 
         /// <inheritdoc />
-        public async Task DeleteAsync(TModel model)
+        public async Task DeleteAsync(Guid id)
         {
-            Guid id = model.Id;
-
             await GraphClient.Cypher.Match($"(e:{typeof(TModel).Name})")
                               .Where<IEntity>(e => e.Id == id)
                               .DetachDelete("e")
