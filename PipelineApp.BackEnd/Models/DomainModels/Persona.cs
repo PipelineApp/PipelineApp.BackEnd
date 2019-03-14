@@ -6,6 +6,8 @@
 namespace PipelineApp.BackEnd.Models.DomainModels
 {
     using System;
+    using Infrastructure.Data.Entities;
+    using ViewModels;
 
     /// <summary>
     /// Domain model representing a user's persona.
@@ -31,5 +33,24 @@ namespace PipelineApp.BackEnd.Models.DomainModels
         /// Gets or sets this persona's description.
         /// </summary>
         public string Description { get; set; }
+
+        public Persona(PersonaEntity entity)
+        {
+            Id = entity.Id;
+            Slug = entity.Slug;
+            PersonaName = entity.PersonaName;
+            Description = entity.Description;
+        }
+
+        public PersonaDto ToDto()
+        {
+            return new PersonaDto
+            {
+                Id = Id,
+                Description = Description,
+                PersonaName = PersonaName,
+                Slug = Slug
+            };
+        }
     }
 }
