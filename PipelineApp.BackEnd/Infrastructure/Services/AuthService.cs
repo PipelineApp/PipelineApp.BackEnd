@@ -9,21 +9,17 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using System.Collections.Generic;
     using System.IdentityModel.Tokens.Jwt;
     using System.Linq;
-    using System.Net.Http;
     using System.Security.Authentication;
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Data.Entities;
     using Exceptions.Account;
-    using Interfaces;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.IdentityModel.Tokens;
     using Models.Configuration;
-    using Models.DomainModels;
     using Models.ViewModels.Auth;
 
     /// <inheritdoc cref="IAuthService"/>
@@ -85,7 +81,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         /// <inheritdoc />
         public AuthToken GenerateJwt(UserEntity user, UserManager<UserEntity> userManager, AppSettings config)
         {
-            var claims = GetUserClaims(user, userManager);
+            var claims = GetUserClaims(user);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.Auth.Key));
             var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var expiry = DateTime.UtcNow.AddMinutes(config.Auth.AccessExpireMinutes);
@@ -133,7 +129,6 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         public async Task<UserEntity> GetUserForRefreshToken(string refreshToken, IRefreshTokenRepository refreshTokenRepository)
         {
             var user = await refreshTokenRepository.GetValidUserForToken(refreshToken);
-            var now = DateTime.UtcNow;
             if (user == null)
             {
                 throw new InvalidRefreshTokenException();
@@ -151,7 +146,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             }
         }
 
-        private static IEnumerable<Claim> GetUserClaims(UserEntity user, UserManager<UserEntity> userManager)
+        private static IEnumerable<Claim> GetUserClaims(UserEntity user)
         {
             var claims = new[]
             {

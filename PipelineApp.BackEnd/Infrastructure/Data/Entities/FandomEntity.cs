@@ -5,10 +5,7 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
 {
-    using System;
-    using Interfaces;
     using Interfaces.Data;
-    using Providers;
 
     /// <summary>
     /// Data-layer representation of a fandom.

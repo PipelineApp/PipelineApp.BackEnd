@@ -13,7 +13,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
     using Neo4jClient;
     using Relationships;
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IRefreshTokenRepository" />
     public class RefreshTokenRepository : BaseRepository<RefreshTokenEntity>, IRefreshTokenRepository
     {
         /// <summary>

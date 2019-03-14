@@ -19,12 +19,10 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
     public class BaseRepository<TModel> : IRepository<TModel>
         where TModel : IEntity
     {
-        private readonly IGraphClient _graphClient;
-
         /// <summary>
         /// Gets the graph client.
         /// </summary>
-        protected IGraphClient GraphClient => _graphClient;
+        protected IGraphClient GraphClient { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseRepository{TModel}"/> class.
@@ -32,8 +30,8 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         /// <param name="client">The graph client.</param>
         public BaseRepository(IGraphClient client)
         {
-            _graphClient = client;
-            _graphClient.Connect();
+            GraphClient = client;
+            GraphClient.Connect();
         }
 
         /// <inheritdoc />

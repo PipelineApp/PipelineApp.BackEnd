@@ -3,7 +3,7 @@
 // Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace PipelineApp.BackEnd.Models.RequestModels
+namespace PipelineApp.BackEnd.Models.RequestModels.Auth
 {
     /// <summary>
     /// Request model containing data about a user's request to log in.

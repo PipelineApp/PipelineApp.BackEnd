@@ -1,71 +1,41 @@
-﻿namespace PipelineApp.BackEnd.Models.DomainModels
+﻿// <copyright file="Pipeline.cs" company="Blackjack Software">
+// Copyright (c) Blackjack Software. All rights reserved.
+// Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace PipelineApp.BackEnd.Models.DomainModels
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Infrastructure.Data.Entities;
-    using Infrastructure.Data.Entities.EntityCollections;
-    using RequestModels.Pipeline;
-    using ViewModels;
 
+    /// <summary>
+    /// Domain model representing a pipeline.
+    /// </summary>
     public class Pipeline
     {
+        /// <summary>
+        /// Gets or sets the pipeline's unique identifier.
+        /// </summary>
         public Guid? Id { get; set; }
 
+        /// <summary>
+        /// Gets or sets the pipeline's name.
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the pipeline's description.
+        /// </summary>
         public string Description { get; set; }
 
+        /// <summary>
+        /// Gets or sets the fandoms tracked by the pipeline.
+        /// </summary>
         public List<Fandom> Fandoms { get; set; }
 
+        /// <summary>
+        /// Gets or sets the personas tracked by the pipeline.
+        /// </summary>
         public List<Persona> Personas { get; set; }
-
-        public Pipeline(CreatePipelineRequestModel dto)
-        {
-            Name = dto.Name;
-            Description = dto.Description;
-        }
-
-        public Pipeline(PipelineEntityDataCollection entity)
-        {
-            Id = entity.Pipeline?.Id;
-            Name = entity.Pipeline?.Name;
-            Description = entity.Pipeline?.Description;
-            Fandoms = entity.Fandoms.Select(f => new Fandom(f)).ToList();
-            Personas = entity.Personas.Select(p => new Persona(p)).ToList();
-        }
-
-        public Pipeline(PipelineEntity entity)
-        {
-            Id = entity.Id;
-            Name = entity.Name;
-            Description = entity.Description;
-        }
-
-        public PipelineEntity ToEntity()
-        {
-            var entity = new PipelineEntity();
-            if (Id != null)
-            {
-                entity.Id = Id.GetValueOrDefault();
-            }
-
-            entity.Name = Name;
-            entity.Description = Description;
-            return entity;
-        }
-
-        public PipelineDto ToDto()
-        {
-            var dto = new PipelineDto
-            {
-                Id = Id,
-                Name = Name,
-                Description = Description,
-                Fandoms = Fandoms?.Select(f => f.ToDto()).ToList(),
-                Personas = Personas?.Select(p => p.ToDto()).ToList()
-            };
-            return dto;
-        }
     }
 }

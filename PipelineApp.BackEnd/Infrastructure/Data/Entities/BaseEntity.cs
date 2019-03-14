@@ -8,14 +8,10 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
     using System;
     using Interfaces.Data;
 
-    /// <summary>
-    /// Base class for all data-layer entities.
-    /// </summary>
+    /// <inheritdoc />
     public abstract class BaseEntity : IEntity
     {
-        /// <summary>
-        /// Gets or sets the entity's unique identifier.
-        /// </summary>
+        /// <inheritdoc />
         public Guid Id { get; set; }
 
         /// <summary>

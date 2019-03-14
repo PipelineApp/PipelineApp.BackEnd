@@ -5,11 +5,6 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
 {
-    using System;
-    using System.Collections.Generic;
-    using Interfaces.Data;
-    using Providers;
-
     /// <summary>
     /// Data-layer representation of a persona.
     /// </summary>

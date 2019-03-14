@@ -5,14 +5,10 @@
 
 namespace PipelineApp.BackEnd.Interfaces.Services
 {
-    using System;
-    using System.Net.Http;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Infrastructure.Data.Entities;
     using Microsoft.AspNetCore.Identity;
     using Models.Configuration;
-    using Models.DomainModels;
     using Models.ViewModels.Auth;
     using Repositories;
 

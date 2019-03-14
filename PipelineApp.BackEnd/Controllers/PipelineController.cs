@@ -1,4 +1,4 @@
-﻿// <copyright file="PersonaController.cs" company="Blackjack Software">
+﻿// <copyright file="PipelineController.cs" company="Blackjack Software">
 // Copyright (c) Blackjack Software. All rights reserved.
 // Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -6,14 +6,9 @@
 namespace PipelineApp.BackEnd.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Infrastructure.Data.Entities;
-    using Infrastructure.Exceptions.Persona;
     using Infrastructure.Exceptions.Pipeline;
-    using Interfaces;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,7 +18,6 @@ namespace PipelineApp.BackEnd.Controllers
     using Models.DomainModels;
     using Models.RequestModels.Pipeline;
     using Models.ViewModels;
-    using Newtonsoft.Json;
 
     /// <summary>
     /// Controller class for behavior related to persona data.
@@ -35,6 +29,7 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly ILogger<PipelineController> _logger;
         private readonly IPipelineService _pipelineService;
         private readonly IPipelineRepository _pipelineRepository;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PipelineController"/> class.
@@ -42,14 +37,17 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="logger">The logger</param>
         /// <param name="pipelineService">The pipeline service.</param>
         /// <param name="pipelineRepository">The pipeline repository.</param>
+        /// <param name="mapper">The mapper.</param>
         public PipelineController(
             ILogger<PipelineController> logger,
             IPipelineService pipelineService,
-            IPipelineRepository pipelineRepository)
+            IPipelineRepository pipelineRepository,
+            IMapper mapper)
         {
             _logger = logger;
             _pipelineService = pipelineService;
             _pipelineRepository = pipelineRepository;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -73,9 +71,9 @@ namespace PipelineApp.BackEnd.Controllers
             {
                 _logger.LogInformation($"Received request to create a pipeline belonging to user {UserId}. Request: {requestModel}");
                 requestModel.AssertIsValid();
-                var pipeline = new Pipeline(requestModel);
-                var result = await _pipelineService.CreatePipeline(pipeline, UserId, _pipelineRepository);
-                var dto = result.ToDto();
+                var pipeline = _mapper.Map<Pipeline>(requestModel);
+                var result = await _pipelineService.CreatePipeline(pipeline, UserId, _pipelineRepository, _mapper);
+                var dto = _mapper.Map<PipelineDto>(result);
                 _logger.LogInformation($"Processed request to create a pipeline belonging to user {UserId}. Created {dto}");
                 return Ok(dto);
             }

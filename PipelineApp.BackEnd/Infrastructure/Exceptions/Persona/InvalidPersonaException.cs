@@ -7,7 +7,6 @@ namespace PipelineApp.BackEnd.Infrastructure.Exceptions.Persona
 {
     using System;
     using System.Collections.Generic;
-    using Account;
 
     /// <summary>
     /// The exception that is thrown when a persona object is invalid.

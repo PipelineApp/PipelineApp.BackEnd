@@ -6,8 +6,6 @@
 namespace PipelineApp.BackEnd.Models.DomainModels
 {
     using System;
-    using Infrastructure.Data.Entities;
-    using ViewModels;
 
     /// <summary>
     /// Domain-layer representation of a fandom.
@@ -23,38 +21,5 @@ namespace PipelineApp.BackEnd.Models.DomainModels
         /// Gets or sets the fandom's name.
         /// </summary>
         public string Name { get; set; }
-
-        public Fandom(FandomDto dto)
-        {
-            Id = dto.Id;
-            Name = dto.Name;
-        }
-
-        public Fandom(FandomEntity entity)
-        {
-            Id = entity.Id;
-            Name = entity.Name;
-        }
-
-        public FandomEntity ToEntity()
-        {
-            var entity = new FandomEntity();
-            if (Id != null)
-            {
-                entity.Id = Id.Value;
-            }
-
-            entity.Name = Name;
-            return entity;
-        }
-
-        public FandomDto ToDto()
-        {
-            return new FandomDto
-            {
-                Id = Id,
-                Name = Name
-            };
-        }
     }
 }

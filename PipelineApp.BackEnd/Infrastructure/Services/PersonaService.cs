@@ -14,7 +14,6 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using Data.Entities;
     using Data.Relationships;
     using Exceptions.Persona;
-    using Interfaces;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Models.DomainModels;

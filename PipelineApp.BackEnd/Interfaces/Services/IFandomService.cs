@@ -8,7 +8,6 @@ namespace PipelineApp.BackEnd.Interfaces.Services
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
-    using Infrastructure.Data.Entities;
     using Models.DomainModels;
     using Repositories;
 
