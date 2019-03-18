@@ -13,6 +13,13 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
         /// <summary>
         /// Initializes a new instance of the <see cref="RoleEntity"/> class.
         /// </summary>
+        public RoleEntity()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoleEntity"/> class.
+        /// </summary>
         /// <param name="name">The role's name.</param>
         public RoleEntity(string name)
         {

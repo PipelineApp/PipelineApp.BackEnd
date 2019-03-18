@@ -7,14 +7,11 @@ namespace PipelineApp.BackEnd.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
     using System.Security.Authentication;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Infrastructure.Data.Constants;
     using Infrastructure.Data.Entities;
     using Infrastructure.Exceptions.Account;
-    using Interfaces;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Identity;
@@ -23,6 +20,7 @@ namespace PipelineApp.BackEnd.Controllers
     using Microsoft.Extensions.Options;
     using Models.Configuration;
     using Models.RequestModels;
+    using Models.RequestModels.Auth;
     using Models.ViewModels.Auth;
 
     /// <summary>

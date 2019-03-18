@@ -66,6 +66,22 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
             where TSource : BaseEntity;
 
         /// <summary>
+        /// Adds a relationship of type <code>TRelationship</code>
+        /// from the <code>TModel</code> node with ID <code>sourceId</code> to the entity of type <code>TTarget</code>
+        /// with ID <code>targetId</code>.
+        /// </summary>
+        /// <typeparam name="TRelationship">The type of the relationship edge to be created.</typeparam>
+        /// <typeparam name="TTarget">The type of the destination node of the relationship to be created.</typeparam>
+        /// <param name="sourceId">The <code>TModel</code> object from which the relationship should originate.</param>
+        /// <param name="targetId">The unique identifier of the destination node to which the <code>TModel</code> object should be connected.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation.
+        /// </returns>
+        Task AddOutboundRelationshipAsync<TRelationship, TTarget>(Guid sourceId, Guid targetId)
+            where TRelationship : BaseRelationship
+            where TTarget : BaseEntity;
+
+        /// <summary>
         /// Updates an existing object in the database.
         /// </summary>
         /// <param name="model">The object with its updated properties.</param>

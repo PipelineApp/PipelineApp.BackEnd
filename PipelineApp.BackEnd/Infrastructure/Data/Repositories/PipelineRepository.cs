@@ -5,9 +5,14 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Entities;
     using Interfaces.Repositories;
     using Neo4jClient;
+    using Relationships;
 
     /// <inheritdoc cref="IFandomRepository" />
     public class PipelineRepository : BaseRepository<PipelineEntity>, IPipelineRepository
@@ -19,6 +24,17 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         public PipelineRepository(IGraphClient graphClient)
             : base(graphClient)
         {
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<PipelineEntity>> GetByUserIdAsync(Guid? userId)
+        {
+            var result = await GraphClient.Cypher
+                .Match($"(user:{typeof(UserEntity).Name})-[r:{typeof(Manages).Name}]->(pipeline:{typeof(PipelineEntity).Name})")
+                .Where((UserEntity user) => user.Id == userId)
+                .Return(pipeline => pipeline.As<PipelineEntity>())
+                .ResultsAsync;
+            return result.ToList();
         }
     }
 }

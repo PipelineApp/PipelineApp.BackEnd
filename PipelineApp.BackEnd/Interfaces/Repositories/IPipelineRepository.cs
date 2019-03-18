@@ -5,6 +5,9 @@
 
 namespace PipelineApp.BackEnd.Interfaces.Repositories
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Infrastructure.Data.Entities;
 
     /// <summary>
@@ -13,5 +16,11 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
     /// </summary>
     public interface IPipelineRepository : IRepository<PipelineEntity>
     {
+        /// <summary>
+        /// Retrieves a list of the pipelines owned by the given user.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user whose pipelines should be retrieved.</param>
+        /// <returns>A list of pipeline entities owned by the given user.</returns>
+        Task<IEnumerable<PipelineEntity>> GetByUserIdAsync(Guid? userId);
     }
 }

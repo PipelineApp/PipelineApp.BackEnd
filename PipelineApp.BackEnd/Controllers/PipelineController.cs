@@ -88,5 +88,81 @@ namespace PipelineApp.BackEnd.Controllers
                 return StatusCode(500, "An unexpected error occurred.");
             }
         }
+
+        /// <summary>
+        /// Processes a request to add a tracked persona to the given pipeline.
+        /// </summary>
+        /// <param name="pipelineId">The unique identifier of the pipeline which should track the persona.</param>
+        /// <param name="personaId">The unique identifier of the persona to be tracked.</param>
+        /// <returns>
+        /// HTTP response containing the results of the request.<para />
+        /// <list type="table">
+        /// <item><term>200 OK</term><description>Response code for successful creation of relationship</description></item>
+        /// <item><term>500 Internal Server Error</term><description>Response code for unexpected errors</description></item>
+        /// </list>
+        /// </returns>
+        [HttpPost]
+        [Route("{pipelineId}/Persona/{personaId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AddPersona(Guid pipelineId, Guid personaId)
+        {
+            try
+            {
+                _logger.LogInformation($"Received request for pipeline {pipelineId} to track persona {personaId}");
+                await _pipelineService.AssertUserOwnsPipeline(pipelineId, UserId, _pipelineRepository);
+                await _pipelineService.AddTrackedPersona(pipelineId, personaId, _pipelineRepository, _mapper);
+                _logger.LogInformation($"Processed request for pipeline {pipelineId} to track persona {personaId}");
+                return Ok();
+            }
+            catch (PipelineNotFoundException)
+            {
+                _logger.LogWarning($"User {UserId} attempted to add persona to invalid pipeline {pipelineId}");
+                return BadRequest("A pipeline with this ID does not exist for this user.");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500, "An unexpected error occurred.");
+            }
+        }
+
+        /// <summary>
+        /// Processes a request to add a tracked fandom to the given pipeline.
+        /// </summary>
+        /// <param name="pipelineId">The unique identifier of the pipeline which should track the persona.</param>
+        /// <param name="fandomId">The unique identifier of the fandom to be tracked.</param>
+        /// <returns>
+        /// HTTP response containing the results of the request.<para />
+        /// <list type="table">
+        /// <item><term>200 OK</term><description>Response code for successful creation of relationship</description></item>
+        /// <item><term>500 Internal Server Error</term><description>Response code for unexpected errors</description></item>
+        /// </list>
+        /// </returns>
+        [HttpPost]
+        [Route("{pipelineId}/Fandom/{fandomId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AddFandom(Guid pipelineId, Guid fandomId)
+        {
+            try
+            {
+                _logger.LogInformation($"Received request for pipeline {pipelineId} to track fandom {fandomId}");
+                await _pipelineService.AssertUserOwnsPipeline(pipelineId, UserId, _pipelineRepository);
+                await _pipelineService.AddTrackedFandom(pipelineId, fandomId, _pipelineRepository, _mapper);
+                _logger.LogInformation($"Processed request for pipeline {pipelineId} to track fandom {fandomId}");
+                return Ok();
+            }
+            catch (PipelineNotFoundException)
+            {
+                _logger.LogWarning($"User {UserId} attempted to add persona to invalid pipeline {pipelineId}");
+                return BadRequest("A pipeline with this ID does not exist for this user.");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500, "An unexpected error occurred.");
+            }
+        }
     }
 }

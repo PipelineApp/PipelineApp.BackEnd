@@ -6,10 +6,12 @@
 namespace PipelineApp.BackEnd.Infrastructure.Services
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using Data.Entities;
     using Data.Relationships;
+    using Exceptions.Pipeline;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Models.DomainModels;
@@ -27,6 +29,32 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             var entity = mapper.Map<PipelineEntity>(pipeline);
             var result = await repository.CreateWithInboundRelationshipAsync<Manages, UserEntity>(entity, userId.Value);
             return mapper.Map<Pipeline>(result);
+        }
+
+        /// <inheritdoc />
+        public async Task AssertUserOwnsPipeline(Guid pipelineId, Guid? userId, IPipelineRepository repository)
+        {
+            if (userId == null)
+            {
+                throw new ArgumentException("User ID cannot be null.");
+            }
+            var entities = await repository.GetByUserIdAsync(userId);
+            if (entities.All(e => e.Id != pipelineId))
+            {
+                throw new PipelineNotFoundException();
+            }
+        }
+
+        /// <inheritdoc />
+        public async Task AddTrackedPersona(Guid pipelineId, Guid personaId, IPipelineRepository pipelineRepository, IMapper mapper)
+        {
+            await pipelineRepository.AddOutboundRelationshipAsync<Tracks, PersonaEntity>(pipelineId, personaId);
+        }
+
+        /// <inheritdoc />
+        public async Task AddTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository, IMapper mapper)
+        {
+            await pipelineRepository.AddOutboundRelationshipAsync<Tracks, FandomEntity>(pipelineId, fandomId);
         }
     }
 }
