@@ -9,6 +9,7 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Infrastructure.Data.Entities;
+    using Infrastructure.Data.Entities.EntityCollections;
 
     /// <summary>
     /// Extension of base repository containing methods related to
@@ -21,6 +22,6 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
         /// </summary>
         /// <param name="userId">The unique identifier of the user whose pipelines should be retrieved.</param>
         /// <returns>A list of pipeline entities owned by the given user.</returns>
-        Task<IEnumerable<PipelineEntity>> GetByUserIdAsync(Guid? userId);
+        Task<IEnumerable<PipelineEntityDataCollection>> GetByUserIdAsync(Guid? userId);
     }
 }

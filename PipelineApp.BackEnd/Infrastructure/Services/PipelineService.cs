@@ -6,6 +6,7 @@
 namespace PipelineApp.BackEnd.Infrastructure.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
@@ -39,7 +40,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
                 throw new ArgumentException("User ID cannot be null.");
             }
             var entities = await repository.GetByUserIdAsync(userId);
-            if (entities.All(e => e.Id != pipelineId))
+            if (entities.All(e => e.Pipeline.Id != pipelineId))
             {
                 throw new PipelineNotFoundException();
             }
@@ -55,6 +56,12 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         public async Task AddTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository, IMapper mapper)
         {
             await pipelineRepository.AddOutboundRelationshipAsync<Tracks, FandomEntity>(pipelineId, fandomId);
+        }
+
+        public async Task<IEnumerable<Pipeline>> GetAllPipelines(Guid? userId, IPipelineRepository pipelineRepository, IMapper mapper)
+        {
+            var result = await pipelineRepository.GetByUserIdAsync(userId);
+            return mapper.Map<List<Pipeline>>(result);
         }
     }
 }

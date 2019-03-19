@@ -6,6 +6,8 @@
 namespace PipelineApp.BackEnd.Controllers
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
     using Infrastructure.Exceptions.Pipeline;
@@ -48,6 +50,38 @@ namespace PipelineApp.BackEnd.Controllers
             _pipelineService = pipelineService;
             _pipelineRepository = pipelineRepository;
             _mapper = mapper;
+        }
+
+        /// <summary>
+        /// Processes a request for all of a user's pipelines.
+        /// </summary>
+        /// <returns>
+        /// HTTP response containing the results of the request and, if successful,
+        /// a list of <see cref="PipelineDto" /> objects in the response body.<para />
+        /// <list type="table">
+        /// <item><term>200 OK</term><description>Response code for successful retrieval of pipeline information</description></item>
+        /// <item><term>500 Internal Server Error</term><description>Response code for unexpected errors</description></item>
+        /// </list>
+        /// </returns>
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(List<PipelineDto>))]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                _logger.LogInformation($"Received request to get list of available pipelines for user {UserId}.");
+                var personas = await _pipelineService.GetAllPipelines(UserId, _pipelineRepository, _mapper);
+                var result = personas.ToList().Select(_mapper.Map<PipelineDto>).ToList();
+                _logger.LogInformation(
+                    $"Processed request to get list of available pipelines for user {UserId}. Found {result.Count} pipelines.");
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+                return StatusCode(500, "An unexpected error occurred.");
+            }
         }
 
         /// <summary>

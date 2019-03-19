@@ -6,6 +6,7 @@
 namespace PipelineApp.BackEnd.Interfaces.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using AutoMapper;
     using Models.DomainModels;
@@ -59,5 +60,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="mapper">The mapper.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         Task AddTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository, IMapper mapper);
+
+        Task<IEnumerable<Pipeline>> GetAllPipelines(Guid? userId, IPipelineRepository pipelineRepository, IMapper mapper);
     }
 }

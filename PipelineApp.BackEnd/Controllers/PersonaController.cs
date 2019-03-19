@@ -55,7 +55,7 @@ namespace PipelineApp.BackEnd.Controllers
         }
 
         /// <summary>
-        /// Processes a request for all fandoms.
+        /// Processes a request for all of a user's personas.
         /// </summary>
         /// <returns>
         /// HTTP response containing the results of the request and, if successful,
