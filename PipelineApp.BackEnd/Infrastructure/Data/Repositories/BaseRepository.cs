@@ -94,6 +94,19 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         }
 
         /// <inheritdoc />
+        public async Task RemoveOutboundRelationshipAsync<TRelationship, TTarget>(Guid sourceId, Guid targetId)
+            where TRelationship : BaseRelationship
+            where TTarget : BaseEntity
+        {
+            await GraphClient.Cypher
+                .Match($"(source:{typeof(TModel).Name})-[r:{typeof(TRelationship).Name}]->(target:{typeof(TTarget).Name})")
+                .Where((TModel source) => source.Id == sourceId)
+                .AndWhere((TTarget target) => target.Id == targetId)
+                .Delete("r")
+                .ExecuteWithoutResultsAsync();
+        }
+
+        /// <inheritdoc />
         public async Task<TModel> UpdateAsync(TModel model)
         {
             var id = model.Id;

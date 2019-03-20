@@ -58,10 +58,34 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             await pipelineRepository.AddOutboundRelationshipAsync<Tracks, FandomEntity>(pipelineId, fandomId);
         }
 
+        /// <inheritdoc />
         public async Task<IEnumerable<Pipeline>> GetAllPipelines(Guid? userId, IPipelineRepository pipelineRepository, IMapper mapper)
         {
             var result = await pipelineRepository.GetByUserIdAsync(userId);
             return mapper.Map<List<Pipeline>>(result);
+        }
+
+        /// <inheritdoc />
+        public async Task<Pipeline> UpdatePipeline(Pipeline model, IPipelineRepository pipelineRepository, IMapper mapper)
+        {
+            var entity = mapper.Map<PipelineEntity>(model);
+            var result = await pipelineRepository.UpdateAsync(entity);
+            return mapper.Map<Pipeline>(result);
+        }
+
+        public async Task DeletePipeline(Guid pipelineId, IPipelineRepository pipelineRepository)
+        {
+            await pipelineRepository.DeleteAsync(pipelineId);
+        }
+
+        public async Task RemoveTrackedPersona(Guid pipelineId, Guid personaId, IPipelineRepository pipelineRepository)
+        {
+            await pipelineRepository.RemoveOutboundRelationshipAsync<Tracks, PersonaEntity>(pipelineId, personaId);
+        }
+
+        public async Task RemoveTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository)
+        {
+            await pipelineRepository.RemoveOutboundRelationshipAsync<Tracks, FandomEntity>(pipelineId, fandomId);
         }
     }
 }

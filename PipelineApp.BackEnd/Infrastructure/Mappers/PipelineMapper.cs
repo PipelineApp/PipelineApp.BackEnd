@@ -48,7 +48,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Mappers
                 .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Pipeline.Id))
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Pipeline.Name))
                 .ForMember(d => d.Description, opt => opt.MapFrom(s => s.Pipeline.Description));
-            CreateMap<CreatePipelineRequestModel, Pipeline>();
+            CreateMap<UpsertPipelineRequestModel, Pipeline>();
         }
     }
 }

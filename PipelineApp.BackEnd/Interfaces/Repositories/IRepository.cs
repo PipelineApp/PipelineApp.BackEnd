@@ -81,6 +81,10 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
             where TRelationship : BaseRelationship
             where TTarget : BaseEntity;
 
+        Task RemoveOutboundRelationshipAsync<TRelationship, TTarget>(Guid sourceId, Guid targetId)
+            where TRelationship : BaseRelationship
+            where TTarget : BaseEntity;
+
         /// <summary>
         /// Updates an existing object in the database.
         /// </summary>

@@ -1,10 +1,11 @@
-﻿// <copyright file="CreatePipelineRequestModel.cs" company="Blackjack Software">
+﻿// <copyright file="UpsertPipelineRequestModel.cs" company="Blackjack Software">
 // Copyright (c) Blackjack Software. All rights reserved.
 // Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace PipelineApp.BackEnd.Models.RequestModels.Pipeline
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Infrastructure.Exceptions.Pipeline;
@@ -12,8 +13,13 @@ namespace PipelineApp.BackEnd.Models.RequestModels.Pipeline
     /// <summary>
     /// Request model containing data about a user's request to create a new pipeline.
     /// </summary>
-    public class CreatePipelineRequestModel
+    public class UpsertPipelineRequestModel
     {
+        /// <summary>
+        /// Gets or sets the pipeline's unique identifier.
+        /// </summary>
+        public Guid? Id { get; set; }
+
         /// <summary>
         /// Gets or sets the pipeline's name.
         /// </summary>

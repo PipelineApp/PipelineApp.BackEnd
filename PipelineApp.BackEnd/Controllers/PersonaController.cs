@@ -95,11 +95,13 @@ namespace PipelineApp.BackEnd.Controllers
         /// a <see cref="PersonaDto" /> object in the response body.<para />
         /// <list type="table">
         /// <item><term>200 OK</term><description>Response code for successful creation of persona</description></item>
+        /// <item><term>400 Bad Request</term><description>Response code for invalid provided persona model</description></item>
         /// <item><term>500 Internal Server Error</term><description>Response code for unexpected errors</description></item>
         /// </list>
         /// </returns>
         [HttpPost]
         [ProducesResponseType(200, Type = typeof(PersonaDto))]
+        [ProducesResponseType(400, Type = typeof(string))]
         [ProducesResponseType(500)]
         public async Task<IActionResult> Post([FromBody] PersonaDto personaDto)
         {
@@ -141,6 +143,7 @@ namespace PipelineApp.BackEnd.Controllers
         /// a <see cref="PersonaDto" /> object in the response body.<para />
         /// <list type="table">
         /// <item><term>200 OK</term><description>Response code for successful update of persona</description></item>
+        /// <item><term>400 Bad Request</term><description>Response code for invalid provided persona model</description></item>
         /// <item><term>500 Internal Server Error</term><description>Response code for unexpected errors</description></item>
         /// </list>
         /// </returns>

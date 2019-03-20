@@ -36,7 +36,8 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
                 .With("user, pipeline")
                 .OptionalMatch($"(pipeline)-[t:{typeof(Tracks).Name}]->(fandom:{typeof(FandomEntity).Name})")
                 .OptionalMatch($"(pipeline)-[t2:{typeof(Tracks).Name}]->(persona:{typeof(PersonaEntity).Name})")
-                .Return((pipeline, fandom, persona) => new {
+                .Return((pipeline, fandom, persona) => new
+                {
                     Pipeline = pipeline.As<PipelineEntity>(),
                     Fandoms = fandom.CollectAsDistinct<FandomEntity>(),
                     Personas = persona.CollectAsDistinct<PersonaEntity>()

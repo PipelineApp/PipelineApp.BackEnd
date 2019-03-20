@@ -61,6 +61,34 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <returns>A task representing the asynchronous operation.</returns>
         Task AddTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository, IMapper mapper);
 
+        /// <summary>
+        /// Fetches all pipelines belonging to the given user.
+        /// </summary>
+        /// <param name="userId">The unique identifier of the user whose pipelines should be retrieved.</param>
+        /// <param name="pipelineRepository">The pipeline repository.</param>
+        /// <param name="mapper">The mapper.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation.
+        /// The task result contains a list of <see cref="Pipeline"/> objects belonging to the
+        /// given user.
+        /// </returns>
         Task<IEnumerable<Pipeline>> GetAllPipelines(Guid? userId, IPipelineRepository pipelineRepository, IMapper mapper);
+
+        /// <summary>
+        /// Updates the passed pipeline.
+        /// </summary>
+        /// <param name="model">The model containing pipeline information.</param>
+        /// <param name="pipelineRepository">The pipeline repository.</param>
+        /// <param name="mapper">The application's object mapper.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation.
+        /// The task result contains the updated pipeline object.
+        /// </returns>
+        Task<Pipeline> UpdatePipeline(Pipeline model, IPipelineRepository pipelineRepository, IMapper mapper);
+
+        Task DeletePipeline(Guid pipelineId, IPipelineRepository pipelineRepository);
+
+        Task RemoveTrackedPersona(Guid pipelineId, Guid personaId, IPipelineRepository pipelineRepository);
+        Task RemoveTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository);
     }
 }
