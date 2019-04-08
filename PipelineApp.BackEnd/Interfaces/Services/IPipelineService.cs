@@ -86,9 +86,30 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// </returns>
         Task<Pipeline> UpdatePipeline(Pipeline model, IPipelineRepository pipelineRepository, IMapper mapper);
 
+        /// <summary>
+        /// Deletes the pipeline with the passed ID.
+        /// </summary>
+        /// <param name="pipelineId">The unique identifier of the pipeline to be deleted.</param>
+        /// <param name="pipelineRepository">The pipeline repository.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         Task DeletePipeline(Guid pipelineId, IPipelineRepository pipelineRepository);
 
+        /// <summary>
+        /// Removes the given persona from the given pipeline.
+        /// </summary>
+        /// <param name="pipelineId">The pipeline which should stop tracking the persona.</param>
+        /// <param name="personaId">The persona which should be removed as a tracked item from the pipeline.</param>
+        /// <param name="pipelineRepository">The pipeline repository.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         Task RemoveTrackedPersona(Guid pipelineId, Guid personaId, IPipelineRepository pipelineRepository);
+
+        /// <summary>
+        /// Removes the given fandom from the given pipeline.
+        /// </summary>
+        /// <param name="pipelineId">The pipeline which should stop tracking the fandom.</param>
+        /// <param name="fandomId">The fandom which should be removed as a tracked item from the pipeline.</param>
+        /// <param name="pipelineRepository">The pipeline repository.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         Task RemoveTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository);
     }
 }

@@ -73,16 +73,19 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             return mapper.Map<Pipeline>(result);
         }
 
+        /// <inheritdoc />
         public async Task DeletePipeline(Guid pipelineId, IPipelineRepository pipelineRepository)
         {
             await pipelineRepository.DeleteAsync(pipelineId);
         }
 
+        /// <inheritdoc />
         public async Task RemoveTrackedPersona(Guid pipelineId, Guid personaId, IPipelineRepository pipelineRepository)
         {
             await pipelineRepository.RemoveOutboundRelationshipAsync<Tracks, PersonaEntity>(pipelineId, personaId);
         }
 
+        /// <inheritdoc />
         public async Task RemoveTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository)
         {
             await pipelineRepository.RemoveOutboundRelationshipAsync<Tracks, FandomEntity>(pipelineId, fandomId);
