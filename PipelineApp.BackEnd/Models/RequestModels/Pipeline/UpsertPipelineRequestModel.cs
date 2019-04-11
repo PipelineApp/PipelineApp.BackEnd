@@ -34,7 +34,7 @@ namespace PipelineApp.BackEnd.Models.RequestModels.Pipeline
         /// Throws an exception if the pipeline is not valid.
         /// </summary>
         /// <exception cref="InvalidPipelineException">Thrown if the pipeline is not valid.</exception>
-        public void AssertIsValid()
+        public virtual void AssertIsValid()
         {
             var errors = new List<string>();
             if (string.IsNullOrWhiteSpace(Name))

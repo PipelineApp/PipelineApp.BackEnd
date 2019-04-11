@@ -7,9 +7,9 @@ namespace PipelineApp.BackEnd.Models.ViewModels
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using Infrastructure.Exceptions.Persona;
-    using Microsoft.EntityFrameworkCore.Internal;
 
     /// <summary>
     /// View model representation of a user's persona.

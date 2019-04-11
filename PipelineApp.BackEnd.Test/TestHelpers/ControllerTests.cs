@@ -42,7 +42,7 @@ namespace PipelineApp.BackEnd.Test.TestHelpers
             };
             var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, Constants.UserId)
+                new Claim(ClaimTypes.NameIdentifier, Constants.UserId.ToString())
             }));
             Controller.ControllerContext = new ControllerContext
             {

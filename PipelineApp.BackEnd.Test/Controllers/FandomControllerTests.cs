@@ -21,7 +21,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
     using TestHelpers;
     using Xunit;
 
-    [Trait("Class", "AuthController")]
+    [Trait("Class", "FandomController")]
     public class FandomControllerTests : ControllerTests<FandomController>
     {
         private readonly Mock<IFandomService> _mockFandomService;

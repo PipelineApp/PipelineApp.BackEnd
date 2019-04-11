@@ -9,6 +9,6 @@ namespace PipelineApp.BackEnd.Test.TestHelpers
 
     public static class Constants
     {
-        public const string UserId = "07825ed8-541b-4c9c-85b3-7b41aed5bb97";
+        public static Guid UserId { get; } = Guid.Parse("07825ed8-541b-4c9c-85b3-7b41aed5bb97");
     }
 }

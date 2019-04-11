@@ -156,7 +156,7 @@ namespace PipelineApp.BackEnd.Controllers
             catch (PipelineNotFoundException)
             {
                 _logger.LogWarning($"User {UserId} attempted to add persona to invalid pipeline {pipelineId}");
-                return BadRequest("A pipeline with this ID does not exist for this user.");
+                return NotFound("A pipeline with this ID does not exist for this user.");
             }
             catch (Exception e)
             {
@@ -196,7 +196,7 @@ namespace PipelineApp.BackEnd.Controllers
             catch (PipelineNotFoundException)
             {
                 _logger.LogWarning($"User {UserId} attempted to add fandom to invalid pipeline {pipelineId}");
-                return BadRequest("A pipeline with this ID does not exist for this user.");
+                return NotFound("A pipeline with this ID does not exist for this user.");
             }
             catch (Exception e)
             {
@@ -317,6 +317,11 @@ namespace PipelineApp.BackEnd.Controllers
                 _logger.LogInformation($"Processed request to remove tracking of persona {personaId} from pipeline {pipelineId} for user {UserId}");
                 return Ok();
             }
+            catch (PipelineNotFoundException)
+            {
+                _logger.LogWarning($"User {UserId} attempted to delete persona from invalid pipeline {pipelineId}");
+                return NotFound("A pipeline with this ID does not exist for this user.");
+            }
             catch (Exception e)
             {
                 _logger.LogError($"Error remove tracking of persona {personaId} from pipeline {pipelineId}: {e.Message}", e);
@@ -348,6 +353,11 @@ namespace PipelineApp.BackEnd.Controllers
                 await _pipelineService.RemoveTrackedFandom(pipelineId, fandomId, _pipelineRepository);
                 _logger.LogInformation($"Processed request to remove tracking of fandom {fandomId} from pipeline {pipelineId} for user {UserId}");
                 return Ok();
+            }
+            catch (PipelineNotFoundException)
+            {
+                _logger.LogWarning($"User {UserId} attempted to delete fandom from invalid pipeline {pipelineId}");
+                return NotFound("A pipeline with this ID does not exist for this user.");
             }
             catch (Exception e)
             {

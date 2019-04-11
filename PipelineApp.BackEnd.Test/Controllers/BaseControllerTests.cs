@@ -32,7 +32,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
                 // Arrange
                 var user = new ClaimsPrincipal(new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, Constants.UserId)
+                    new Claim(ClaimTypes.NameIdentifier, Constants.UserId.ToString())
                 }));
                 _childController.ControllerContext = new ControllerContext
                 {
