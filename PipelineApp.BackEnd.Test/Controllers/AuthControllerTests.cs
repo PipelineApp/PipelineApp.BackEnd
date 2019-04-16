@@ -10,10 +10,10 @@ namespace PipelineApp.BackEnd.Test.Controllers
     using System.Security.Authentication;
     using System.Threading.Tasks;
     using BackEnd.Controllers;
+    using BackEnd.Infrastructure.Data.Constants;
+    using BackEnd.Infrastructure.Data.Entities;
+    using BackEnd.Infrastructure.Exceptions.Account;
     using FluentAssertions;
-    using Infrastructure.Data.Constants;
-    using Infrastructure.Data.Entities;
-    using Infrastructure.Exceptions.Account;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Identity;

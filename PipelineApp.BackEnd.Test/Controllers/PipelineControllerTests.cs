@@ -10,9 +10,9 @@ namespace PipelineApp.BackEnd.Test.Controllers
     using System.Threading.Tasks;
     using AutoMapper;
     using BackEnd.Controllers;
+    using BackEnd.Infrastructure.Data.Entities;
+    using BackEnd.Infrastructure.Exceptions.Pipeline;
     using FluentAssertions;
-    using Infrastructure.Data.Entities;
-    using Infrastructure.Exceptions.Pipeline;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Mvc;
