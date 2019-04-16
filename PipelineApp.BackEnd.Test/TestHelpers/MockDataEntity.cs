@@ -9,5 +9,6 @@ namespace PipelineApp.BackEnd.Test.TestHelpers
 
     public class MockDataEntity : BaseEntity
     {
+        public string Name { get; set; }
     }
 }

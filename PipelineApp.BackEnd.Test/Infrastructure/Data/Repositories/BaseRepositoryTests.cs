@@ -5,10 +5,13 @@
 
 namespace PipelineApp.BackEnd.Test.Infrastructure.Data.Repositories
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using BackEnd.Infrastructure.Data.Entities;
+    using BackEnd.Infrastructure.Data.Relationships;
     using BackEnd.Infrastructure.Data.Repositories;
+    using FluentAssertions;
     using Moq;
     using Neo4jClient.Cypher;
     using TestHelpers;
@@ -20,6 +23,12 @@ namespace PipelineApp.BackEnd.Test.Infrastructure.Data.Repositories
         public BaseRepositoryTests()
         {
             Repository = new BaseRepository<MockDataEntity>(MockGraphClient.Object);
+            SetData(new List<MockDataEntity>()
+            {
+                new MockDataEntity { Name = "Entity 1" },
+                new MockDataEntity { Name = "Entity 2" },
+                new MockDataEntity { Name = "Entity 3" }
+            });
         }
 
         public class GetAllAsync : BaseRepositoryTests
@@ -27,32 +36,173 @@ namespace PipelineApp.BackEnd.Test.Infrastructure.Data.Repositories
             [Fact]
             public async Task FetchesAllNodesOfType()
             {
+                // Arrange
                 MockGraphClient
                     .Setup(gc => gc.ExecuteGetCypherResultsAsync<MockDataEntity>(It.IsAny<CypherQuery>()))
-                    .Returns(Task.FromResult<IEnumerable<MockDataEntity>>(new List<MockDataEntity>()));
+                    .Returns(Task.FromResult<IEnumerable<MockDataEntity>>(Data));
 
+                // Act
                 var results = await Repository.GetAllAsync();
 
-                VerifyQuery("MATCH(e:MockDataEntity)\r\nRETURN e");
+                // Assert
+                VerifyQueryWithResults("MATCH(e:MockDataEntity)\r\nRETURN e");
+                results.Should().HaveCount(3);
             }
+        }
 
+        public class GetByIdAsync : BaseRepositoryTests
+        {
             [Fact]
-            public async Task CheckingCypher()
+            public async Task FetchesSingleNodeById()
             {
-                var mockGc = MockGraphClient;
-                mockGc
-                    .Setup(gc => gc.ExecuteGetCypherResultsAsync<PersonaEntity>(It.IsAny<CypherQuery>()))
-                    .Returns(Task.FromResult<IEnumerable<PersonaEntity>>(new List<PersonaEntity>()));
+                // Arrange
+                MockGraphClient
+                    .Setup(gc => gc.ExecuteGetCypherResultsAsync<MockDataEntity>(It.IsAny<CypherQuery>()))
+                    .Returns(Task.FromResult<IEnumerable<MockDataEntity>>(Data.GetRange(1,1)));
+                var id = Data[1].Id;
 
-                var expectedQuery = new CypherQuery(
-                    "MATCH(persona:PersonaEntity)\r\nWHERE (persona.Slug = \"testSlug\")\r\nRETURN persona",
-                    new Dictionary<string, object> { { "p0", "testSlug" } },
-                    CypherResultMode.Projection);
+                // Act
+                var results = await Repository.GetByIdAsync(id);
 
-                var pr = new BaseRepository<MockDataEntity>(mockGc.Object);
-                var results = await pr.GetAllAsync();
+                // Assert
+                VerifyQueryWithResults($"MATCH(e:MockDataEntity)\r\nWHERE (e.Id = \"{id}\")\r\nRETURN e");
+                results.Name.Should().Be("Entity 2");
+            }
+        }
 
-                mockGc.Verify(gc => gc.ExecuteGetCypherResultsAsync<PersonaEntity>(It.Is<CypherQuery>((actual) => CompareQuery(expectedQuery, actual, true))), Times.Once);
+        public class SaveAsync : BaseRepositoryTests
+        {
+            [Fact]
+            public async Task CreatesNewNode()
+            {
+                // Arrange
+                var model = new MockDataEntity { Name = "Entity 4" };
+                var startId = model.Id;
+                MockGraphClient
+                    .Setup(gc => gc.ExecuteGetCypherResultsAsync<MockDataEntity>(It.IsAny<CypherQuery>()))
+                    .Returns(Task.FromResult<IEnumerable<MockDataEntity>>(new List<MockDataEntity> { model }));
+
+                // Act
+                var results = await Repository.SaveAsync(model);
+
+                // Assert
+                VerifyQueryWithResults("CREATE (e:MockDataEntity {model})\r\nRETURN e", new Dictionary<string, object> { { "model", model } });
+                results.Id.Should().NotBe(startId);
+                results.Name.Should().Be("Entity 4");
+            }
+        }
+
+        public class CreateWithInboundRelationshipAsync : BaseRepositoryTests
+        {
+            [Fact]
+            public async Task CreatesNewNodeWithInboundRelationship()
+            {
+                // Arrange
+                var model = new MockDataEntity { Name = "Entity 4" };
+                var startId = model.Id;
+                var sourceId = Guid.NewGuid();
+                MockGraphClient
+                    .Setup(gc => gc.ExecuteGetCypherResultsAsync<MockDataEntity>(It.IsAny<CypherQuery>()))
+                    .Returns(Task.FromResult<IEnumerable<MockDataEntity>>(new List<MockDataEntity> { model }));
+
+                // Act
+                var results = await Repository.CreateWithInboundRelationshipAsync<BelongsTo, UserEntity>(model, sourceId);
+
+                // Assert
+                VerifyQueryWithResults($"MATCH (source:UserEntity)\r\nWHERE(source.Id=\"{sourceId}\")\r\nCREATE(source)-[:BelongsTo]->(newEntity:MockDataEntity {{model}})\r\nRETURNnewEntity", new Dictionary<string, object> { { "model", model } });
+                results.Id.Should().NotBe(startId);
+                results.Name.Should().Be("Entity 4");
+            }
+        }
+
+        public class AddOutboundRelationshipAsync : BaseRepositoryTests
+        {
+            [Fact]
+            public async Task AddsRelationshipToExistingNodes()
+            {
+                // Arrange
+                var sourceId = Guid.NewGuid();
+                var targetId = Guid.NewGuid();
+
+                // Act
+                await Repository.AddOutboundRelationshipAsync<BelongsTo, UserEntity>(sourceId, targetId);
+
+                // Assert
+                VerifyQuery($"MATCH(source:MockDataEntity),(target:UserEntity)\r\nWHERE(source.Id=\"{sourceId}\")\r\nAND(target.Id=\"{targetId}\")\r\nCREATE(source)-[:BelongsTo]->(target)");
+            }
+        }
+
+        public class RemoveOutboundRelationshipAsync : BaseRepositoryTests
+        {
+            [Fact]
+            public async Task RemovesRelationshipFromExistingNodes()
+            {
+                // Arrange
+                var sourceId = Guid.NewGuid();
+                var targetId = Guid.NewGuid();
+
+                // Act
+                await Repository.RemoveOutboundRelationshipAsync<BelongsTo, UserEntity>(sourceId, targetId);
+
+                // Assert
+                VerifyQuery($"MATCH(source:MockDataEntity)-[r:BelongsTo]->(target:UserEntity)\r\nWHERE(source.Id=\"{sourceId}\")\r\nAND(target.Id=\"{targetId}\")\r\nDELETEr");
+            }
+        }
+
+        public class UpdateAsync : BaseRepositoryTests
+        {
+            [Fact]
+            public async Task SavesUpdatedNode()
+            {
+                // Arrange
+                var model = new MockDataEntity { Name = "Entity 4" };
+                var startId = model.Id;
+                MockGraphClient
+                    .Setup(gc => gc.ExecuteGetCypherResultsAsync<MockDataEntity>(It.IsAny<CypherQuery>()))
+                    .Returns(Task.FromResult<IEnumerable<MockDataEntity>>(new List<MockDataEntity> { model }));
+
+                // Act
+                var results = await Repository.UpdateAsync(model);
+
+                // Assert
+                VerifyQueryWithResults($"MATCH(e:MockDataEntity)\r\nWHERE(e.Id=\"{startId}\")\r\nSET e= {{model}}\r\nRETURN e", new Dictionary<string, object> { { "model", model } });
+                results.Name.Should().Be("Entity 4");
+                results.Id.Should().Be(startId);
+            }
+        }
+
+        public class DeleteAsync : BaseRepositoryTests
+        {
+            [Fact]
+            public async Task RemovesMatchingNode()
+            {
+                // Arrange
+                var id = Guid.NewGuid();
+
+                // Act
+                await Repository.DeleteAsync(id);
+
+                // Assert
+                VerifyQuery($"MATCH(e: MockDataEntity)\r\nWHERE(e.Id =\"{id}\")\r\nDETACH DELETE e");
+            }
+        }
+
+        public class Count : BaseRepositoryTests
+        {
+            [Fact]
+            public async Task ReturnsCountOfMatchingNodes()
+            {
+                // Arrange
+                MockGraphClient
+                    .Setup(gc => gc.ExecuteGetCypherResultsAsync<long>(It.IsAny<CypherQuery>()))
+                    .Returns(Task.FromResult<IEnumerable<long>>(new List<long> { 54 }));
+
+                // Act
+                var results = await Repository.Count();
+
+                // Assert
+                VerifyQueryWithResults<long>($"MATCH(e:MockDataEntity)\r\nRETURN count(e)");
+                results.Should().Be(54);
             }
         }
     }
