@@ -28,7 +28,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
                 throw new ArgumentException("User ID cannot be null.");
             }
             var entity = mapper.Map<PipelineEntity>(pipeline);
-            var result = await repository.CreateWithInboundRelationshipAsync<Manages, UserEntity>(entity, userId.Value);
+            var inboundRelationships = new List<BaseRelationship>
+            {
+                new Manages {SourceId = userId.Value}
+            };
+            var result = repository.CreateWithRelationships(entity, inboundRelationships);
             return mapper.Map<Pipeline>(result);
         }
 

@@ -8,6 +8,6 @@
 
     public interface IPostService
     {
-        Task<Post> CreateBasePost(Post post, Guid personaId, IPostRepository postRepository, IMapper mapper);
+        Post CreateBasePost(Post post, Guid personaId, Guid fandomId, IPostRepository postRepository, IMapper mapper);
     }
 }

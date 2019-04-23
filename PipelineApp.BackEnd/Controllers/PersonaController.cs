@@ -265,7 +265,7 @@ namespace PipelineApp.BackEnd.Controllers
                 requestModel.AssertIsValid();
                 await _personaService.AssertUserOwnsPersona(personaId, UserId, _personaRepository);
                 var post = _mapper.Map<Post>(requestModel);
-                var result = await _postService.CreateBasePost(post, personaId, _postRepository, _mapper);
+                var result = _postService.CreateBasePost(post, personaId, requestModel.FandomId, _postRepository, _mapper);
                 var dto = _mapper.Map<PostDto>(result);
                 _logger.LogInformation($"Processed request to create a post belonging to user {UserId}. Created {dto}");
                 return Ok(dto);

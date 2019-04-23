@@ -62,6 +62,7 @@ namespace PipelineApp.BackEnd
         /// <returns>Web host instance.</returns>
         private static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseKestrel()
                 .UseStartup<Startup>()
                 .UseUrls("http://*:80")
                 .ConfigureAppConfiguration((builderContext, config) =>
@@ -80,6 +81,10 @@ namespace PipelineApp.BackEnd
                     logging.SetMinimumLevel(LogLevel.Information);
                 })
                 .UseNLog()
+                .ConfigureKestrel((context, options) =>
+                {
+                    // Set properties and call methods on options
+                })
                 .Build();
 
         private static void SeedDatabase(IWebHost host)

@@ -5,6 +5,7 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Relationships
 {
+    using Entities;
     /// <summary>
     /// Data-layer representation of an "is author of" relationship.
     /// </summary>

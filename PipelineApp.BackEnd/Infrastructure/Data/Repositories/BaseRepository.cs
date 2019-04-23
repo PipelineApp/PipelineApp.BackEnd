@@ -9,10 +9,12 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Transactions;
     using Entities;
     using Interfaces.Data;
     using Interfaces.Repositories;
     using Neo4jClient;
+    using Neo4jClient.Transactions;
     using Relationships;
 
     /// <inheritdoc cref="IRepository{TModel}"/>
@@ -64,20 +66,45 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
             return results.Single();
         }
 
-        /// <inheritdoc />
-        public async Task<TModel> CreateWithInboundRelationshipAsync<TRelationship, TSource>(TModel model, Guid sourceId)
-            where TRelationship : BaseRelationship
-            where TSource : BaseEntity
+        public TModel CreateWithRelationships(TModel model, List<BaseRelationship> inboundRelationships = null, List<BaseRelationship> outboundRelationships = null)
         {
-            model.Id = Guid.NewGuid();
-            var results = await GraphClient.Cypher
-                .Match($"(source:{typeof(TSource).Name})")
-                .Where((TSource source) => source.Id == sourceId)
-                .Create($"(source)-[:{typeof(TRelationship).Name}]->(newEntity:{typeof(TModel).Name} {{model}})")
-                .WithParam("model", model)
-                .Return(newEntity => newEntity.As<TModel>())
-                .ResultsAsync;
-            return results.Single();
+            using (var scope = new TransactionScope())
+            {
+                model.Id = Guid.NewGuid();
+                var id = model.Id;
+                var node = GraphClient.Cypher.Create($"(e:{typeof(TModel).Name} {{model}})")
+                    .WithParam("model", model)
+                    .Return(e => e.As<TModel>())
+                    .Results.FirstOrDefault();
+                if (inboundRelationships != null)
+                {
+                    foreach (var rel in inboundRelationships)
+                    {
+                        GraphClient.Cypher
+                            .Match("(source)", "(target)")
+                            .Where<BaseEntity>(source => source.Id == rel.SourceId)
+                            .AndWhere((TModel target) => target.Id == id)
+                            .Create($"(source)-[:{rel.GetType().Name}]->(target)")
+                            .ExecuteWithoutResults();
+                    }
+                }
+
+                if (outboundRelationships != null)
+                {
+                    foreach (var rel in outboundRelationships)
+                    {
+                        GraphClient.Cypher
+                            .Match("(source)", "(target)")
+                            .Where((TModel source) => source.Id == id)
+                            .AndWhere<BaseEntity>(target => target.Id == rel.TargetId)
+                            .Create($"(source)-[:{rel.GetType().Name}]->(target)")
+                            .ExecuteWithoutResults();
+                    }
+                }
+
+                scope.Complete();
+                return node;
+            }
         }
 
         /// <inheritdoc />

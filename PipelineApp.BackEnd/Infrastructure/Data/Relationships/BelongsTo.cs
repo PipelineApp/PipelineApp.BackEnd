@@ -5,6 +5,8 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Relationships
 {
+    using Entities;
+
     /// <summary>
     /// Data-layer representation of a "belongs-to" relationship.
     /// </summary>

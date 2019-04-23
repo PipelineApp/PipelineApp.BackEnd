@@ -5,10 +5,12 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Relationships
 {
-    /// <summary>
-    /// Base class for all entity relationships.
-    /// </summary>
-    public class BaseRelationship
+    using System;
+
+    public abstract class BaseRelationship
     {
+        public Guid SourceId { get; set; }
+
+        public Guid TargetId { get; set; }
     }
 }
