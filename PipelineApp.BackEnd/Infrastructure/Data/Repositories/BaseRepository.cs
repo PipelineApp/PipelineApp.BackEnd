@@ -56,16 +56,6 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         }
 
         /// <inheritdoc />
-        public async Task<TModel> SaveAsync(TModel model)
-        {
-            model.Id = Guid.NewGuid();
-            var results = await GraphClient.Cypher.Create($"(e:{typeof(TModel).Name} {{model}})")
-                                     .WithParam("model", model)
-                                     .Return(e => e.As<TModel>())
-                                     .ResultsAsync;
-            return results.Single();
-        }
-
         public TModel CreateWithRelationships(TModel model, List<BaseRelationship> inboundRelationships = null, List<BaseRelationship> outboundRelationships = null)
         {
             using (var scope = new TransactionScope())

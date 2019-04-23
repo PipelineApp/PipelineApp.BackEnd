@@ -40,17 +40,17 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
         Task<TModel> GetByIdAsync(Guid id);
 
         /// <summary>
-        /// Inserts a new object into the database.
+        /// Inserts a new object into the database with optional relationships to other nodes.
         /// </summary>
         /// <param name="model">The object to be inserted.</param>
+        /// <param name="inboundRelationships">Inbound relationships for the created node.</param>
+        /// <param name="outboundRelationships">Outbound relationships from the created node.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
         /// The task result contains the created object.
         /// </returns>
-        Task<TModel> SaveAsync(TModel model);
-
         TModel CreateWithRelationships(TModel model, List<BaseRelationship> inboundRelationships = null, List<BaseRelationship> outboundRelationships = null);
-        
+
         /// <summary>
         /// Adds a relationship of type <code>TRelationship</code>
         /// from the <code>TModel</code> node with ID <code>sourceId</code> to the entity of type <code>TTarget</code>

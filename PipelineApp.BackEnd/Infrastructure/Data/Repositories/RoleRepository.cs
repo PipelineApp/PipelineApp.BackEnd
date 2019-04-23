@@ -29,11 +29,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         }
 
         /// <inheritdoc />
-        public async Task<IdentityResult> CreateAsync(RoleEntity role, CancellationToken cancellationToken)
+        public Task<IdentityResult> CreateAsync(RoleEntity role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await SaveAsync(role);
-            return IdentityResult.Success;
+            CreateWithRelationships(role);
+            return Task.FromResult(IdentityResult.Success);
         }
 
         /// <inheritdoc />

@@ -33,11 +33,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         }
 
         /// <inheritdoc />
-        public async Task<IdentityResult> CreateAsync(UserEntity user, CancellationToken cancellationToken)
+        public Task<IdentityResult> CreateAsync(UserEntity user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await SaveAsync(user);
-            return IdentityResult.Success;
+            CreateWithRelationships(user);
+            return Task.FromResult(IdentityResult.Success);
         }
 
         /// <inheritdoc />

@@ -63,9 +63,9 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
             {
                 return;
             }
-            await _repository.SaveAsync(new FandomEntity { Name = "Star Trek" });
-            await _repository.SaveAsync(new FandomEntity { Name = "Mass Effect" });
-            await _repository.SaveAsync(new FandomEntity { Name = "Dragon Age" });
+            _repository.CreateWithRelationships(new FandomEntity { Name = "Star Trek" });
+            _repository.CreateWithRelationships(new FandomEntity { Name = "Mass Effect" });
+            _repository.CreateWithRelationships(new FandomEntity { Name = "Dragon Age" });
         }
     }
 }
