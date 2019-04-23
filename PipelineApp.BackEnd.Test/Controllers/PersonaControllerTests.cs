@@ -29,6 +29,8 @@ namespace PipelineApp.BackEnd.Test.Controllers
         private readonly Mock<IPersonaService> _mockPersonaService;
         private readonly Mock<IPersonaRepository> _mockPersonaRepository;
         private readonly Mock<IMapper> _mockMapper;
+        private Mock<IPostService> _mockPostService;
+        private Mock<IPostRepository> _mockPostRepository;
 
         public PersonaControllerTests()
         {
@@ -52,7 +54,9 @@ namespace PipelineApp.BackEnd.Test.Controllers
                 });
             _mockPersonaService = new Mock<IPersonaService>();
             _mockPersonaRepository = new Mock<IPersonaRepository>();
-            Controller = new PersonaController(mockLogger.Object, _mockPersonaService.Object, _mockPersonaRepository.Object, _mockMapper.Object);
+            _mockPostService = new Mock<IPostService>();
+            _mockPostRepository = new Mock<IPostRepository>();
+            Controller = new PersonaController(mockLogger.Object, _mockPersonaService.Object, _mockPersonaRepository.Object, _mockPostService.Object, _mockPostRepository.Object, _mockMapper.Object);
             InitControllerContext();
         }
 

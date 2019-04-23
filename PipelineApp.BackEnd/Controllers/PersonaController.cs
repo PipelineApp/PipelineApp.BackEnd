@@ -12,6 +12,7 @@ namespace PipelineApp.BackEnd.Controllers
     using AutoMapper;
     using Infrastructure.Data.Entities;
     using Infrastructure.Exceptions.Persona;
+    using Infrastructure.Exceptions.Post;
     using Interfaces;
     using Interfaces.Repositories;
     using Interfaces.Services;
@@ -20,6 +21,7 @@ namespace PipelineApp.BackEnd.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using Models.DomainModels;
+    using Models.RequestModels.Post;
     using Models.ViewModels;
     using Newtonsoft.Json;
 
@@ -33,6 +35,8 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly ILogger<PersonaController> _logger;
         private readonly IPersonaService _personaService;
         private readonly IPersonaRepository _personaRepository;
+        private readonly IPostService _postService;
+        private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
 
         /// <summary>
@@ -41,16 +45,22 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="logger">The logger</param>
         /// <param name="personaService">The persona service.</param>
         /// <param name="personaRepository">The persona repository.</param>
+        /// <param name="postService">The post service.</param>
+        /// <param name="postRepository">The post repository.</param>
         /// <param name="mapper">The mapper.</param>
         public PersonaController(
             ILogger<PersonaController> logger,
             IPersonaService personaService,
             IPersonaRepository personaRepository,
+            IPostService postService,
+            IPostRepository postRepository,
             IMapper mapper)
         {
             _logger = logger;
             _personaService = personaService;
             _personaRepository = personaRepository;
+            _postService = postService;
+            _postRepository = postRepository;
             _mapper = mapper;
         }
 
@@ -222,6 +232,52 @@ namespace PipelineApp.BackEnd.Controllers
             catch (Exception e)
             {
                 _logger.LogError($"Error deleting persona {personaId}: {e.Message}", e);
+                return StatusCode(500, "An unexpected error occurred.");
+            }
+        }
+
+
+        /// <summary>
+        /// Processes a request to create a new base post for the current user.
+        /// </summary>
+        /// <param name="personaId">The ID of the author persona for the post.</param>
+        /// <param name="requestModel">View model containing information about post to be created.</param>
+        /// <returns>
+        /// HTTP response containing the results of the request and, if successful,
+        /// a <see cref="PostDto" /> object in the response body.<para />
+        /// <list type="table">
+        /// <item><term>200 OK</term><description>Response code for successful creation of post</description></item>
+        /// <item><term>400 Bad Request</term><description>Response code for invalid provided post model</description></item>
+        /// <item><term>500 Internal Server Error</term><description>Response code for unexpected errors</description></item>
+        /// </list>
+        /// </returns>
+        [HttpPost]
+        [Route("{personaId}/post")]
+        [ProducesResponseType(200, Type = typeof(PostDto))]
+        [ProducesResponseType(400, Type = typeof(string))]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> CreateBasePost(Guid personaId, [FromBody] CreateBasePostRequestModel requestModel)
+        {
+            try
+            {
+                _logger.LogInformation(
+                    $"Received request to create a post belonging to user {UserId}. Request: {requestModel}");
+                requestModel.AssertIsValid();
+                await _personaService.AssertUserOwnsPersona(personaId, UserId, _personaRepository);
+                var post = _mapper.Map<Post>(requestModel);
+                var result = await _postService.CreateBasePost(post, personaId, _postRepository, _mapper);
+                var dto = _mapper.Map<PostDto>(result);
+                _logger.LogInformation($"Processed request to create a post belonging to user {UserId}. Created {dto}");
+                return Ok(dto);
+            }
+            catch (InvalidPostException e)
+            {
+                _logger.LogWarning($"User {UserId} attempted to create invalid post: {requestModel}");
+                return BadRequest(e.Errors);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
                 return StatusCode(500, "An unexpected error occurred.");
             }
         }
