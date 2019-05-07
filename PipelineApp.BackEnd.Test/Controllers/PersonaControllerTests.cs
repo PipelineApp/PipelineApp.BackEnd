@@ -175,7 +175,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
                 // Arrange
                 _mockPersonaService.Setup(s =>
                         s.CreatePersona(It.IsAny<Persona>(), Constants.UserId, _mockPersonaRepository.Object, _mockMapper.Object))
-                    .ReturnsAsync((Persona model, Guid? userId, IRepository<PersonaEntity> repo, IMapper mapper) => model);
+                    .Returns((Persona model, Guid? userId, IRepository<PersonaEntity> repo, IMapper mapper) => model);
 
                 // Act
                 var result = await Controller.Post(_validRequest);

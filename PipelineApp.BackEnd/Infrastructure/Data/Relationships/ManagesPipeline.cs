@@ -1,15 +1,14 @@
-﻿// <copyright file="Manages.cs" company="Blackjack Software">
+﻿// <copyright file="ManagesPipeline.cs" company="Blackjack Software">
 // Copyright (c) Blackjack Software. All rights reserved.
 // Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace PipelineApp.BackEnd.Infrastructure.Data.Relationships
 {
-    using Entities;
     /// <summary>
-    /// Data-layer representation of a "manages" relationship.
+    /// Data-layer representation of a "manages pipeline" relationship.
     /// </summary>
-    public class Manages : BaseRelationship
+    public class ManagesPipeline : BaseRelationship
     {
     }
 }

@@ -7,10 +7,9 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
-    using Data;
     using Data.Constants;
     using Data.Entities;
-    using Interfaces;
+    using Data.Requests;
     using Interfaces.Repositories;
     using Microsoft.AspNetCore.Identity;
 
@@ -63,9 +62,9 @@ namespace PipelineApp.BackEnd.Infrastructure.Seeders
             {
                 return;
             }
-            _repository.CreateWithRelationships(new FandomEntity { Name = "Star Trek" });
-            _repository.CreateWithRelationships(new FandomEntity { Name = "Mass Effect" });
-            _repository.CreateWithRelationships(new FandomEntity { Name = "Dragon Age" });
+            _repository.CreateWithRelationships(new CreateNodeRequest<FandomEntity>(new FandomEntity { Name = "Star Trek" }));
+            _repository.CreateWithRelationships(new CreateNodeRequest<FandomEntity>(new FandomEntity { Name = "Mass Effect" }));
+            _repository.CreateWithRelationships(new CreateNodeRequest<FandomEntity>(new FandomEntity { Name = "Dragon Age" }));
         }
     }
 }

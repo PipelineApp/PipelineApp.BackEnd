@@ -1,4 +1,4 @@
-﻿// <copyright file="IsValidatedBy.cs" company="Blackjack Software">
+﻿// <copyright file="BelongsToRole.cs" company="Blackjack Software">
 // Copyright (c) Blackjack Software. All rights reserved.
 // Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -6,9 +6,9 @@
 namespace PipelineApp.BackEnd.Infrastructure.Data.Relationships
 {
     /// <summary>
-    /// Data-layer representation of an "is-validated-by" relationship.
+    /// Data-layer representation of a "belongs to role" relationship.
     /// </summary>
-    public class IsValidatedBy : BaseRelationship
+    public class BelongsToRole : BaseRelationship
     {
     }
 }

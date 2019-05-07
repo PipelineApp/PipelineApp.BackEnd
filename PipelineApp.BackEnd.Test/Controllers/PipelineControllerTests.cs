@@ -118,7 +118,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
             }
 
             [Fact]
-            public async Task ReturnsBadRequestWhePersonaIsInvalid()
+            public void ReturnsBadRequestWhePersonaIsInvalid()
             {
                 // Arrange
                 var pipeline = new Mock<UpsertPipelineRequestModel>();
@@ -126,7 +126,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
                 pipeline.Setup(c => c.AssertIsValid()).Throws(exception);
 
                 // Act
-                var result = await Controller.Post(pipeline.Object);
+                var result = Controller.Post(pipeline.Object);
 
                 // Assert
                 result.Should().BeOfType<BadRequestObjectResult>();
@@ -134,14 +134,14 @@ namespace PipelineApp.BackEnd.Test.Controllers
             }
 
             [Fact]
-            public async Task ReturnsServerErrorWhenUnexpectedErrorOccurs()
+            public void ReturnsServerErrorWhenUnexpectedErrorOccurs()
             {
                 // Arrange
                 _mockPipelineService.Setup(s => s.CreatePipeline(It.IsAny<Pipeline>(), Constants.UserId, _mockPipelineRepository.Object, _mockMapper.Object))
                     .Throws<NullReferenceException>();
 
                 // Act
-                var result = await Controller.Post(_validRequest);
+                var result = Controller.Post(_validRequest);
 
                 // Assert
                 result.Should().BeOfType<ObjectResult>();
@@ -149,15 +149,15 @@ namespace PipelineApp.BackEnd.Test.Controllers
             }
 
             [Fact]
-            public async Task ReturnsOkWhenRequestIsSuccessful()
+            public void ReturnsOkWhenRequestIsSuccessful()
             {
                 // Arrange
                 _mockPipelineService.Setup(s =>
                         s.CreatePipeline(It.IsAny<Pipeline>(), Constants.UserId, _mockPipelineRepository.Object, _mockMapper.Object))
-                    .ReturnsAsync((Pipeline model, Guid? userId, IRepository<PipelineEntity> repo, IMapper mapper) => model);
+                    .Returns((Pipeline model, Guid? userId, IRepository<PipelineEntity> repo, IMapper mapper) => model);
 
                 // Act
-                var result = await Controller.Post(_validRequest);
+                var result = Controller.Post(_validRequest);
                 var body = ((OkObjectResult)result).Value as PipelineDto;
 
                 // Assert

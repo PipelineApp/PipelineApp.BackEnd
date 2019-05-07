@@ -101,14 +101,14 @@ namespace PipelineApp.BackEnd.Controllers
         [ProducesResponseType(200, Type = typeof(PipelineDto))]
         [ProducesResponseType(400, Type = typeof(string))]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> Post([FromBody] UpsertPipelineRequestModel requestModel)
+        public IActionResult Post([FromBody] UpsertPipelineRequestModel requestModel)
         {
             try
             {
                 _logger.LogInformation($"Received request to create a pipeline belonging to user {UserId}. Request: {requestModel}");
                 requestModel.AssertIsValid();
                 var pipeline = _mapper.Map<Pipeline>(requestModel);
-                var result = await _pipelineService.CreatePipeline(pipeline, UserId, _pipelineRepository, _mapper);
+                var result = _pipelineService.CreatePipeline(pipeline, UserId, _pipelineRepository, _mapper);
                 var dto = _mapper.Map<PipelineDto>(result);
                 _logger.LogInformation($"Processed request to create a pipeline belonging to user {UserId}. Created {dto}");
                 return Ok(dto);

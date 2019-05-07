@@ -19,7 +19,6 @@ namespace PipelineApp.BackEnd.Controllers
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Models.Configuration;
-    using Models.RequestModels;
     using Models.RequestModels.Auth;
     using Models.ViewModels.Auth;
 

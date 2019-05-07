@@ -80,10 +80,10 @@ namespace PipelineApp.BackEnd.Test.Infrastructure.Data.Repositories
                 var targetId = Guid.NewGuid();
 
                 // Act
-                await Repository.AddOutboundRelationshipAsync<BelongsTo, UserEntity>(sourceId, targetId);
+                await Repository.AddOutboundRelationshipAsync<BelongsToRole, UserEntity>(sourceId, targetId);
 
                 // Assert
-                VerifyQuery($"MATCH(source:MockDataEntity),(target:UserEntity)\r\nWHERE(source.Id=\"{sourceId}\")\r\nAND(target.Id=\"{targetId}\")\r\nCREATE(source)-[:BelongsTo]->(target)");
+                VerifyQuery($"MATCH(source:MockDataEntity),(target:UserEntity)\r\nWHERE(source.Id=\"{sourceId}\")\r\nAND(target.Id=\"{targetId}\")\r\nCREATE(source)-[:BelongsToRole]->(target)");
             }
         }
 
@@ -97,10 +97,10 @@ namespace PipelineApp.BackEnd.Test.Infrastructure.Data.Repositories
                 var targetId = Guid.NewGuid();
 
                 // Act
-                await Repository.RemoveOutboundRelationshipAsync<BelongsTo, UserEntity>(sourceId, targetId);
+                await Repository.RemoveOutboundRelationshipAsync<BelongsToRole, UserEntity>(sourceId, targetId);
 
                 // Assert
-                VerifyQuery($"MATCH(source:MockDataEntity)-[r:BelongsTo]->(target:UserEntity)\r\nWHERE(source.Id=\"{sourceId}\")\r\nAND(target.Id=\"{targetId}\")\r\nDELETEr");
+                VerifyQuery($"MATCH(source:MockDataEntity)-[r:BelongsToRole]->(target:UserEntity)\r\nWHERE(source.Id=\"{sourceId}\")\r\nAND(target.Id=\"{targetId}\")\r\nDELETEr");
             }
         }
 

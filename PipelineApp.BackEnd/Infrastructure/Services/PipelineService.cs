@@ -12,6 +12,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using AutoMapper;
     using Data.Entities;
     using Data.Relationships;
+    using Data.Requests;
     using Exceptions.Pipeline;
     using Interfaces.Repositories;
     using Interfaces.Services;
@@ -21,18 +22,16 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     public class PipelineService : IPipelineService
     {
         /// <inheritdoc />
-        public async Task<Pipeline> CreatePipeline(Pipeline pipeline, Guid? userId, IPipelineRepository repository, IMapper mapper)
+        public Pipeline CreatePipeline(Pipeline pipeline, Guid? userId, IPipelineRepository repository, IMapper mapper)
         {
             if (userId == null)
             {
                 throw new ArgumentException("User ID cannot be null.");
             }
             var entity = mapper.Map<PipelineEntity>(pipeline);
-            var inboundRelationships = new List<BaseRelationship>
-            {
-                new Manages {SourceId = userId.Value}
-            };
-            var result = repository.CreateWithRelationships(entity, inboundRelationships);
+            var request = new CreateNodeRequest<PipelineEntity>(entity)
+                .WithInboundRelationship<ManagesPipeline>(userId.Value);
+            var result = repository.CreateWithRelationships(request);
             return mapper.Map<Pipeline>(result);
         }
 

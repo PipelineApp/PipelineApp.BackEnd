@@ -7,18 +7,15 @@ namespace PipelineApp.BackEnd.Test.TestHelpers
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using BackEnd.Infrastructure.Data.Repositories;
     using Interfaces.Data;
-    using Interfaces.Repositories;
     using Moq;
     using Neo4jClient;
     using Neo4jClient.Cypher;
 
     public abstract class RepositoryTests<TRepository, TEntity> : IDisposable
         where TRepository : BaseRepository<TEntity>
-        where TEntity : IEntity
+        where TEntity : class, IEntity
     {
         protected TRepository Repository { get; set; }
 

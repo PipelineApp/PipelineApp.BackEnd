@@ -8,19 +8,14 @@ namespace PipelineApp.BackEnd
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
-    using System.Net;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
     using System.Reflection;
     using System.Text;
     using AutoMapper;
-    using Infrastructure.Data;
     using Infrastructure.Data.Entities;
     using Infrastructure.Data.Repositories;
     using Infrastructure.Providers;
     using Infrastructure.Seeders;
     using Infrastructure.Services;
-    using Interfaces;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,7 +27,6 @@ namespace PipelineApp.BackEnd
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
     using Models.Configuration;
-    using Neo4j.Driver.V1;
     using Neo4jClient;
     using Swashbuckle.AspNetCore.Swagger;
 

@@ -15,6 +15,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
     using Microsoft.AspNetCore.Identity;
     using Neo4jClient;
     using Relationships;
+    using Requests;
 
     /// <summary>
     /// Extension of base repository containing methods related to
@@ -36,7 +37,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         public Task<IdentityResult> CreateAsync(UserEntity user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            CreateWithRelationships(user);
+            CreateWithRelationships(new CreateNodeRequest<UserEntity>(user));
             return Task.FromResult(IdentityResult.Success);
         }
 
@@ -226,7 +227,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
                 .Match($"(user:{typeof(UserEntity).Name})", $"(role:{typeof(RoleEntity).Name})")
                 .Where((UserEntity user) => user.Id == userEntity.Id)
                 .AndWhere((RoleEntity role) => role.NormalizedName == roleName)
-                .Create($"(user)-[:{typeof(BelongsTo).Name}]->(role)")
+                .Create($"(user)-[:{typeof(BelongsToRole).Name}]->(role)")
                 .ExecuteWithoutResultsAsync();
         }
 
@@ -235,7 +236,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             await GraphClient.Cypher
-                .OptionalMatch($"(user:{typeof(UserEntity).Name})-[r:{typeof(BelongsTo).Name}]->(role:{typeof(RoleEntity).Name})")
+                .OptionalMatch($"(user:{typeof(UserEntity).Name})-[r:{typeof(BelongsToRole).Name}]->(role:{typeof(RoleEntity).Name})")
                 .Where((UserEntity user) => user.Id == userEntity.Id)
                 .AndWhere((RoleEntity role) => role.NormalizedName == roleName)
                 .Delete("r")
@@ -247,7 +248,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var result = await GraphClient.Cypher
-                .Match($"(user:{typeof(UserEntity).Name})-[r:{typeof(BelongsTo).Name}]->(role:{typeof(RoleEntity).Name})")
+                .Match($"(user:{typeof(UserEntity).Name})-[r:{typeof(BelongsToRole).Name}]->(role:{typeof(RoleEntity).Name})")
                 .Where((UserEntity user) => user.Id == userEntity.Id)
                 .Return(role => role.As<RoleEntity>())
                 .ResultsAsync;
@@ -266,7 +267,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         {
             cancellationToken.ThrowIfCancellationRequested();
             var result = await GraphClient.Cypher
-                .OptionalMatch($"(user:{typeof(UserEntity).Name})-[r:{typeof(BelongsTo).Name}]->(role:{typeof(RoleEntity).Name})")
+                .OptionalMatch($"(user:{typeof(UserEntity).Name})-[r:{typeof(BelongsToRole).Name}]->(role:{typeof(RoleEntity).Name})")
                 .Where((RoleEntity role) => role.NormalizedName == roleName)
                 .Return(user => user.As<UserEntity>())
                 .ResultsAsync;

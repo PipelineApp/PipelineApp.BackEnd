@@ -47,10 +47,9 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="personaRepository">The persona repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <returns>
-        /// A task representing the asynchronous operation.
-        /// The task result contains the created persona.
+        /// The created persona.
         /// </returns>
-        Task<Persona> CreatePersona(Persona persona, Guid? userId, IPersonaRepository personaRepository, IMapper mapper);
+        Persona CreatePersona(Persona persona, Guid? userId, IPersonaRepository personaRepository, IMapper mapper);
 
         /// <summary>
         /// Throws an exception if the given user does not own the given persona.

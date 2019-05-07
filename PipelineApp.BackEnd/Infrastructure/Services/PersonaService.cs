@@ -13,6 +13,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using AutoMapper;
     using Data.Entities;
     using Data.Relationships;
+    using Data.Requests;
     using Exceptions.Persona;
     using Interfaces.Repositories;
     using Interfaces.Services;
@@ -44,18 +45,16 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<Persona> CreatePersona(Persona persona, Guid? userId, IPersonaRepository repository, IMapper mapper)
+        public Persona CreatePersona(Persona persona, Guid? userId, IPersonaRepository repository, IMapper mapper)
         {
             if (userId == null)
             {
                 throw new ArgumentException("User ID cannot be null.");
             }
             var entity = mapper.Map<PersonaEntity>(persona);
-            var inboundRelationships = new List<BaseRelationship>
-            {
-                new HasPersona {SourceId = userId.Value}
-            };
-            var createdEntity = repository.CreateWithRelationships(entity, inboundRelationships);
+            var request = new CreateNodeRequest<PersonaEntity>(entity)
+                .WithInboundRelationship<HasPersona>(userId.Value);
+            var createdEntity = repository.CreateWithRelationships(request);
             return mapper.Map<Persona>(createdEntity);
         }
 

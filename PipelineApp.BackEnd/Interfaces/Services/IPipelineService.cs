@@ -25,10 +25,9 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="repository">The pipeline repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <returns>
-        /// A task representing the asynchronous operation.
-        /// The task result contains the created pipeline.
+        /// The created pipeline.
         /// </returns>
-        Task<Pipeline> CreatePipeline(Pipeline pipeline, Guid? userId, IPipelineRepository repository, IMapper mapper);
+        Pipeline CreatePipeline(Pipeline pipeline, Guid? userId, IPipelineRepository repository, IMapper mapper);
 
         /// <summary>
         /// Throws an exception if the given user does not own the given pipeline.

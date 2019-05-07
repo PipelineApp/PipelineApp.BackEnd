@@ -11,13 +11,14 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
     using Data;
     using Infrastructure.Data.Entities;
     using Infrastructure.Data.Relationships;
+    using Infrastructure.Data.Requests;
 
     /// <summary>
     /// Base repository for CRUD operations relating to the given model class.
     /// </summary>
     /// <typeparam name="TModel">Model class on which CRUD operations should be performed.</typeparam>
     public interface IRepository<TModel> : IDisposable
-        where TModel : IEntity
+        where TModel : class, IEntity
     {
         /// <summary>
         /// Gets all values in the database of the given type.
@@ -42,14 +43,12 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
         /// <summary>
         /// Inserts a new object into the database with optional relationships to other nodes.
         /// </summary>
-        /// <param name="model">The object to be inserted.</param>
-        /// <param name="inboundRelationships">Inbound relationships for the created node.</param>
-        /// <param name="outboundRelationships">Outbound relationships from the created node.</param>
+        /// <param name="request">Data regarding the node to be created and its relationship to other nodes.</param>
         /// <returns>
         /// A task representing the asynchronous operation.
         /// The task result contains the created object.
         /// </returns>
-        TModel CreateWithRelationships(TModel model, List<BaseRelationship> inboundRelationships = null, List<BaseRelationship> outboundRelationships = null);
+        TModel CreateWithRelationships(CreateNodeRequest<TModel> request);
 
         /// <summary>
         /// Adds a relationship of type <code>TRelationship</code>

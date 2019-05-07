@@ -31,7 +31,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         public async Task<IEnumerable<PipelineEntityDataCollection>> GetByUserIdAsync(Guid? userId)
         {
             var result = await GraphClient.Cypher
-                .Match($"(user:{typeof(UserEntity).Name})-[r:{typeof(Manages).Name}]->(pipeline:{typeof(PipelineEntity).Name})")
+                .Match($"(user:{typeof(UserEntity).Name})-[r:{typeof(ManagesPipeline).Name}]->(pipeline:{typeof(PipelineEntity).Name})")
                 .Where((UserEntity user) => user.Id == userId)
                 .With("user, pipeline")
                 .OptionalMatch($"(pipeline)-[t:{typeof(Tracks).Name}]->(fandom:{typeof(FandomEntity).Name})")

@@ -12,6 +12,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
     using Entities;
     using Microsoft.AspNetCore.Identity;
     using Neo4jClient;
+    using Requests;
 
     /// <summary>
     /// Extension of base repository containing methods related to
@@ -32,7 +33,8 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         public Task<IdentityResult> CreateAsync(RoleEntity role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            CreateWithRelationships(role);
+            var request = new CreateNodeRequest<RoleEntity>(role);
+            CreateWithRelationships(request);
             return Task.FromResult(IdentityResult.Success);
         }
 
