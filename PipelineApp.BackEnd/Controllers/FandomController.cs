@@ -70,8 +70,7 @@ namespace PipelineApp.BackEnd.Controllers
                 _logger.LogInformation($"Received request to get list of available fandoms for user {UserId}.");
                 var fandoms = await _fandomService.GetAllFandoms(_fandomRepository, _mapper);
                 var result = fandoms.Select(_mapper.Map<FandomDto>).ToList();
-                _logger.LogInformation(
-                    $"Processed request to get list of available fandoms for user {UserId}. Found {result.Count} fandoms.");
+                _logger.LogInformation($"Processed request to get list of available fandoms for user {UserId}. Found {result.Count} fandoms.");
                 return Ok(result);
             }
             catch (Exception e)

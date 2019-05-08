@@ -27,8 +27,8 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
 
             var entity = mapper.Map<PostEntity>(post);
             var request = new CreateNodeRequest<PostEntity>(entity)
-                .WithInboundRelationship<IsAuthorOf>(personaId)
-                .WithOutboundRelationship<BelongsToFandom>(fandomId);
+                .WithInboundRelationshipFrom<IsAuthorOf>(personaId)
+                .WithOutboundRelationshipTo<BelongsToFandom>(fandomId);
             var result = repository.CreateWithRelationships(request);
             return mapper.Map<Post>(result);
         }

@@ -53,7 +53,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             }
             var entity = mapper.Map<PersonaEntity>(persona);
             var request = new CreateNodeRequest<PersonaEntity>(entity)
-                .WithInboundRelationship<HasPersona>(userId.Value);
+                .WithInboundRelationshipFrom<HasPersona>(userId.Value);
             var createdEntity = repository.CreateWithRelationships(request);
             return mapper.Map<Persona>(createdEntity);
         }

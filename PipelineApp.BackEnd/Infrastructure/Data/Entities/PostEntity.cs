@@ -10,14 +10,5 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
     /// </summary>
     public class PostEntity : BaseEntity
     {
-        /// <summary>
-        /// Gets or sets the post's title.
-        /// </summary>
-        public string Title { get; set; }
-
-        /// <summary>
-        /// Gets or sets the post's content.
-        /// </summary>
-        public string Content { get; set; }
     }
 }

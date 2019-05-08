@@ -50,7 +50,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Requests
         /// <typeparam name="TRelationship">The type of the relationship to be created.</typeparam>
         /// <param name="sourceId">The ID of the node from which the relationship should originate.</param>
         /// <returns>The request.</returns>
-        public CreateNodeRequest<TModel> WithInboundRelationship<TRelationship>(Guid sourceId)
+        public CreateNodeRequest<TModel> WithInboundRelationshipFrom<TRelationship>(Guid sourceId)
             where TRelationship : BaseRelationship, new()
         {
             InboundRelationships.Add(new TRelationship { SourceId = sourceId });
@@ -63,7 +63,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Requests
         /// <typeparam name="TRelationship">The type of the relationship to be created.</typeparam>
         /// <param name="targetId">The ID of the node to which the relationship should lead.</param>
         /// <returns>The request.</returns>
-        public CreateNodeRequest<TModel> WithOutboundRelationship<TRelationship>(Guid targetId)
+        public CreateNodeRequest<TModel> WithOutboundRelationshipTo<TRelationship>(Guid targetId)
             where TRelationship : BaseRelationship, new()
         {
             OutboundRelationships.Add(new TRelationship { TargetId = targetId });

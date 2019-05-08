@@ -15,14 +15,6 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
     public interface IRefreshTokenRepository : IRepository<RefreshTokenEntity>
     {
         /// <summary>
-        /// Saves a refresh token in the database and associates it with a given user.
-        /// </summary>
-        /// <param name="refreshToken">The refresh token.</param>
-        /// <param name="user">The user.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        Task SaveRefreshTokenForUser(RefreshTokenEntity refreshToken, UserEntity user);
-
-        /// <summary>
         /// Retrieves the user validated by the given refresh token string,
         /// or null if the token does not exist or has expired.
         /// </summary>

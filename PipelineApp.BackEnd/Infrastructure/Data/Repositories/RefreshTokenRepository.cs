@@ -26,17 +26,6 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         }
 
         /// <inheritdoc />
-        public async Task SaveRefreshTokenForUser(RefreshTokenEntity refreshToken, UserEntity userEntity)
-        {
-            await GraphClient.Cypher
-                .Match($"(user:{typeof(UserEntity).Name})")
-                .Where((UserEntity user) => user.Id == userEntity.Id)
-                .Create($"(token:{typeof(RefreshTokenEntity).Name} {{newToken}})<-[:{typeof(IsValidatedBy).Name}]-(user)")
-                .WithParam("newToken", refreshToken)
-                .ExecuteWithoutResultsAsync();
-        }
-
-        /// <inheritdoc />
         public async Task<UserEntity> GetValidUserForToken(string refreshToken)
         {
             var now = DateTime.UtcNow;

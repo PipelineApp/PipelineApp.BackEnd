@@ -30,7 +30,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             }
             var entity = mapper.Map<PipelineEntity>(pipeline);
             var request = new CreateNodeRequest<PipelineEntity>(entity)
-                .WithInboundRelationship<ManagesPipeline>(userId.Value);
+                .WithInboundRelationshipFrom<ManagesPipeline>(userId.Value);
             var result = repository.CreateWithRelationships(request);
             return mapper.Map<Pipeline>(result);
         }

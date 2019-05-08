@@ -14,6 +14,8 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using System.Text;
     using System.Threading.Tasks;
     using Data.Entities;
+    using Data.Relationships;
+    using Data.Requests;
     using Exceptions.Account;
     using Interfaces.Repositories;
     using Interfaces.Services;
@@ -115,13 +117,15 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
                 expires: expiry,
                 signingCredentials: signingCredentials);
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
-            await refreshTokenRepository.SaveRefreshTokenForUser(
-                new RefreshTokenEntity
-                {
-                    Token = token,
-                    IssuedUtc = now,
-                    ExpiresUtc = expiry
-                }, user);
+            var entity = new RefreshTokenEntity
+            {
+                Token = token,
+                IssuedUtc = now,
+                ExpiresUtc = expiry
+            };
+            var request = new CreateNodeRequest<RefreshTokenEntity>(entity)
+                .WithInboundRelationshipFrom<IsValidatedBy>(user.Id);
+            refreshTokenRepository.CreateWithRelationships(request);
             return new AuthToken(token, expiry);
         }
 
