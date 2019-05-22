@@ -5,28 +5,59 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Mappers
 {
-    using System.Diagnostics.CodeAnalysis;
-    using AutoMapper;
     using Data.Entities;
+    using Interfaces.Mappers;
     using Models.DomainModels;
     using Models.ViewModels;
 
-    /// <summary>
-    /// Mapping class for mapping between view model, domain model, and entity representations of personas.
-    /// </summary>
-    /// <seealso cref="Profile" />
-    [ExcludeFromCodeCoverage]
-    public class PersonaMapper : Profile
+    /// <inheritdoc />
+    public class PersonaMapper : IPersonaMapper
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PersonaMapper"/> class.
-        /// </summary>
-        public PersonaMapper()
+        /// <inheritdoc />
+        public PersonaDto ToDto(Persona persona)
         {
-            CreateMap<Persona, PersonaEntity>()
-                .ReverseMap();
-            CreateMap<Persona, PersonaDto>()
-                .ReverseMap();
+            return new PersonaDto
+            {
+                Id = persona.Id,
+                Description = persona.Description,
+                PersonaName = persona.PersonaName,
+                Slug = persona.Slug
+            };
+        }
+
+        /// <inheritdoc />
+        public Persona ToDomainModel(PersonaEntity entity)
+        {
+            return new Persona
+            {
+                Id = entity.Id,
+                Description = entity.Description,
+                PersonaName = entity.PersonaName,
+                Slug = entity.Slug
+            };
+        }
+
+        /// <inheritdoc />
+        public Persona ToDomainModel(PersonaDto personaDto)
+        {
+            return new Persona
+            {
+                Id = personaDto.Id,
+                Description = personaDto.Description,
+                PersonaName = personaDto.PersonaName,
+                Slug = personaDto.Slug
+            };
+        }
+
+        /// <inheritdoc />
+        public PersonaEntity ToEntity(Persona persona)
+        {
+            var entity = new PersonaEntity();
+            entity.Id = persona.Id ?? entity.Id;
+            entity.Description = persona.Description;
+            entity.PersonaName = persona.PersonaName;
+            entity.Slug = persona.Slug;
+            return entity;
         }
     }
 }

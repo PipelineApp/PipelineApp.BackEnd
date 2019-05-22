@@ -8,9 +8,9 @@ namespace PipelineApp.BackEnd.Test.Controllers
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AutoMapper;
     using BackEnd.Controllers;
     using FluentAssertions;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Mvc;
@@ -26,27 +26,21 @@ namespace PipelineApp.BackEnd.Test.Controllers
     {
         private readonly Mock<IFandomService> _mockFandomService;
         private readonly Mock<IFandomRepository> _mockFandomRepository;
-        private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<IFandomMapper> _mockMapper;
 
         public FandomControllerTests()
         {
             var mockLogger = new Mock<ILogger<FandomController>>();
-            _mockMapper = new Mock<IMapper>();
-            _mockMapper.Setup(m => m.Map<FandomDto>(It.IsAny<Fandom>()))
+            _mockMapper = new Mock<IFandomMapper>();
+            _mockMapper.Setup(m => m.ToDto(It.IsAny<Fandom>()))
                 .Returns((Fandom model) => new FandomDto
                 {
                     Id = model.Id,
                     Name = model.Name
                 });
-            _mockMapper.Setup(m => m.Map<Fandom>(It.IsAny<FandomDto>()))
-                .Returns((FandomDto dto) => new Fandom
-                {
-                    Id = dto.Id,
-                    Name = dto.Name
-                });
             _mockFandomService = new Mock<IFandomService>();
             _mockFandomRepository = new Mock<IFandomRepository>();
-            Controller = new FandomController(mockLogger.Object, _mockMapper.Object, _mockFandomService.Object, _mockFandomRepository.Object);
+            Controller = new FandomController(mockLogger.Object, _mockFandomService.Object, _mockFandomRepository.Object, _mockMapper.Object);
             InitControllerContext();
         }
 

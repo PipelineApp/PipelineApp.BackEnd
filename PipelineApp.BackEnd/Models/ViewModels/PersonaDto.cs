@@ -19,7 +19,7 @@ namespace PipelineApp.BackEnd.Models.ViewModels
         /// <summary>
         /// Gets or sets the unique identifier of the persona.
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         /// <summary>
         /// Gets or sets the persona's unique slug.

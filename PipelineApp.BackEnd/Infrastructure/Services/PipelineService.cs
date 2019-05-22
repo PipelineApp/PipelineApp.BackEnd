@@ -9,11 +9,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Data.Entities;
     using Data.Relationships;
     using Data.Requests;
     using Exceptions.Pipeline;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Models.DomainModels;
@@ -22,17 +22,17 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     public class PipelineService : IPipelineService
     {
         /// <inheritdoc />
-        public Pipeline CreatePipeline(Pipeline pipeline, Guid? userId, IPipelineRepository repository, IMapper mapper)
+        public Pipeline CreatePipeline(Pipeline pipeline, Guid? userId, IPipelineRepository repository, IPipelineMapper mapper)
         {
             if (userId == null)
             {
                 throw new ArgumentException("User ID cannot be null.");
             }
-            var entity = mapper.Map<PipelineEntity>(pipeline);
+            var entity = mapper.ToEntity(pipeline);
             var request = new CreateNodeRequest<PipelineEntity>(entity)
                 .WithInboundRelationshipFrom<ManagesPipeline>(userId.Value);
             var result = repository.CreateWithRelationships(request);
-            return mapper.Map<Pipeline>(result);
+            return mapper.ToDomainModel(result);
         }
 
         /// <inheritdoc />
@@ -50,30 +50,30 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task AddTrackedPersona(Guid pipelineId, Guid personaId, IPipelineRepository pipelineRepository, IMapper mapper)
+        public async Task AddTrackedPersona(Guid pipelineId, Guid personaId, IPipelineRepository pipelineRepository, IPipelineMapper mapper)
         {
             await pipelineRepository.AddOutboundRelationshipAsync<Tracks, PersonaEntity>(pipelineId, personaId);
         }
 
         /// <inheritdoc />
-        public async Task AddTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository, IMapper mapper)
+        public async Task AddTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository, IPipelineMapper mapper)
         {
             await pipelineRepository.AddOutboundRelationshipAsync<Tracks, FandomEntity>(pipelineId, fandomId);
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<Pipeline>> GetAllPipelines(Guid? userId, IPipelineRepository pipelineRepository, IMapper mapper)
+        public async Task<List<Pipeline>> GetAllPipelines(Guid? userId, IPipelineRepository pipelineRepository, IPipelineMapper mapper)
         {
             var result = await pipelineRepository.GetByUserIdAsync(userId);
-            return mapper.Map<List<Pipeline>>(result);
+            return result.Select(mapper.ToDomainModel).ToList();
         }
 
         /// <inheritdoc />
-        public async Task<Pipeline> UpdatePipeline(Pipeline model, IPipelineRepository pipelineRepository, IMapper mapper)
+        public async Task<Pipeline> UpdatePipeline(Pipeline model, IPipelineRepository pipelineRepository, IPipelineMapper mapper)
         {
-            var entity = mapper.Map<PipelineEntity>(model);
+            var entity = mapper.ToEntity(model);
             var result = await pipelineRepository.UpdateAsync(entity);
-            return mapper.Map<Pipeline>(result);
+            return mapper.ToDomainModel(result);
         }
 
         /// <inheritdoc />

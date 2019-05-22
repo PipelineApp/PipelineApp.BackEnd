@@ -7,7 +7,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AutoMapper;
+    using Mappers;
     using Models.DomainModels;
     using Repositories;
 
@@ -25,6 +25,6 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// A task representing the asynchronous operation.
         /// The task result contains a list of the retrieved fandoms.
         /// </returns>
-        Task<IEnumerable<Fandom>> GetAllFandoms(IFandomRepository repository, IMapper mapper);
+        Task<IEnumerable<Fandom>> GetAllFandoms(IFandomRepository repository, IFandomMapper mapper);
     }
 }

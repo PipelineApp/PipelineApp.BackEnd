@@ -10,12 +10,13 @@ namespace PipelineApp.BackEnd
     using System.IO;
     using System.Reflection;
     using System.Text;
-    using AutoMapper;
     using Infrastructure.Data.Entities;
     using Infrastructure.Data.Repositories;
+    using Infrastructure.Mappers;
     using Infrastructure.Providers;
     using Infrastructure.Seeders;
     using Infrastructure.Services;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -95,10 +96,13 @@ namespace PipelineApp.BackEnd
             services.AddScoped<IPersonaService, PersonaService>();
             services.AddScoped<IPipelineService, PipelineService>();
             services.AddScoped<IPostService, PostService>();
+            services.AddSingleton<IFandomMapper, FandomMapper>();
+            services.AddSingleton<IPersonaMapper, PersonaMapper>();
+            services.AddSingleton<IPipelineMapper, PipelineMapper>();
+            services.AddSingleton<IPostMapper, PostMapper>();
 
             services.AddCors();
             services.AddMvc();
-            services.AddAutoMapper();
         }
 
         /// <summary>

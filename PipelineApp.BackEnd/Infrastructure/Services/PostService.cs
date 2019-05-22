@@ -6,10 +6,10 @@
 namespace PipelineApp.BackEnd.Infrastructure.Services
 {
     using System;
-    using AutoMapper;
     using Data.Entities;
     using Data.Relationships;
     using Data.Requests;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Models.DomainModels;
@@ -18,19 +18,19 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     public class PostService : IPostService
     {
         /// <inheritdoc />
-        public Post CreateRootPost(Post post, Guid personaId, Guid fandomId, IPostRepository repository, IMapper mapper)
+        public Post CreateRootPost(Post post, Guid personaId, Guid fandomId, IPostRepository repository, IPostMapper mapper)
         {
             if (personaId == null)
             {
                 throw new ArgumentException("Persona ID cannot be null.");
             }
 
-            var entity = mapper.Map<PostEntity>(post);
+            var entity = mapper.ToEntity(post);
             var request = new CreateNodeRequest<PostEntity>(entity)
                 .WithInboundRelationshipFrom<IsAuthorOf>(personaId)
                 .WithOutboundRelationshipTo<BelongsToFandom>(fandomId);
             var result = repository.CreateWithRelationships(request);
-            return mapper.Map<Post>(result);
+            return mapper.ToDomainModel(result);
         }
     }
 }

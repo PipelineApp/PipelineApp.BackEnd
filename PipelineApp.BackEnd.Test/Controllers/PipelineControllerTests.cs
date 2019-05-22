@@ -8,11 +8,11 @@ namespace PipelineApp.BackEnd.Test.Controllers
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AutoMapper;
     using BackEnd.Controllers;
     using BackEnd.Infrastructure.Data.Entities;
     using BackEnd.Infrastructure.Exceptions.Pipeline;
     using FluentAssertions;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Mvc;
@@ -29,20 +29,20 @@ namespace PipelineApp.BackEnd.Test.Controllers
     {
         private readonly Mock<IPipelineService> _mockPipelineService;
         private readonly Mock<IPipelineRepository> _mockPipelineRepository;
-        private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<IPipelineMapper> _mockMapper;
 
         public PipelineControllerTests()
         {
             var mockLogger = new Mock<ILogger<PipelineController>>();
-            _mockMapper = new Mock<IMapper>();
-            _mockMapper.Setup(m => m.Map<PipelineDto>(It.IsAny<Pipeline>()))
+            _mockMapper = new Mock<IPipelineMapper>();
+            _mockMapper.Setup(m => m.ToDto(It.IsAny<Pipeline>()))
                 .Returns((Pipeline model) => new PipelineDto
                 {
                     Id = model.Id,
                     Description = model.Description,
                     Name = model.Name
                 });
-            _mockMapper.Setup(m => m.Map<Pipeline>(It.IsAny<UpsertPipelineRequestModel>()))
+            _mockMapper.Setup(m => m.ToDomainModel(It.IsAny<UpsertPipelineRequestModel>()))
                 .Returns((UpsertPipelineRequestModel dto) => new Pipeline
                 {
                     Id = dto.Id,
@@ -154,7 +154,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
                 // Arrange
                 _mockPipelineService.Setup(s =>
                         s.CreatePipeline(It.IsAny<Pipeline>(), Constants.UserId, _mockPipelineRepository.Object, _mockMapper.Object))
-                    .Returns((Pipeline model, Guid? userId, IRepository<PipelineEntity> repo, IMapper mapper) => model);
+                    .Returns((Pipeline model, Guid? userId, IRepository<PipelineEntity> repo, IPipelineMapper mapper) => model);
 
                 // Act
                 var result = Controller.Post(_validRequest);
@@ -232,7 +232,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
                 // Arrange
                 _mockPipelineService.Setup(s =>
                         s.UpdatePipeline(It.IsAny<Pipeline>(), _mockPipelineRepository.Object, _mockMapper.Object))
-                    .ReturnsAsync((Pipeline model, IRepository<PipelineEntity> repo, IMapper mapper) => model);
+                    .ReturnsAsync((Pipeline model, IRepository<PipelineEntity> repo, IPipelineMapper mapper) => model);
 
                 // Act
                 var result = await Controller.Put(_pipelineId, _validRequest);

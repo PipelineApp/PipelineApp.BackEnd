@@ -91,10 +91,9 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="config">The user manager.</param>
         /// <param name="refreshTokenRepository">The refresh token repository.</param>
         /// <returns>
-        /// A task that represents the asynchronous operation.
-        /// The task result contains an <see cref="AuthToken" /> containing the refresh token information information.
+        /// An <see cref="AuthToken" /> containing the refresh token information information.
         /// </returns>
-        Task<AuthToken> GenerateRefreshToken(UserEntity user, AppSettings config, IRefreshTokenRepository refreshTokenRepository);
+        AuthToken GenerateRefreshToken(UserEntity user, AppSettings config, IRefreshTokenRepository refreshTokenRepository);
 
         /// <summary>
         /// Gets the user with whom the given refresh token is associated.

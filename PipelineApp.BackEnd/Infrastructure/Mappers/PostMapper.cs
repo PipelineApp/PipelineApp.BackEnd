@@ -5,30 +5,42 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Mappers
 {
-    using System.Diagnostics.CodeAnalysis;
-    using AutoMapper;
     using Data.Entities;
+    using Interfaces.Mappers;
     using Models.DomainModels;
     using Models.RequestModels.Post;
     using Models.ViewModels;
 
-    /// <summary>
-    /// Mapping class for mapping between view model, domain model, and entity representations of posts.
-    /// </summary>
-    /// <seealso cref="Profile" />
-    [ExcludeFromCodeCoverage]
-    public class PostMapper : Profile
+    /// <inheritdoc />
+    public class PostMapper : IPostMapper
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PostMapper"/> class.
-        /// </summary>
-        public PostMapper()
+        /// <inheritdoc />
+        public PostDto ToDto(Post post)
         {
-            CreateMap<Post, PostEntity>()
-                .ReverseMap();
-            CreateMap<Post, PostDto>()
-                .ReverseMap();
-            CreateMap<CreateRootPostRequestModel, Post>();
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public Post ToDomainModel(CreateRootPostRequestModel requestModel)
+        {
+            var post = new Post
+            {
+                Content = requestModel.Content,
+                Title = requestModel.Title
+            };
+            return post;
+        }
+
+        /// <inheritdoc />
+        public Post ToDomainModel(PostEntity entity)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public PostEntity ToEntity(Post post)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

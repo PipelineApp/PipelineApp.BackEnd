@@ -15,7 +15,7 @@ namespace PipelineApp.BackEnd.Models.DomainModels
         /// <summary>
         /// Gets or sets the unique identifier of this persona.
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         /// <summary>
         /// Gets or sets this persona's unique slug.

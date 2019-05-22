@@ -9,7 +9,7 @@ namespace PipelineApp.BackEnd.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AutoMapper;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,27 +26,27 @@ namespace PipelineApp.BackEnd.Controllers
     public class FandomController : BaseController
     {
         private readonly ILogger<FandomController> _logger;
-        private readonly IMapper _mapper;
         private readonly IFandomService _fandomService;
         private readonly IFandomRepository _fandomRepository;
+        private readonly IFandomMapper _mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FandomController"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <param name="mapper">The mapper.</param>
         /// <param name="fandomService">The fandom service.</param>
         /// <param name="fandomRepository">The fandom repository.</param>
+        /// <param name="mapper">The mapper.</param>
         public FandomController(
             ILogger<FandomController> logger,
-            IMapper mapper,
             IFandomService fandomService,
-            IFandomRepository fandomRepository)
+            IFandomRepository fandomRepository,
+            IFandomMapper mapper)
         {
             _logger = logger;
-            _mapper = mapper;
             _fandomService = fandomService;
             _fandomRepository = fandomRepository;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace PipelineApp.BackEnd.Controllers
             {
                 _logger.LogInformation($"Received request to get list of available fandoms for user {UserId}.");
                 var fandoms = await _fandomService.GetAllFandoms(_fandomRepository, _mapper);
-                var result = fandoms.Select(_mapper.Map<FandomDto>).ToList();
+                var result = fandoms.Select(f => _mapper.ToDto(f)).ToList();
                 _logger.LogInformation($"Processed request to get list of available fandoms for user {UserId}. Found {result.Count} fandoms.");
                 return Ok(result);
             }

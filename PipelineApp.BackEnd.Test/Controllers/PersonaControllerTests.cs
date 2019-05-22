@@ -8,11 +8,11 @@ namespace PipelineApp.BackEnd.Test.Controllers
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AutoMapper;
     using BackEnd.Controllers;
     using BackEnd.Infrastructure.Data.Entities;
     using BackEnd.Infrastructure.Exceptions.Persona;
     using FluentAssertions;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Mvc;
@@ -28,15 +28,17 @@ namespace PipelineApp.BackEnd.Test.Controllers
     {
         private readonly Mock<IPersonaService> _mockPersonaService;
         private readonly Mock<IPersonaRepository> _mockPersonaRepository;
-        private readonly Mock<IMapper> _mockMapper;
+        private readonly Mock<IPersonaMapper> _mockPersonaMapper;
+        private readonly Mock<IPostMapper> _mockPostMapper;
         private Mock<IPostService> _mockPostService;
         private Mock<IPostRepository> _mockPostRepository;
 
         public PersonaControllerTests()
         {
             var mockLogger = new Mock<ILogger<PersonaController>>();
-            _mockMapper = new Mock<IMapper>();
-            _mockMapper.Setup(m => m.Map<PersonaDto>(It.IsAny<Persona>()))
+            _mockPersonaMapper = new Mock<IPersonaMapper>();
+            _mockPostMapper = new Mock<IPostMapper>();
+            _mockPersonaMapper.Setup(m => m.ToDto(It.IsAny<Persona>()))
                 .Returns((Persona model) => new PersonaDto
                 {
                     Id = model.Id,
@@ -44,7 +46,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
                     PersonaName = model.PersonaName,
                     Slug = model.Slug
                 });
-            _mockMapper.Setup(m => m.Map<Persona>(It.IsAny<PersonaDto>()))
+            _mockPersonaMapper.Setup(m => m.ToDomainModel(It.IsAny<PersonaDto>()))
                 .Returns((PersonaDto dto) => new Persona
                 {
                     Id = dto.Id,
@@ -56,7 +58,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
             _mockPersonaRepository = new Mock<IPersonaRepository>();
             _mockPostService = new Mock<IPostService>();
             _mockPostRepository = new Mock<IPostRepository>();
-            Controller = new PersonaController(mockLogger.Object, _mockPersonaService.Object, _mockPersonaRepository.Object, _mockPostService.Object, _mockPostRepository.Object, _mockMapper.Object);
+            Controller = new PersonaController(mockLogger.Object, _mockPersonaService.Object, _mockPersonaRepository.Object, _mockPostService.Object, _mockPostRepository.Object, _mockPersonaMapper.Object, _mockPostMapper.Object);
             InitControllerContext();
         }
 
@@ -67,7 +69,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
             {
                 // Arrange
                 _mockPersonaService
-                    .Setup(s => s.GetAllPersonas(Constants.UserId, _mockPersonaRepository.Object, _mockMapper.Object))
+                    .Setup(s => s.GetAllPersonas(Constants.UserId, _mockPersonaRepository.Object, _mockPersonaMapper.Object))
                     .Throws<NullReferenceException>();
 
                 // Act
@@ -95,7 +97,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
                     }
                 };
                 _mockPersonaService
-                    .Setup(s => s.GetAllPersonas(Constants.UserId, _mockPersonaRepository.Object, _mockMapper.Object))
+                    .Setup(s => s.GetAllPersonas(Constants.UserId, _mockPersonaRepository.Object, _mockPersonaMapper.Object))
                     .ReturnsAsync(personas);
 
                 // Act
@@ -137,14 +139,14 @@ namespace PipelineApp.BackEnd.Test.Controllers
 
                 // Assert
                 result.Should().BeOfType<BadRequestObjectResult>();
-                _mockPersonaService.Verify(s => s.CreatePersona(It.IsAny<Persona>(), Constants.UserId, _mockPersonaRepository.Object, _mockMapper.Object), Times.Never);
+                _mockPersonaService.Verify(s => s.CreatePersona(It.IsAny<Persona>(), Constants.UserId, _mockPersonaRepository.Object, _mockPersonaMapper.Object), Times.Never);
             }
 
             [Fact]
             public async Task ReturnsBadRequestWhenSlugExists()
             {
                 // Arrange
-                _mockPersonaService.Setup(s => s.CreatePersona(It.IsAny<Persona>(), Constants.UserId, _mockPersonaRepository.Object, _mockMapper.Object))
+                _mockPersonaService.Setup(s => s.CreatePersona(It.IsAny<Persona>(), Constants.UserId, _mockPersonaRepository.Object, _mockPersonaMapper.Object))
                     .Throws<PersonaSlugExistsException>();
 
                 // Act
@@ -158,7 +160,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
             public async Task ReturnsServerErrorWhenUnexpectedErrorOccurs()
             {
                 // Arrange
-                _mockPersonaService.Setup(s => s.CreatePersona(It.IsAny<Persona>(), Constants.UserId, _mockPersonaRepository.Object, _mockMapper.Object))
+                _mockPersonaService.Setup(s => s.CreatePersona(It.IsAny<Persona>(), Constants.UserId, _mockPersonaRepository.Object, _mockPersonaMapper.Object))
                     .Throws<NullReferenceException>();
 
                 // Act
@@ -174,8 +176,8 @@ namespace PipelineApp.BackEnd.Test.Controllers
             {
                 // Arrange
                 _mockPersonaService.Setup(s =>
-                        s.CreatePersona(It.IsAny<Persona>(), Constants.UserId, _mockPersonaRepository.Object, _mockMapper.Object))
-                    .Returns((Persona model, Guid? userId, IRepository<PersonaEntity> repo, IMapper mapper) => model);
+                        s.CreatePersona(It.IsAny<Persona>(), Constants.UserId, _mockPersonaRepository.Object, _mockPersonaMapper.Object))
+                    .Returns((Persona model, Guid? userId, IRepository<PersonaEntity> repo, IPersonaMapper mapper) => model);
 
                 // Act
                 var result = await Controller.Post(_validRequest);
@@ -217,14 +219,14 @@ namespace PipelineApp.BackEnd.Test.Controllers
 
                 // Assert
                 result.Should().BeOfType<BadRequestObjectResult>();
-                _mockPersonaService.Verify(s => s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockMapper.Object), Times.Never);
+                _mockPersonaService.Verify(s => s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockPersonaMapper.Object), Times.Never);
             }
 
             [Fact]
             public async Task ReturnsBadRequestWhenSlugExists()
             {
                 // Arrange
-                _mockPersonaService.Setup(s => s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockMapper.Object))
+                _mockPersonaService.Setup(s => s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockPersonaMapper.Object))
                     .Throws<PersonaSlugExistsException>();
 
                 // Act
@@ -247,14 +249,14 @@ namespace PipelineApp.BackEnd.Test.Controllers
 
                 // Assert
                 result.Should().BeOfType<BadRequestObjectResult>();
-                _mockPersonaService.Verify(s => s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockMapper.Object), Times.Never);
+                _mockPersonaService.Verify(s => s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockPersonaMapper.Object), Times.Never);
             }
 
             [Fact]
             public async Task ReturnsServerErrorWhenUnexpectedErrorOccurs()
             {
                 // Arrange
-                _mockPersonaService.Setup(s => s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockMapper.Object))
+                _mockPersonaService.Setup(s => s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockPersonaMapper.Object))
                     .Throws<NullReferenceException>();
 
                 // Act
@@ -269,8 +271,8 @@ namespace PipelineApp.BackEnd.Test.Controllers
             {
                 // Arrange
                 _mockPersonaService.Setup(s =>
-                        s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockMapper.Object))
-                    .ReturnsAsync((Persona model, IRepository<PersonaEntity> repo, IMapper mapper) => model);
+                        s.UpdatePersona(It.IsAny<Persona>(), _mockPersonaRepository.Object, _mockPersonaMapper.Object))
+                    .ReturnsAsync((Persona model, IRepository<PersonaEntity> repo, IPersonaMapper mapper) => model);
 
                 // Act
                 var result = await Controller.Put(_personaId, _validRequest);

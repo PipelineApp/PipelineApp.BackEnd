@@ -98,7 +98,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<AuthToken> GenerateRefreshToken(UserEntity user, AppSettings config, IRefreshTokenRepository refreshTokenRepository)
+        public AuthToken GenerateRefreshToken(UserEntity user, AppSettings config, IRefreshTokenRepository refreshTokenRepository)
         {
             var now = DateTime.UtcNow;
             var claims = new[]

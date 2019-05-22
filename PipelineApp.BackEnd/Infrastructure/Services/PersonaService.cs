@@ -10,11 +10,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Data.Entities;
     using Data.Relationships;
     using Data.Requests;
     using Exceptions.Persona;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Models.DomainModels;
@@ -23,14 +23,14 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     public class PersonaService : IPersonaService
     {
         /// <inheritdoc />
-        public async Task<IEnumerable<Persona>> GetAllPersonas(Guid? userId, IPersonaRepository repository, IMapper mapper)
+        public async Task<IEnumerable<Persona>> GetAllPersonas(Guid? userId, IPersonaRepository repository, IPersonaMapper mapper)
         {
             var personaEntities = await repository.GetByUserIdAsync(userId);
-            return personaEntities.Select(mapper.Map<Persona>).ToList();
+            return personaEntities.Select(mapper.ToDomainModel).ToList();
         }
 
         /// <inheritdoc />
-        public async Task AssertSlugIsValid(string slug, Guid personaId, IPersonaRepository personaRepository)
+        public async Task AssertSlugIsValid(string slug, Guid? personaId, IPersonaRepository personaRepository)
         {
             var slugRegex = new Regex(@"^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$");
             if (!slugRegex.IsMatch(slug))
@@ -45,21 +45,22 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public Persona CreatePersona(Persona persona, Guid? userId, IPersonaRepository repository, IMapper mapper)
+        public Persona CreatePersona(Persona persona, Guid? userId, IPersonaRepository repository, IPersonaMapper mapper)
         {
             if (userId == null)
             {
                 throw new ArgumentException("User ID cannot be null.");
             }
-            var entity = mapper.Map<PersonaEntity>(persona);
+
+            var entity = mapper.ToEntity(persona);
             var request = new CreateNodeRequest<PersonaEntity>(entity)
                 .WithInboundRelationshipFrom<HasPersona>(userId.Value);
             var createdEntity = repository.CreateWithRelationships(request);
-            return mapper.Map<Persona>(createdEntity);
+            return mapper.ToDomainModel(createdEntity);
         }
 
         /// <inheritdoc />
-        public async Task AssertUserOwnsPersona(Guid personaId, Guid? userId, IPersonaRepository repository)
+        public async Task AssertUserOwnsPersona(Guid? personaId, Guid? userId, IPersonaRepository repository)
         {
             if (userId == null)
             {
@@ -73,11 +74,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<Persona> UpdatePersona(Persona model, IPersonaRepository repository, IMapper mapper)
+        public async Task<Persona> UpdatePersona(Persona model, IPersonaRepository repository, IPersonaMapper mapper)
         {
-            var entity = mapper.Map<PersonaEntity>(model);
+            var entity = mapper.ToEntity(model);
             var result = await repository.UpdateAsync(entity);
-            return mapper.Map<Persona>(result);
+            return mapper.ToDomainModel(result);
         }
 
         /// <inheritdoc />

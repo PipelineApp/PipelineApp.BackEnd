@@ -81,7 +81,7 @@ namespace PipelineApp.BackEnd.Controllers
                 var user = await _authService.GetUserByUsername(model.Username, _userManager);
                 await _authService.ValidatePassword(user, model.Password, _userManager);
                 var jwt = _authService.GenerateJwt(user, _userManager, _config);
-                var refreshToken = await _authService.GenerateRefreshToken(user, _config, _refreshTokenRepository);
+                var refreshToken = _authService.GenerateRefreshToken(user, _config, _refreshTokenRepository);
                 return Ok(new AuthTokenCollection
                 {
                     Token = jwt,
@@ -130,7 +130,7 @@ namespace PipelineApp.BackEnd.Controllers
                 _logger.LogInformation("Received token refresh request.");
                 var user = await _authService.GetUserForRefreshToken(model.RefreshToken, _refreshTokenRepository);
                 var jwt = _authService.GenerateJwt(user, _userManager, _config);
-                var refreshToken = await _authService.GenerateRefreshToken(user, _config, _refreshTokenRepository);
+                var refreshToken = _authService.GenerateRefreshToken(user, _config, _refreshTokenRepository);
                 _logger.LogInformation("Processed token refresh request.");
                 return Ok(new AuthTokenCollection
                 {

@@ -6,7 +6,7 @@
 namespace PipelineApp.BackEnd.Interfaces.Services
 {
     using System;
-    using AutoMapper;
+    using Mappers;
     using Models.DomainModels;
     using Repositories;
 
@@ -26,6 +26,6 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <returns>
         /// The created post.
         /// </returns>
-        Post CreateRootPost(Post post, Guid personaId, Guid fandomId, IPostRepository repository, IMapper mapper);
+        Post CreateRootPost(Post post, Guid personaId, Guid fandomId, IPostRepository repository, IPostMapper mapper);
     }
 }

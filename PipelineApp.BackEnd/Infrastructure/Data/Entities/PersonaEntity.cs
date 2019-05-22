@@ -11,11 +11,6 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
     public class PersonaEntity : BaseEntity
     {
         /// <summary>
-        /// Gets or sets the unique identifier of the user that owns the persona.
-        /// </summary>
-        public string UserId { get; set; }
-
-        /// <summary>
         /// Gets or sets the persona's unique URL slug.
         /// </summary>
         public string Slug { get; set; }

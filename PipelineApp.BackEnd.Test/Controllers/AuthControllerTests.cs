@@ -136,7 +136,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
                     .Returns(token);
                 _mockAuthService
                     .Setup(s => s.GenerateRefreshToken(It.IsAny<UserEntity>(), _mockConfig, _mockRefreshTokenRepository.Object))
-                    .ReturnsAsync(refreshToken);
+                    .Returns(refreshToken);
 
                 // Act
                 var result = await Controller.CreateToken(model);
@@ -216,7 +216,7 @@ namespace PipelineApp.BackEnd.Test.Controllers
                     .Returns(token);
                 _mockAuthService
                     .Setup(s => s.GenerateRefreshToken(It.IsAny<UserEntity>(), _mockConfig, _mockRefreshTokenRepository.Object))
-                    .ReturnsAsync(refreshToken);
+                    .Returns(refreshToken);
 
                 // Act
                 var result = await Controller.RefreshToken(model);

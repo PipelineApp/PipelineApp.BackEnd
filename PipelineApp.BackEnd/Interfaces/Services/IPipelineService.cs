@@ -8,7 +8,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using AutoMapper;
+    using Mappers;
     using Models.DomainModels;
     using Repositories;
 
@@ -27,7 +27,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <returns>
         /// The created pipeline.
         /// </returns>
-        Pipeline CreatePipeline(Pipeline pipeline, Guid? userId, IPipelineRepository repository, IMapper mapper);
+        Pipeline CreatePipeline(Pipeline pipeline, Guid? userId, IPipelineRepository repository, IPipelineMapper mapper);
 
         /// <summary>
         /// Throws an exception if the given user does not own the given pipeline.
@@ -48,7 +48,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="pipelineRepository">The pipeline repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task AddTrackedPersona(Guid pipelineId, Guid personaId, IPipelineRepository pipelineRepository, IMapper mapper);
+        Task AddTrackedPersona(Guid pipelineId, Guid personaId, IPipelineRepository pipelineRepository, IPipelineMapper mapper);
 
         /// <summary>
         /// Adds a tracked fandom to a pipeline.
@@ -58,7 +58,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// <param name="pipelineRepository">The pipeline repository.</param>
         /// <param name="mapper">The mapper.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task AddTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository, IMapper mapper);
+        Task AddTrackedFandom(Guid pipelineId, Guid fandomId, IPipelineRepository pipelineRepository, IPipelineMapper mapper);
 
         /// <summary>
         /// Fetches all pipelines belonging to the given user.
@@ -71,7 +71,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// The task result contains a list of <see cref="Pipeline"/> objects belonging to the
         /// given user.
         /// </returns>
-        Task<IEnumerable<Pipeline>> GetAllPipelines(Guid? userId, IPipelineRepository pipelineRepository, IMapper mapper);
+        Task<List<Pipeline>> GetAllPipelines(Guid? userId, IPipelineRepository pipelineRepository, IPipelineMapper mapper);
 
         /// <summary>
         /// Updates the passed pipeline.
@@ -83,7 +83,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
         /// A task representing the asynchronous operation.
         /// The task result contains the updated pipeline object.
         /// </returns>
-        Task<Pipeline> UpdatePipeline(Pipeline model, IPipelineRepository pipelineRepository, IMapper mapper);
+        Task<Pipeline> UpdatePipeline(Pipeline model, IPipelineRepository pipelineRepository, IPipelineMapper mapper);
 
         /// <summary>
         /// Deletes the pipeline with the passed ID.

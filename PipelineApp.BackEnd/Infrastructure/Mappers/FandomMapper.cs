@@ -5,28 +5,32 @@
 
 namespace PipelineApp.BackEnd.Infrastructure.Mappers
 {
-    using System.Diagnostics.CodeAnalysis;
-    using AutoMapper;
     using Data.Entities;
+    using Interfaces.Mappers;
     using Models.DomainModels;
     using Models.ViewModels;
 
-    /// <summary>
-    /// Mapping class for mapping between view model, domain model, and entity representations of fandoms.
-    /// </summary>
-    /// <seealso cref="Profile" />
-    [ExcludeFromCodeCoverage]
-    public class FandomMapper : Profile
+    /// <inheritdoc />
+    public class FandomMapper : IFandomMapper
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FandomMapper"/> class.
-        /// </summary>
-        public FandomMapper()
+        /// <inheritdoc />
+        public FandomDto ToDto(Fandom fandom)
         {
-            CreateMap<Fandom, FandomEntity>()
-                .ReverseMap();
-            CreateMap<Fandom, FandomDto>()
-                .ReverseMap();
+            return new FandomDto
+            {
+                Id = fandom.Id,
+                Name = fandom.Name
+            };
+        }
+
+        /// <inheritdoc />
+        public Fandom ToDomainModel(FandomEntity entity)
+        {
+            return new Fandom
+            {
+                Id = entity.Id,
+                Name = entity.Name
+            };
         }
     }
 }

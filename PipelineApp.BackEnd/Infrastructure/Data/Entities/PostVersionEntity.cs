@@ -8,7 +8,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
     /// <summary>
     /// Data-layer represenation of a particular version of a post's content.
     /// </summary>
-    public class PostVersionEntity
+    public class PostVersionEntity : VersionEntity<PostEntity>
     {
         /// <summary>
         /// Gets or sets the post's title.

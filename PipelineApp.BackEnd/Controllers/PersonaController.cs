@@ -9,16 +9,15 @@ namespace PipelineApp.BackEnd.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Infrastructure.Exceptions.Persona;
     using Infrastructure.Exceptions.Post;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Models.DomainModels;
     using Models.RequestModels.Post;
     using Models.ViewModels;
     using Newtonsoft.Json;
@@ -35,7 +34,8 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly IPersonaRepository _personaRepository;
         private readonly IPostService _postService;
         private readonly IPostRepository _postRepository;
-        private readonly IMapper _mapper;
+        private readonly IPersonaMapper _personaMapper;
+        private readonly IPostMapper _postMapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PersonaController"/> class.
@@ -45,21 +45,24 @@ namespace PipelineApp.BackEnd.Controllers
         /// <param name="personaRepository">The persona repository.</param>
         /// <param name="postService">The post service.</param>
         /// <param name="postRepository">The post repository.</param>
-        /// <param name="mapper">The mapper.</param>
+        /// <param name="personaMapper">The persona mapper.</param>
+        /// <param name="postMapper">The post mapper.</param>
         public PersonaController(
             ILogger<PersonaController> logger,
             IPersonaService personaService,
             IPersonaRepository personaRepository,
             IPostService postService,
             IPostRepository postRepository,
-            IMapper mapper)
+            IPersonaMapper personaMapper,
+            IPostMapper postMapper)
         {
             _logger = logger;
             _personaService = personaService;
             _personaRepository = personaRepository;
             _postService = postService;
             _postRepository = postRepository;
-            _mapper = mapper;
+            _personaMapper = personaMapper;
+            _postMapper = postMapper;
         }
 
         /// <summary>
@@ -81,8 +84,8 @@ namespace PipelineApp.BackEnd.Controllers
             try
             {
                 _logger.LogInformation($"Received request to get list of available personas for user {UserId}.");
-                var personas = await _personaService.GetAllPersonas(UserId, _personaRepository, _mapper);
-                var result = personas.Select(_mapper.Map<PersonaDto>).ToList();
+                var personas = await _personaService.GetAllPersonas(UserId, _personaRepository, _personaMapper);
+                var result = personas.Select(p => _personaMapper.ToDto(p)).ToList();
                 _logger.LogInformation(
                     $"Processed request to get list of available personas for user {UserId}. Found {result.Count} personas.");
                 return Ok(result);
@@ -119,8 +122,8 @@ namespace PipelineApp.BackEnd.Controllers
                     $"Received request to create a persona belonging to user {UserId}. Request: {personaDto}");
                 personaDto.AssertIsValid();
                 await _personaService.AssertSlugIsValid(personaDto.Slug, personaDto.Id, _personaRepository);
-                var persona = _mapper.Map<Persona>(personaDto);
-                var result = _personaService.CreatePersona(persona, UserId, _personaRepository, _mapper);
+                var persona = _personaMapper.ToDomainModel(personaDto);
+                var result = _personaService.CreatePersona(persona, UserId, _personaRepository, _personaMapper);
                 _logger.LogInformation($"Processed request to create a persona belonging to user {UserId}. Created {result}");
                 return Ok(result);
             }
@@ -169,10 +172,10 @@ namespace PipelineApp.BackEnd.Controllers
                 personaDto.Id = personaId;
                 await _personaService.AssertUserOwnsPersona(personaDto.Id, UserId, _personaRepository);
                 await _personaService.AssertSlugIsValid(personaDto.Slug, personaDto.Id, _personaRepository);
-                var model = _mapper.Map<Persona>(personaDto);
-                var updatedPersona = await _personaService.UpdatePersona(model, _personaRepository, _mapper);
+                var model = _personaMapper.ToDomainModel(personaDto);
+                var updatedPersona = await _personaService.UpdatePersona(model, _personaRepository, _personaMapper);
                 _logger.LogInformation($"Processed request to update persona {personaId} for user {UserId}. Result body: {JsonConvert.SerializeObject(updatedPersona)}");
-                return Ok(_mapper.Map<PersonaDto>(updatedPersona));
+                return Ok(_personaMapper.ToDto(updatedPersona));
             }
             catch (PersonaSlugExistsException)
             {
@@ -261,9 +264,9 @@ namespace PipelineApp.BackEnd.Controllers
                     $"Received request to create a post belonging to user {UserId}. Request: {requestModel}");
                 requestModel.AssertIsValid();
                 await _personaService.AssertUserOwnsPersona(personaId, UserId, _personaRepository);
-                var post = _mapper.Map<Post>(requestModel);
-                var result = _postService.CreateRootPost(post, personaId, requestModel.FandomId, _postRepository, _mapper);
-                var dto = _mapper.Map<PostDto>(result);
+                var post = _postMapper.ToDomainModel(requestModel);
+                var result = _postService.CreateRootPost(post, personaId, requestModel.FandomId, _postRepository, _postMapper);
+                var dto = _postMapper.ToDto(result);
                 _logger.LogInformation($"Processed request to create a post belonging to user {UserId}. Created {dto}");
                 return Ok(dto);
             }

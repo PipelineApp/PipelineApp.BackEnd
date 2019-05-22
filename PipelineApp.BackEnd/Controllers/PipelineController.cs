@@ -9,15 +9,14 @@ namespace PipelineApp.BackEnd.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using AutoMapper;
     using Infrastructure.Exceptions.Pipeline;
+    using Interfaces.Mappers;
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Models.DomainModels;
     using Models.RequestModels.Pipeline;
     using Models.ViewModels;
     using Newtonsoft.Json;
@@ -32,7 +31,7 @@ namespace PipelineApp.BackEnd.Controllers
         private readonly ILogger<PipelineController> _logger;
         private readonly IPipelineService _pipelineService;
         private readonly IPipelineRepository _pipelineRepository;
-        private readonly IMapper _mapper;
+        private readonly IPipelineMapper _mapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PipelineController"/> class.
@@ -45,7 +44,7 @@ namespace PipelineApp.BackEnd.Controllers
             ILogger<PipelineController> logger,
             IPipelineService pipelineService,
             IPipelineRepository pipelineRepository,
-            IMapper mapper)
+            IPipelineMapper mapper)
         {
             _logger = logger;
             _pipelineService = pipelineService;
@@ -73,7 +72,7 @@ namespace PipelineApp.BackEnd.Controllers
             {
                 _logger.LogInformation($"Received request to get list of available pipelines for user {UserId}.");
                 var pipelines = await _pipelineService.GetAllPipelines(UserId, _pipelineRepository, _mapper);
-                var result = pipelines.ToList().Select(_mapper.Map<PipelineDto>).ToList();
+                var result = pipelines.Select(_mapper.ToDto).ToList();
                 _logger.LogInformation($"Processed request to get list of available pipelines for user {UserId}. Found {result.Count} pipelines.");
                 return Ok(result);
             }
@@ -107,9 +106,9 @@ namespace PipelineApp.BackEnd.Controllers
             {
                 _logger.LogInformation($"Received request to create a pipeline belonging to user {UserId}. Request: {requestModel}");
                 requestModel.AssertIsValid();
-                var pipeline = _mapper.Map<Pipeline>(requestModel);
+                var pipeline = _mapper.ToDomainModel(requestModel);
                 var result = _pipelineService.CreatePipeline(pipeline, UserId, _pipelineRepository, _mapper);
-                var dto = _mapper.Map<PipelineDto>(result);
+                var dto = _mapper.ToDto(result);
                 _logger.LogInformation($"Processed request to create a pipeline belonging to user {UserId}. Created {dto}");
                 return Ok(dto);
             }
@@ -232,10 +231,10 @@ namespace PipelineApp.BackEnd.Controllers
                 pipelineDto.AssertIsValid();
                 pipelineDto.Id = pipelineId;
                 await _pipelineService.AssertUserOwnsPipeline(pipelineDto.Id.Value, UserId, _pipelineRepository);
-                var model = _mapper.Map<Pipeline>(pipelineDto);
+                var model = _mapper.ToDomainModel(pipelineDto);
                 var updatedPipeline = await _pipelineService.UpdatePipeline(model, _pipelineRepository, _mapper);
                 _logger.LogInformation($"Processed request to update pipeline {pipelineId} for user {UserId}. Result body: {JsonConvert.SerializeObject(updatedPipeline)}");
-                return Ok(_mapper.Map<PipelineDto>(updatedPipeline));
+                return Ok(_mapper.ToDto(updatedPipeline));
             }
             catch (InvalidPipelineException)
             {
