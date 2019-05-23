@@ -3,9 +3,10 @@
 // Licensed under the GPL v3 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace PipelineApp.BackEnd.Models.DomainModels
+namespace PipelineApp.BackEnd.Models.DomainModels.Posts
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Domain model representing a post.
@@ -26,5 +27,7 @@ namespace PipelineApp.BackEnd.Models.DomainModels
         /// Gets or sets the root post of the thread to which the post belongs.
         /// </summary>
         public Post RootPost { get; set; }
+
+        public List<PostVersion> Versions { get; set; }
     }
 }

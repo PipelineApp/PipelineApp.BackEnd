@@ -5,8 +5,11 @@
 
 namespace PipelineApp.BackEnd.Interfaces.Mappers
 {
+    using System.Collections.Generic;
     using Infrastructure.Data.Entities;
+    using Infrastructure.Data.Entities.EntityCollections;
     using Models.DomainModels;
+    using Models.DomainModels.Posts;
     using Models.RequestModels.Post;
     using Models.ViewModels;
 
@@ -30,17 +33,20 @@ namespace PipelineApp.BackEnd.Interfaces.Mappers
         Post ToDomainModel(CreateRootPostRequestModel requestModel);
 
         /// <summary>
-        /// Maps the given data entity to a domain model.
+        /// Maps the given data entities to a domain model.
         /// </summary>
-        /// <param name="entity">The post data entity.</param>
+        /// <param name="postEntity">The base post information.</param>
+        /// <param name="versionEntities">The post's version information.</param>
         /// <returns>A domain layer representation of the post.</returns>
-        Post ToDomainModel(PostEntity entity);
+        Post ToDomainModel(PostEntity postEntity, List<VersionEntity<PostEntity>> versionEntities);
+
+        Post ToDomainModel(PostEntity postEntity, VersionEntity<PostEntity> versionEntity);
 
         /// <summary>
         /// Maps the given domain model to a data entity.
         /// </summary>
         /// <param name="post">The post domain model.</param>
         /// <returns>A data layer representation of the post.</returns>
-        PostEntity ToEntity(Post post);
+        PostEntityDataCollection ToEntity(Post post);
     }
 }

@@ -17,14 +17,8 @@ namespace PipelineApp.BackEnd.Models.ViewModels
         /// </summary>
         public Guid? Id { get; set; }
 
-        /// <summary>
-        /// Gets or sets the post's title.
-        /// </summary>
         public string Title { get; set; }
 
-        /// <summary>
-        /// Gets or sets the post's content.
-        /// </summary>
         public string Content { get; set; }
 
         /// <summary>

@@ -48,7 +48,8 @@ namespace PipelineApp.BackEnd.Interfaces.Repositories
         /// A task representing the asynchronous operation.
         /// The task result contains the created object.
         /// </returns>
-        TModel CreateWithRelationships(CreateNodeRequest<TModel> request);
+        TType CreateWithRelationships<TType>(CreateNodeRequest<TType> request)
+            where TType : class, IEntity;
 
         /// <summary>
         /// Adds a relationship of type <code>TRelationship</code>

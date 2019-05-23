@@ -8,6 +8,7 @@ namespace PipelineApp.BackEnd.Interfaces.Services
     using System;
     using Mappers;
     using Models.DomainModels;
+    using Models.DomainModels.Posts;
     using Repositories;
 
     /// <summary>

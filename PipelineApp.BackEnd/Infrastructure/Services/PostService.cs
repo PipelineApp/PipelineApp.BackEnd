@@ -6,6 +6,7 @@
 namespace PipelineApp.BackEnd.Infrastructure.Services
 {
     using System;
+    using System.Collections.Generic;
     using Data.Entities;
     using Data.Relationships;
     using Data.Requests;
@@ -13,6 +14,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
     using Interfaces.Repositories;
     using Interfaces.Services;
     using Models.DomainModels;
+    using Models.DomainModels.Posts;
 
     /// <inheritdoc />
     public class PostService : IPostService
@@ -26,11 +28,14 @@ namespace PipelineApp.BackEnd.Infrastructure.Services
             }
 
             var entity = mapper.ToEntity(post);
-            var request = new CreateNodeRequest<PostEntity>(entity)
-                .WithInboundRelationshipFrom<IsAuthorOf>(personaId)
-                .WithOutboundRelationshipTo<BelongsToFandom>(fandomId);
-            var result = repository.CreateWithRelationships(request);
-            return mapper.ToDomainModel(result);
+            var postRequest = new CreateNodeRequest<PostEntity>(entity.Post)
+                .WithInboundRelationshipFrom<IsAuthorOf>(personaId);
+            var createdPost = repository.CreateWithRelationships(postRequest);
+            var versionRequest = new CreateNodeRequest<PostVersionEntity>(entity.Versions[0])
+                .WithOutboundRelationshipTo<BelongsToFandom>(fandomId)
+                .WithInboundRelationshipFrom<HasVersion>(createdPost.Id);
+            var createdVersion = repository.CreateWithRelationships(versionRequest);
+            return mapper.ToDomainModel(createdPost, createdVersion);
         }
     }
 }

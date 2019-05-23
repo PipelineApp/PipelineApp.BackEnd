@@ -56,21 +56,22 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
         }
 
         /// <inheritdoc />
-        public TModel CreateWithRelationships(CreateNodeRequest<TModel> request)
+        public TType CreateWithRelationships<TType>(CreateNodeRequest<TType> request) 
+            where TType : class, IEntity
         {
             using (var scope = new TransactionScope())
             {
                 var id = request.Entity.Id;
-                var node = GraphClient.Cypher.Create($"(e:{typeof(TModel).Name} {{model}})")
+                var node = GraphClient.Cypher.Create($"(e:{typeof(TType).Name} {{model}})")
                     .WithParam("model", request.Entity)
-                    .Return(e => e.As<TModel>())
+                    .Return(e => e.As<TType>())
                     .Results.FirstOrDefault();
                 foreach (var rel in request.InboundRelationships)
                 {
                     GraphClient.Cypher
                         .Match("(source)", "(target)")
                         .Where<BaseEntity>(source => source.Id == rel.SourceId)
-                        .AndWhere((TModel target) => target.Id == id)
+                        .AndWhere((TType target) => target.Id == id)
                         .Create($"(source)-[:{rel.GetType().Name}]->(target)")
                         .ExecuteWithoutResults();
                 }
@@ -78,7 +79,7 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Repositories
                 {
                     GraphClient.Cypher
                         .Match("(source)", "(target)")
-                        .Where((TModel source) => source.Id == id)
+                        .Where((TType source) => source.Id == id)
                         .AndWhere<BaseEntity>(target => target.Id == rel.TargetId)
                         .Create($"(source)-[:{rel.GetType().Name}]->(target)")
                         .ExecuteWithoutResults();
