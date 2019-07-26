@@ -21,10 +21,5 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
         /// Gets or sets the post version's content.
         /// </summary>
         public string Content { get; set; }
-
-        /// <summary>
-        /// Gets or sets the post version's fandom ID
-        /// </summary>
-        public Guid FandomId { get; set; }
     }
 }

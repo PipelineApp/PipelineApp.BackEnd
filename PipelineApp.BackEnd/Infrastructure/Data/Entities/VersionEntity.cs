@@ -14,6 +14,11 @@ namespace PipelineApp.BackEnd.Infrastructure.Data.Entities
     public class VersionEntity<TBase> : BaseEntity
         where TBase : IEntity
     {
+        public VersionEntity()
+        {
+            UtcDateTime = DateTime.UtcNow;
+        }
+
         /// <summary>
         /// Gets or sets the date at which the version was created.
         /// </summary>
